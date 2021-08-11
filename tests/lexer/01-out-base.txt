@@ -1,0 +1,81 @@
+newline
+newline
+newline
+keyword expression
+indentifier some-name
+newline
+indent
+expression [a-bA-Y09]lyoun(kkol)?
+newline
+newline
+keyword expression
+identifier another-name
+expression [a-z0-9]{3}
+newline
+newline
+keyword expression
+identifier third-name
+expression  expression with space
+keyword pattern
+identifier some-name#
+identifier comments
+identifier aren't
+identifier allowed
+identifier at
+identifier the
+identifier end
+identifier of
+identifier the
+identifier line
+newline
+indent
+identifier abcde
+newline
+indent
+operator |
+identifier fghij
+identifier klmno
+identifier pqrs
+newline
+indent
+operator |
+identifier wxyz
+newline
+newline
+keyword rule
+identifier what-to-match
+newline
+indent
+action produce-nothing
+newline
+indent
+action produce
+identifier token-name
+newline
+indent
+action rewind
+newline
+indent
+action transition
+identifier another-state
+newline
+indent
+action inc-line
+newline
+indent
+action inc-line
+newline
+indent
+action dec-line
+newline
+indent
+action dec-line
+newline
+indent
+action line
+number +2
+newline
+indent
+action line
+number -9
+newline
