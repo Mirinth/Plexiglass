@@ -2,7 +2,7 @@ newline \n
 newline \n
 newline \n
 keyword expression
-indentifier some-name
+identifier some-name
 newline \n
 indent
 expression [a-bA-Y09]lyoun(kkol)?

@@ -3,7 +3,7 @@
 #include <fstream>
 
 constexpr int initial_state = 0;
-constexpr int expression_state = 1;
+constexpr int expression_keyword_state = 1;
 constexpr int expression_identifier_state = 2;
 constexpr int invalid_state = -1;
 
@@ -112,7 +112,18 @@ void Lexer::Lex()
 	{
 		m_next = Token(m_line, TokenType::Keyword, "expression");
 		m_data.remove_prefix(sizeof("expression"));
-		m_state = expression_state;
+		m_state = expression_keyword_state;
+		return;
+	}
+
+	if (m_state == expression_keyword_state)
+	{
+		size_t end = m_data.find_first_of(" \t\r\n");
+		auto viewIdentifier = m_data.substr(0, end);
+		std::string identifier(viewIdentifier.begin(), viewIdentifier.end());
+		m_next = Token(m_line, TokenType::Identifier, identifier);
+		m_data.remove_prefix(end);
+		m_state = expression_identifier_state;
 		return;
 	}
 
