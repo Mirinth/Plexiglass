@@ -120,14 +120,6 @@ action line
 number -9
 	*/
 
-	if (!m_data.empty())
-	{
-		m_next = Token(99, TokenType::Identifier, "This is a token");
-		size_t amount = std::min(size_t(50), m_data.size());
-		m_data.remove_prefix(amount);
-	}
-	else
-	{
-		m_next = Token(95, TokenType::Eof, "This is the end of file");
-	}
+	m_next = Token(m_line, TokenType::Unknown, std::string(1, m_data[0]));
+	m_data.remove_prefix(1);
 }
