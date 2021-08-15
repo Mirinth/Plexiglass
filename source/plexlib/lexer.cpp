@@ -14,7 +14,29 @@ Token::Token(size_t line, TokenType type, std::string text)
 
 std::ostream& operator<<(std::ostream& os, const Token token)
 {
-	os << token.text;
+	std::string name;
+	switch (token.type)
+	{
+	case TokenType::Eof:
+		name = "eof";
+		break;
+	case TokenType::Identifier:
+		name = "identifier";
+		break;
+	case TokenType::Keyword:
+		name = "keyword";
+		break;
+	case TokenType::Newline:
+		name = "newline";
+		break;
+	case TokenType::Unknown:
+		name = "unknown";
+		break;
+	default:
+		throw std::exception("Unrecognized token type in operator<<(Token)");
+	}
+
+	os << name << " " << token.text;
 	return os;
 }
 
