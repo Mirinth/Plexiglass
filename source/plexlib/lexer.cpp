@@ -2,10 +2,15 @@
 
 #include <fstream>
 
+constexpr int invalid_state = -1;
 constexpr int initial_state = 0;
+
 constexpr int expression_keyword_state = 1;
 constexpr int expression_identifier_state = 2;
-constexpr int invalid_state = -1;
+
+constexpr int pattern_keyword_state = 11;
+constexpr int pattern_identifier_state = 12;
+
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
 std::string TakeUntil(std::string_view& data, const std::string find);
@@ -25,6 +30,12 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	std::string name;
 	switch (token.type)
 	{
+	case TokenType::Alternator:
+		name = "alternator";
+		break;
+	case TokenType::End:
+		name = "end";
+		break;
 	case TokenType::Eof:
 		name = "eof";
 		break;
@@ -143,13 +154,45 @@ void Lexer::Lex()
 		return;
 	}
 
-
-	if (m_state == invalid_state && StartsWith(m_data, "pattern"))
+	// Patterns
+	if (m_state == initial_state && StartsWith(m_data, "pattern"))
 	{
 		m_next = Token(m_line, TokenType::Keyword, "pattern");
 		m_data.remove_prefix(sizeof("pattern"));
+		m_state = pattern_keyword_state;
 		return;
 	}
+
+	if (m_state == pattern_keyword_state)
+	{
+		std::string identifier = TakeUntil(m_data, " \t\r\n");
+		m_next = Token(m_line, TokenType::Identifier, identifier);
+		m_state = pattern_identifier_state;
+		return;
+	}
+
+	if (m_state == pattern_identifier_state && m_data[0] == '|')
+	{
+		m_next = Token(m_line, TokenType::Alternator, "|");
+		m_data.remove_prefix(1);
+		return;
+	}
+
+	if (m_state == pattern_identifier_state && m_data[0] == ';')
+	{
+		m_next = Token(m_line, TokenType::End, ";");
+		m_data.remove_prefix(1);
+		m_state = initial_state;
+		return;
+	}
+
+	if (m_state == pattern_identifier_state)
+	{
+		std::string identifier = TakeUntil(m_data, " \t\r\n");
+		m_next = Token(m_line, TokenType::Identifier, identifier);
+		return;
+	}
+
 
 	if (m_state == invalid_state && StartsWith(m_data, "rule"))
 	{

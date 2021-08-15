@@ -6,6 +6,8 @@
 
 enum class TokenType
 {
+	Alternator,
+	End,
 	Eof,
 	Expression,
 	Identifier,
