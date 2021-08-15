@@ -40,6 +40,7 @@ newline \n
 alternator |
 identifier wxyz
 newline \n
+end ;
 newline \n
 keyword rule
 identifier what-to-match
