@@ -48,7 +48,6 @@ Lexer::Lexer(std::string_view data)
 {
 	Lex();
 	Shift();
-	Lex();
 }
 
 void Lexer::Shift()
