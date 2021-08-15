@@ -16,6 +16,8 @@ keyword expression
 identifier third-name
 newline \n
 expression  expression with space
+newline \n
+newline \n
 keyword pattern
 identifier some-name#
 identifier comments
