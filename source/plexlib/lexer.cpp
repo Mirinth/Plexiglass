@@ -45,6 +45,11 @@ const Token& Lexer::Next() const
 
 void Lexer::Lex()
 {
+	if (m_data.empty())
+	{
+		m_next = Token(m_line, TokenType::Eof, "EOF");
+	}
+
 	if (!m_data.empty())
 	{
 		m_next = Token(99, TokenType::Identifier, "This is a token");
