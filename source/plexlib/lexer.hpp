@@ -6,10 +6,11 @@
 
 enum class TokenType
 {
-	Newline,
-	Keyword,
-	Identifier,
 	Eof,
+	Identifier,
+	Keyword,
+	Newline,
+	Unknown,
 };
 
 class Token
