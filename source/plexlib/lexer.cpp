@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+bool StartsWith(const std::string_view& toSearch, const std::string find);
+
 Token::Token()
 	: line(0), type(TokenType::Eof), text("")
 {
@@ -91,6 +93,13 @@ void Lexer::Lex()
 		return;
 	}
 
+	if (StartsWith(m_data, "expression"))
+	{
+		m_next = Token(m_line, TokenType::Keyword, "expression");
+		m_data.remove_prefix(sizeof("expression"));
+		return;
+	}
+
 	/*
 	* Things to handle:
 keyword expression
@@ -154,4 +163,17 @@ number -9
 
 	m_next = Token(m_line, TokenType::Unknown, std::string(1, m_data[0]));
 	m_data.remove_prefix(1);
+}
+
+bool StartsWith(const std::string_view& toSearch, const std::string find)
+{
+	for (size_t i = 0; i < toSearch.size() && i < find.size(); i++)
+	{
+		if (toSearch[i] != find[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
