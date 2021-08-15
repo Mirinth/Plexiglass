@@ -1,15 +1,23 @@
-#include "RegularExpressionParser.hpp"
+#include <fstream>
+#include <iostream>
+
+#include "lexer.hpp"
 
 int main()
 {
-	parseRegularExpression("abc");
-	parseRegularExpression("a|b|c");
-	parseRegularExpression("a*");
-	parseRegularExpression("abc|cba|(ab)*");
+	std::ifstream in("../../../tests/lexer/01-in.txt");
+	std::string data;
 
-	parseRegularExpression("abc()");
-	parseRegularExpression("abc)");
-	parseRegularExpression("*abc");
+	// https://stackoverflow.com/a/2602060
+	in.seekg(0, std::ios::end);
+	data.reserve(in.tellg());
+	in.seekg(0, std::ios::beg);
+	data.assign((std::istreambuf_iterator<char>(in)),
+		std::istreambuf_iterator<char>());
+
+	Lexer lexer(data);
+
+	std::cout << lexer.Current() << "\n";
 
 	return 0;
 }
