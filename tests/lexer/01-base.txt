@@ -1,18 +1,18 @@
-newline
-newline
-newline
+newline \n
+newline \n
+newline \n
 keyword expression
 indentifier some-name
-newline
+newline \n
 indent
 expression [a-bA-Y09]lyoun(kkol)?
-newline
-newline
+newline \n
+newline \n
 keyword expression
 identifier another-name
 expression [a-z0-9]{3}
-newline
-newline
+newline \n
+newline \n
 keyword expression
 identifier third-name
 expression  expression with space
@@ -27,55 +27,55 @@ identifier end
 identifier of
 identifier the
 identifier line
-newline
+newline \n
 indent
 identifier abcde
-newline
+newline \n
 indent
 operator |
 identifier fghij
 identifier klmno
 identifier pqrs
-newline
+newline \n
 indent
 operator |
 identifier wxyz
-newline
-newline
+newline \n
+newline \n
 keyword rule
 identifier what-to-match
-newline
+newline \n
 indent
 action produce-nothing
-newline
+newline \n
 indent
 action produce
 identifier token-name
-newline
+newline \n
 indent
 action rewind
-newline
+newline \n
 indent
 action transition
 identifier another-state
-newline
+newline \n
 indent
 action inc-line
-newline
+newline \n
 indent
 action inc-line
-newline
+newline \n
 indent
 action dec-line
-newline
+newline \n
 indent
 action dec-line
-newline
+newline \n
 indent
 action line
 number +2
-newline
+newline \n
 indent
 action line
 number -9
-newline
+newline \n
