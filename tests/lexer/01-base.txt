@@ -32,12 +32,12 @@ identifier line
 newline \n
 identifier abcde
 newline \n
-operator |
+alternator |
 identifier fghij
 identifier klmno
 identifier pqrs
 newline \n
-operator |
+alternator |
 identifier wxyz
 newline \n
 newline \n
