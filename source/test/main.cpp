@@ -17,7 +17,11 @@ int main()
 
 	Lexer lexer(data);
 
-	std::cout << lexer.Current() << "\n";
+	while (lexer.Current().type != TokenType::Eof)
+	{
+		std::cout << lexer.Current() << "\n";
+		lexer.Shift();
+	}
 
 	return 0;
 }

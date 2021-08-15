@@ -15,12 +15,12 @@ enum class TokenType
 class Token
 {
 public:
+	Token();
 	Token(size_t line, TokenType type, std::string text);
 	int line;
 	TokenType type;
 	std::string text;
 };
-
 std::ostream& operator<<(std::ostream& os, const Token token);
 
 class Lexer
@@ -32,7 +32,10 @@ public:
 	const Token& Next() const;
 
 private:
+	void Lex();
+
 	std::string_view m_data;
 	Token m_current;
 	Token m_next;
+	int m_line;
 };

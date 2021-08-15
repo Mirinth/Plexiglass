@@ -1,11 +1,10 @@
 #include "lexer.hpp"
 
 #include <fstream>
-#include <tuple>
 
-namespace
+Token::Token()
+	: line(0), type(TokenType::Eof), text("")
 {
-	Token Lex(std::string_view& data);
 }
 
 Token::Token(size_t line, TokenType type, std::string text)
@@ -21,15 +20,17 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
-	, m_current(Lex(m_data))
-	, m_next(Lex(m_data))
+	, m_line(1)
 {
+	Lex();
+	Shift();
+	Lex();
 }
 
 void Lexer::Shift()
 {
 	m_current = m_next;
-	m_next = Lex(m_data);
+	Lex();
 }
 
 const Token& Lexer::Current() const
@@ -42,10 +43,16 @@ const Token& Lexer::Next() const
 	return m_next;
 }
 
-namespace
+void Lexer::Lex()
 {
-	Token Lex(std::string_view& data)
+	if (!m_data.empty())
 	{
-		return Token(99, TokenType::Eof, "This is a token");
+		m_next = Token(99, TokenType::Identifier, "This is a token");
+		size_t amount = std::min(size_t(50), m_data.size());
+		m_data.remove_prefix(amount);
+	}
+	else
+	{
+		m_next = Token(95, TokenType::Eof, "This is the end of file");
 	}
 }
