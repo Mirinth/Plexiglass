@@ -99,19 +99,29 @@ void Lexer::Lex()
 		return;
 	}
 
+	if (StartsWith(m_data, "pattern"))
+	{
+		m_next = Token(m_line, TokenType::Keyword, "pattern");
+		m_data.remove_prefix(sizeof("pattern"));
+		return;
+	}
+
+	if (StartsWith(m_data, "rule"))
+	{
+		m_next = Token(m_line, TokenType::Keyword, "rule");
+		m_data.remove_prefix(sizeof("rule"));
+		return;
+	}
+
 	/*
 	* Things to handle:
-keyword expression
 indentifier some-name
 indent
 expression [a-bA-Y09]lyoun(kkol)?
-keyword expression
 identifier another-name
 expression [a-z0-9]{3}
-keyword expression
 identifier third-name
 expression  expression with space
-keyword pattern
 identifier some-name#
 identifier comments
 identifier aren't
@@ -132,7 +142,6 @@ identifier pqrs
 indent
 operator |
 identifier wxyz
-keyword rule
 identifier what-to-match
 indent
 action produce-nothing
