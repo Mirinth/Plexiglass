@@ -131,6 +131,13 @@ void Lexer::Lex()
 	if (m_state == expression_identifier_state)
 	{
 		std::string expression = TakeUntil(m_data, "\r\n");
+		if (expression.size() > 1 && expression[0] == '\\')
+		{
+			if (expression[1] == ' ' || expression[1] == '\t')
+			{
+				expression.erase(0, 1);
+			}
+		}
 		m_next = Token(m_line, TokenType::Expression, expression);
 		m_state = initial_state;
 		return;
