@@ -2,6 +2,10 @@
 
 #include <fstream>
 
+constexpr int initial_state = 0;
+constexpr int expression_state = 1;
+constexpr int expression_identifier_state = 2;
+
 bool StartsWith(const std::string_view& toSearch, const std::string find);
 
 Token::Token()
@@ -45,6 +49,7 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_line(1)
+	, m_state(initial_state)
 {
 	Lex();
 	Shift();
@@ -68,6 +73,7 @@ const Token& Lexer::Next() const
 
 void Lexer::Lex()
 {
+	// Any state
 	if (m_data.empty())
 	{
 		m_next = Token(m_line, TokenType::Eof, "EOF");
@@ -82,7 +88,15 @@ void Lexer::Lex()
 		return;
 	}
 
-	if (m_data[0] == '#')
+	while (m_data[0] == ' ' || m_data[0] == '\t')
+	{
+		m_data.remove_prefix(1);
+		Lex();
+		return;
+	}
+
+	// Initial state
+	if (m_state == initial_state && m_data[0] == '#')
 	{
 		while (m_data[0] != '\n')
 		{
@@ -91,6 +105,8 @@ void Lexer::Lex()
 		Lex();
 		return;
 	}
+
+
 
 	if (StartsWith(m_data, "expression"))
 	{

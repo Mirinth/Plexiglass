@@ -39,4 +39,5 @@ private:
 	Token m_current;
 	Token m_next;
 	int m_line;
+	int m_state;
 };
