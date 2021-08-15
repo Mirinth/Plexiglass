@@ -5,6 +5,7 @@
 constexpr int initial_state = 0;
 constexpr int expression_state = 1;
 constexpr int expression_identifier_state = 2;
+constexpr int invalid_state = -1;
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
 
@@ -95,7 +96,7 @@ void Lexer::Lex()
 		return;
 	}
 
-	// Initial state
+	// Comments
 	if (m_state == initial_state && m_data[0] == '#')
 	{
 		while (m_data[0] != '\n')
@@ -106,23 +107,24 @@ void Lexer::Lex()
 		return;
 	}
 
-
-
-	if (StartsWith(m_data, "expression"))
+	// Expressions
+	if (m_state == initial_state && StartsWith(m_data, "expression"))
 	{
 		m_next = Token(m_line, TokenType::Keyword, "expression");
 		m_data.remove_prefix(sizeof("expression"));
+		m_state = expression_state;
 		return;
 	}
 
-	if (StartsWith(m_data, "pattern"))
+
+	if (m_state == invalid_state && StartsWith(m_data, "pattern"))
 	{
 		m_next = Token(m_line, TokenType::Keyword, "pattern");
 		m_data.remove_prefix(sizeof("pattern"));
 		return;
 	}
 
-	if (StartsWith(m_data, "rule"))
+	if (m_state == invalid_state && StartsWith(m_data, "rule"))
 	{
 		m_next = Token(m_line, TokenType::Keyword, "rule");
 		m_data.remove_prefix(sizeof("rule"));
