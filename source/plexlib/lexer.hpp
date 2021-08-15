@@ -7,6 +7,7 @@
 enum class TokenType
 {
 	Eof,
+	Expression,
 	Identifier,
 	Keyword,
 	Newline,

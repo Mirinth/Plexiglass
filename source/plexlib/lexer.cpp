@@ -8,6 +8,7 @@ constexpr int expression_identifier_state = 2;
 constexpr int invalid_state = -1;
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
+std::string TakeUntil(std::string_view& data, const std::string find);
 
 Token::Token()
 	: line(0), type(TokenType::Eof), text("")
@@ -26,6 +27,9 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	{
 	case TokenType::Eof:
 		name = "eof";
+		break;
+	case TokenType::Expression:
+		name = "expression";
 		break;
 	case TokenType::Identifier:
 		name = "identifier";
@@ -118,12 +122,17 @@ void Lexer::Lex()
 
 	if (m_state == expression_keyword_state)
 	{
-		size_t end = m_data.find_first_of(" \t\r\n");
-		auto viewIdentifier = m_data.substr(0, end);
-		std::string identifier(viewIdentifier.begin(), viewIdentifier.end());
+		std::string identifier = TakeUntil(m_data, " \t\r\n");
 		m_next = Token(m_line, TokenType::Identifier, identifier);
-		m_data.remove_prefix(end);
 		m_state = expression_identifier_state;
+		return;
+	}
+
+	if (m_state == expression_identifier_state)
+	{
+		std::string expression = TakeUntil(m_data, "\r\n");
+		m_next = Token(m_line, TokenType::Expression, expression);
+		m_state = initial_state;
 		return;
 	}
 
@@ -213,4 +222,13 @@ bool StartsWith(const std::string_view& toSearch, const std::string find)
 	}
 
 	return true;
+}
+
+std::string TakeUntil(std::string_view& data, const std::string find)
+{
+	size_t end = data.find_first_of(find);
+	auto viewIdentifier = data.substr(0, end);
+	std::string identifier(viewIdentifier.begin(), viewIdentifier.end());
+	data.remove_prefix(end);
+	return identifier;
 }
