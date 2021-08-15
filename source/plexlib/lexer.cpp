@@ -81,6 +81,16 @@ void Lexer::Lex()
 		return;
 	}
 
+	if (m_data[0] == '#')
+	{
+		while (m_data[0] != '\n')
+		{
+			m_data.remove_prefix(1);
+		}
+		Lex();
+		return;
+	}
+
 	/*
 	* Things to handle:
 keyword expression
