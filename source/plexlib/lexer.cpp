@@ -243,6 +243,7 @@ void Lexer::Lex()
 	{
 		m_data.remove_prefix(sizeof("line"));
 		m_state = rule_line_state;
+		Lex();
 		return;
 	}
 
