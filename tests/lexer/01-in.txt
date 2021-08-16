@@ -26,3 +26,4 @@ rule what-to-match
 	line--
 	line +2
 	line -9
+	;
