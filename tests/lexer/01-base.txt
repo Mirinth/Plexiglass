@@ -42,6 +42,7 @@ identifier wxyz
 newline \n
 end ;
 newline \n
+newline \n
 keyword rule
 identifier what-to-match
 newline \n
