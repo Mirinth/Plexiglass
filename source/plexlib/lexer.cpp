@@ -105,6 +105,15 @@ const Token& Lexer::Next() const
 		return; \
 	}
 
+#define IDENTIFIER(current, next) \
+	if (m_state == current) \
+	{ \
+		std::string identifier = TakeUntil(m_data, " \t\r\n"); \
+		m_next = Token(m_line, TokenType::Identifier, identifier); \
+		m_state = next; \
+		return; \
+	}
+
 void Lexer::Lex()
 {
 	// Any state
@@ -144,15 +153,9 @@ void Lexer::Lex()
 	}
 
 	// Expressions
-	KEYWORD("expression", expression_keyword_state)
+	KEYWORD("expression", expression_keyword_state);
 
-	if (m_state == expression_keyword_state)
-	{
-		std::string identifier = TakeUntil(m_data, " \t\r\n");
-		m_next = Token(m_line, TokenType::Identifier, identifier);
-		m_state = expression_identifier_state;
-		return;
-	}
+	IDENTIFIER(expression_keyword_state, expression_identifier_state);
 
 	if (m_state == expression_identifier_state)
 	{
@@ -172,13 +175,7 @@ void Lexer::Lex()
 	// Patterns
 	KEYWORD("pattern", pattern_keyword_state);
 
-	if (m_state == pattern_keyword_state)
-	{
-		std::string identifier = TakeUntil(m_data, " \t\r\n");
-		m_next = Token(m_line, TokenType::Identifier, identifier);
-		m_state = pattern_identifier_state;
-		return;
-	}
+	IDENTIFIER(pattern_keyword_state, pattern_identifier_state);
 
 	if (m_state == pattern_identifier_state && m_data[0] == '|')
 	{
@@ -205,13 +202,7 @@ void Lexer::Lex()
 	// Rules
 	KEYWORD("rule", rule_keyword_state);
 
-	if (m_state == rule_keyword_state)
-	{
-		std::string identifier = TakeUntil(m_data, " \t\r\n");
-		m_next = Token(m_line, TokenType::Identifier, identifier);
-		m_state = rule_identifier_state;
-		return;
-	}
+	IDENTIFIER(rule_keyword_state, rule_identifier_state);
 
 	if (m_state == rule_identifier_state && m_data[0] == ';')
 	{
