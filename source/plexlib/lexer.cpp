@@ -96,6 +96,15 @@ const Token& Lexer::Next() const
 	return m_next;
 }
 
+#define KEYWORD(name, next) \
+	if (m_state == initial_state && StartsWith(m_data, name)) \
+    { \
+	    m_next = Token(m_line, TokenType::Keyword, name); \
+		m_data.remove_prefix(sizeof(name) - 1); \
+		m_state = next; \
+		return; \
+	}
+
 void Lexer::Lex()
 {
 	// Any state
@@ -135,13 +144,7 @@ void Lexer::Lex()
 	}
 
 	// Expressions
-	if (m_state == initial_state && StartsWith(m_data, "expression"))
-	{
-		m_next = Token(m_line, TokenType::Keyword, "expression");
-		m_data.remove_prefix(sizeof("expression"));
-		m_state = expression_keyword_state;
-		return;
-	}
+	KEYWORD("expression", expression_keyword_state)
 
 	if (m_state == expression_keyword_state)
 	{
@@ -167,13 +170,7 @@ void Lexer::Lex()
 	}
 
 	// Patterns
-	if (m_state == initial_state && StartsWith(m_data, "pattern"))
-	{
-		m_next = Token(m_line, TokenType::Keyword, "pattern");
-		m_data.remove_prefix(sizeof("pattern"));
-		m_state = pattern_keyword_state;
-		return;
-	}
+	KEYWORD("pattern", pattern_keyword_state);
 
 	if (m_state == pattern_keyword_state)
 	{
@@ -206,13 +203,7 @@ void Lexer::Lex()
 	}
 
 	// Rules
-	if (m_state == initial_state && StartsWith(m_data, "rule"))
-	{
-		m_next = Token(m_line, TokenType::Keyword, "rule");
-		m_data.remove_prefix(sizeof("rule"));
-		m_state = rule_keyword_state;
-		return;
-	}
+	KEYWORD("rule", rule_keyword_state);
 
 	if (m_state == rule_keyword_state)
 	{
