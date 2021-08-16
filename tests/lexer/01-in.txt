@@ -1,0 +1,29 @@
+
+# Here's a comment
+# Comments aren't allowed at the end of the line
+expression some-name
+	[a-bA-Y09]lyoun(kkol)?
+
+expression another-name [a-z0-9]{3}
+
+expression third-name
+	\ expression with space
+
+pattern some-name# comments aren't allowed at the end of the line
+	  abcde
+	| fghij klmno pqrs
+	| wxyz
+	;
+
+rule what-to-match
+	produce-nothing
+	produce token-name
+	rewind
+	transition another-state
+	++line
+	line++
+	--line
+	line--
+	line +2
+	line -9
+	;

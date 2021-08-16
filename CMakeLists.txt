@@ -9,6 +9,8 @@ project(Plexiglass
 add_library(plexlib STATIC
     source/plexlib/FiniteStateMachine.hpp
     source/plexlib/FiniteStateMachine.cpp
+    source/plexlib/lexer.hpp
+    source/plexlib/lexer.cpp
     source/plexlib/plexlib.hpp
     source/plexlib/plexlib.cpp
     source/plexlib/RegularExpressionParser.hpp
