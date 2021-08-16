@@ -27,7 +27,7 @@ void RunTest()
 
 bool CompareOutput()
 {
-	std::ifstream base("../../../tests/lexer/01-in.txt");
+	std::ifstream base("../../../tests/lexer/01-base.txt");
 	std::ifstream out("../../../tests/lexer/01-out.txt");
 
 	bool good = true;
