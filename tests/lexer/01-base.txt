@@ -68,3 +68,5 @@ action +2
 newline \n
 action -9
 newline \n
+end ;
+newline \n
