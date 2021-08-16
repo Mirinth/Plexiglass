@@ -11,6 +11,12 @@ constexpr int expression_identifier_state = 2;
 constexpr int pattern_keyword_state = 11;
 constexpr int pattern_identifier_state = 12;
 
+constexpr int rule_keyword_state = 21;
+constexpr int rule_identifier_state = 22;
+constexpr int rule_produce_state = 23;
+constexpr int rule_transition_state = 24;
+constexpr int rule_line_state = 25;
+
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
 std::string TakeUntil(std::string_view& data, const std::string find);
@@ -30,6 +36,9 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	std::string name;
 	switch (token.type)
 	{
+	case TokenType::Action:
+		name = "action";
+		break;
 	case TokenType::Alternator:
 		name = "alternator";
 		break;
@@ -193,11 +202,103 @@ void Lexer::Lex()
 		return;
 	}
 
-
-	if (m_state == invalid_state && StartsWith(m_data, "rule"))
+	// Rules
+	if (m_state == initial_state && StartsWith(m_data, "rule"))
 	{
 		m_next = Token(m_line, TokenType::Keyword, "rule");
 		m_data.remove_prefix(sizeof("rule"));
+		m_state = rule_keyword_state;
+		return;
+	}
+
+	if (m_state == rule_keyword_state)
+	{
+		std::string identifier = TakeUntil(m_data, " \t\r\n");
+		m_next = Token(m_line, TokenType::Identifier, identifier);
+		m_state = rule_identifier_state;
+		return;
+	}
+
+	if (m_state == rule_identifier_state && m_data[0] == ';')
+	{
+		m_next = Token(m_line, TokenType::End, ";");
+		m_data.remove_prefix(1);
+		m_state = initial_state;
+		return;
+	}
+
+	if (m_state == rule_identifier_state && StartsWith(m_data, "produce-nothing"))
+	{
+		m_next = Token(m_line, TokenType::Action, "produce-nothing");
+		m_data.remove_prefix(sizeof("produce-nothing"));
+		return;
+	}
+
+	if (m_state == rule_identifier_state && StartsWith(m_data, "produce"))
+	{
+		m_next = Token(m_line, TokenType::Action, "produce");
+		m_data.remove_prefix(sizeof("produce"));
+		m_state = rule_produce_state;
+		return;
+	}
+
+	if (m_state == rule_produce_state)
+	{
+		std::string identifier = TakeUntil(m_data, " \t\r\n");
+		m_next = Token(m_line, TokenType::Identifier, identifier);
+		m_state = rule_identifier_state;
+		return;
+	}
+
+	if (m_state == rule_identifier_state && StartsWith(m_data, "rewind"))
+	{
+		m_next = Token(m_line, TokenType::Action, "rewind");
+		m_data.remove_prefix(sizeof("rewind"));
+		return;
+	}
+
+	if (m_state == rule_identifier_state && StartsWith(m_data, "transition"))
+	{
+		m_next = Token(m_line, TokenType::Action, "transition");
+		m_data.remove_prefix(sizeof("transition"));
+		m_state = rule_transition_state;
+		return;
+	}
+
+	if (m_state == rule_transition_state)
+	{
+		std::string identifier = TakeUntil(m_data, " \t\r\n");
+		m_next = Token(m_line, TokenType::Identifier, identifier);
+		m_state = rule_identifier_state;
+		return;
+	}
+
+	if (m_state == rule_identifier_state && StartsWith(m_data, "++line") || StartsWith(m_data, "line++"))
+	{
+		m_next = Token(m_line, TokenType::Action, "+1");
+		m_data.remove_prefix(sizeof("line++"));
+		return;
+	}
+
+	if (m_state == rule_identifier_state && StartsWith(m_data, "--line") || StartsWith(m_data, "line--"))
+	{
+		m_next = Token(m_line, TokenType::Action, "-1");
+		m_data.remove_prefix(sizeof("line--"));
+		return;
+	}
+
+	if (m_state == rule_identifier_state && StartsWith(m_data, "line"))
+	{
+		m_data.remove_prefix(sizeof("line"));
+		m_state = rule_line_state;
+		return;
+	}
+
+	if (m_state == rule_line_state)
+	{
+		std::string identifier = TakeUntil(m_data, " \t\r\n");
+		m_next = Token(m_line, TokenType::Action, identifier);
+		m_state = rule_identifier_state;
 		return;
 	}
 
