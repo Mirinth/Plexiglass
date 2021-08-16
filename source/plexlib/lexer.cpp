@@ -192,12 +192,7 @@ void Lexer::Lex()
 		return;
 	}
 
-	if (m_state == pattern_identifier_state)
-	{
-		std::string identifier = TakeUntil(m_data, " \t\r\n");
-		m_next = Token(m_line, TokenType::Identifier, identifier);
-		return;
-	}
+	IDENTIFIER(pattern_identifier_state, pattern_identifier_state);
 
 	// Rules
 	KEYWORD("rule", rule_keyword_state);
@@ -227,13 +222,7 @@ void Lexer::Lex()
 		return;
 	}
 
-	if (m_state == rule_produce_state)
-	{
-		std::string identifier = TakeUntil(m_data, " \t\r\n");
-		m_next = Token(m_line, TokenType::Identifier, identifier);
-		m_state = rule_identifier_state;
-		return;
-	}
+	IDENTIFIER(rule_produce_state, rule_identifier_state);
 
 	if (m_state == rule_identifier_state && StartsWith(m_data, "rewind"))
 	{
@@ -250,13 +239,7 @@ void Lexer::Lex()
 		return;
 	}
 
-	if (m_state == rule_transition_state)
-	{
-		std::string identifier = TakeUntil(m_data, " \t\r\n");
-		m_next = Token(m_line, TokenType::Identifier, identifier);
-		m_state = rule_identifier_state;
-		return;
-	}
+	IDENTIFIER(rule_transition_state, rule_identifier_state);
 
 	if (m_state == rule_identifier_state && StartsWith(m_data, "++line") || StartsWith(m_data, "line++"))
 	{
