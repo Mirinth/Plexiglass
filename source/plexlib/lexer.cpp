@@ -113,9 +113,12 @@ void Lexer::Lex()
 		return;
 	}
 
-	while (m_data[0] == ' ' || m_data[0] == '\t')
+	if (m_data[0] == ' ' || m_data[0] == '\t')
 	{
-		m_data.remove_prefix(1);
+		while (m_data[0] == ' ' || m_data[0] == '\t')
+		{
+			m_data.remove_prefix(1);
+		}
 		Lex();
 		return;
 	}
