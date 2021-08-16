@@ -114,6 +114,18 @@ const Token& Lexer::Next() const
 		return; \
 	}
 
+#define LINE_ACTION(search_name, token_name, next) \
+	if (m_state == rule_identifier_state && StartsWith(m_data, search_name)) \
+	{ \
+		m_next = Token(m_line, TokenType::Action, token_name); \
+		m_data.remove_prefix(sizeof(search_name) - 1); \
+		m_state = next; \
+		return; \
+	}
+
+#define ACTION(name, next) \
+	LINE_ACTION(name, name, next)
+
 void Lexer::Lex()
 {
 	// Any state
@@ -207,53 +219,25 @@ void Lexer::Lex()
 		return;
 	}
 
-	if (m_state == rule_identifier_state && StartsWith(m_data, "produce-nothing"))
-	{
-		m_next = Token(m_line, TokenType::Action, "produce-nothing");
-		m_data.remove_prefix(sizeof("produce-nothing"));
-		return;
-	}
+	ACTION("produce-nothing", rule_identifier_state);
 
-	if (m_state == rule_identifier_state && StartsWith(m_data, "produce"))
-	{
-		m_next = Token(m_line, TokenType::Action, "produce");
-		m_data.remove_prefix(sizeof("produce"));
-		m_state = rule_produce_state;
-		return;
-	}
+	ACTION("produce", rule_produce_state);
 
 	IDENTIFIER(rule_produce_state, rule_identifier_state);
 
-	if (m_state == rule_identifier_state && StartsWith(m_data, "rewind"))
-	{
-		m_next = Token(m_line, TokenType::Action, "rewind");
-		m_data.remove_prefix(sizeof("rewind"));
-		return;
-	}
+	ACTION("rewind", rule_identifier_state);
 
-	if (m_state == rule_identifier_state && StartsWith(m_data, "transition"))
-	{
-		m_next = Token(m_line, TokenType::Action, "transition");
-		m_data.remove_prefix(sizeof("transition"));
-		m_state = rule_transition_state;
-		return;
-	}
+	ACTION("transition", rule_transition_state);
 
 	IDENTIFIER(rule_transition_state, rule_identifier_state);
 
-	if (m_state == rule_identifier_state && StartsWith(m_data, "++line") || StartsWith(m_data, "line++"))
-	{
-		m_next = Token(m_line, TokenType::Action, "+1");
-		m_data.remove_prefix(sizeof("line++"));
-		return;
-	}
+	LINE_ACTION("line++", "+1", rule_identifier_state);
 
-	if (m_state == rule_identifier_state && StartsWith(m_data, "--line") || StartsWith(m_data, "line--"))
-	{
-		m_next = Token(m_line, TokenType::Action, "-1");
-		m_data.remove_prefix(sizeof("line--"));
-		return;
-	}
+	LINE_ACTION("++line", "+1", rule_identifier_state);
+
+	LINE_ACTION("line--", "-1", rule_identifier_state);
+
+	LINE_ACTION("--line", "-1", rule_identifier_state);
 
 	if (m_state == rule_identifier_state && StartsWith(m_data, "line"))
 	{
