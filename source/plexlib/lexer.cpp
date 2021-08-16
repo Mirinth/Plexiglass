@@ -154,7 +154,7 @@ void Lexer::Lex()
 	}
 
 	// Comments
-	if (m_state == initial_state && m_data[0] == '#')
+	if (m_data[0] == '#')
 	{
 		while (m_data[0] != '\n')
 		{
