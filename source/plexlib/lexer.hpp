@@ -12,6 +12,7 @@ enum class TokenType
 	Eof,
 	Expression,
 	Identifier,
+	Indent,
 	Keyword,
 	Newline,
 	Unknown,
@@ -44,4 +45,5 @@ private:
 	Token m_next;
 	int m_line;
 	int m_state;
+	bool m_startOfLine;
 };

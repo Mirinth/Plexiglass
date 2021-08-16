@@ -54,6 +54,9 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	case TokenType::Identifier:
 		name = "identifier";
 		break;
+	case TokenType::Indent:
+		name = "indent";
+		break;
 	case TokenType::Keyword:
 		name = "keyword";
 		break;
@@ -75,6 +78,7 @@ Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_line(1)
 	, m_state(initial_state)
+	, m_startOfLine(true)
 {
 	Lex();
 	Shift();
@@ -140,8 +144,19 @@ void Lexer::Lex()
 		m_next = Token(m_line, TokenType::Newline, "\\n");
 		m_line++;
 		m_data.remove_prefix(1);
+		m_startOfLine = true;
 		return;
 	}
+
+	if (m_startOfLine && m_data[0] == '\t' || StartsWith(m_data, "    "))
+	{
+		m_next = Token(m_line, TokenType::Indent, "\\t");
+		size_t amount = m_data[0] == '\t' ? 1 : sizeof("    ") - 1;
+		m_data.remove_prefix(amount);
+		return;
+	}
+
+	m_startOfLine = false;
 
 	if (m_data[0] == ' ' || m_data[0] == '\t')
 	{
