@@ -29,6 +29,8 @@ public:
 };
 std::ostream& operator<<(std::ostream& os, const Token token);
 
+enum class LexerState;
+
 class Lexer
 {
 public:
@@ -44,6 +46,6 @@ private:
 	Token m_current;
 	Token m_next;
 	int m_line;
-	int m_state;
+	LexerState m_state;
 	bool m_startOfLine;
 };
