@@ -15,6 +15,7 @@ enum class TokenType
 	Indent,
 	Keyword,
 	Newline,
+	Retry,
 	Unknown,
 };
 
@@ -41,6 +42,7 @@ public:
 
 private:
 	Token Lex();
+	Token LexHelper();
 
 	std::string_view m_data;
 	Token m_current;

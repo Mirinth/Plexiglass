@@ -66,6 +66,9 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	case TokenType::Newline:
 		name = "newline";
 		break;
+	case TokenType::Retry:
+		name = "retry";
+		break;
 	case TokenType::Unknown:
 		name = "unknown";
 		break;
@@ -135,6 +138,16 @@ const Token& Lexer::Next() const
 
 Token Lexer::Lex()
 {
+	Token tok = LexHelper();
+	while (tok.type == TokenType::Retry)
+	{
+		tok = LexHelper();
+	}
+	return tok;
+}
+
+Token Lexer::LexHelper()
+{
 	// Any state
 	if (m_data.empty())
 	{
@@ -166,7 +179,7 @@ Token Lexer::Lex()
 		{
 			m_data.remove_prefix(1);
 		}
-		return Lex();
+		return Token(0, TokenType::Retry, "");
 	}
 
 	// Comments
@@ -176,7 +189,7 @@ Token Lexer::Lex()
 		{
 			m_data.remove_prefix(1);
 		}
-		return Lex();
+		return Token(0, TokenType::Retry, "");
 	}
 
 	// Expressions
@@ -258,7 +271,7 @@ Token Lexer::Lex()
 	{
 		m_data.remove_prefix(sizeof("line"));
 		m_state = LexerState::RuleLine;
-		return Lex();
+		return Token(0, TokenType::Retry, "");
 	}
 
 	if (m_state == LexerState::RuleLine)
