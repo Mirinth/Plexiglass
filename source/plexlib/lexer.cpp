@@ -80,14 +80,14 @@ Lexer::Lexer(std::string_view data)
 	, m_state(initial_state)
 	, m_startOfLine(true)
 {
-	Lex();
-	Shift();
+	m_current = Lex();
+	m_next = Lex();
 }
 
 void Lexer::Shift()
 {
 	m_current = m_next;
-	Lex();
+	m_next = Lex();
 }
 
 const Token& Lexer::Current() const
@@ -103,57 +103,56 @@ const Token& Lexer::Next() const
 #define KEYWORD(name, next) \
 	if (m_state == initial_state && StartsWith(m_data, name)) \
     { \
-	    m_next = Token(m_line, TokenType::Keyword, name); \
+	    Token tok(m_line, TokenType::Keyword, name); \
 		m_data.remove_prefix(sizeof(name) - 1); \
 		m_state = next; \
-		return; \
+		return tok; \
 	}
 
 #define IDENTIFIER(current, next) \
 	if (m_state == current) \
 	{ \
 		std::string identifier = TakeUntil(m_data, " \t\r\n"); \
-		m_next = Token(m_line, TokenType::Identifier, identifier); \
+		Token tok(m_line, TokenType::Identifier, identifier); \
 		m_state = next; \
-		return; \
+		return tok; \
 	}
 
 #define LINE_ACTION(search_name, token_name, next) \
 	if (m_state == rule_identifier_state && StartsWith(m_data, search_name)) \
 	{ \
-		m_next = Token(m_line, TokenType::Action, token_name); \
+		Token tok(m_line, TokenType::Action, token_name); \
 		m_data.remove_prefix(sizeof(search_name) - 1); \
 		m_state = next; \
-		return; \
+		return tok; \
 	}
 
 #define ACTION(name, next) \
 	LINE_ACTION(name, name, next)
 
-void Lexer::Lex()
+Token Lexer::Lex()
 {
 	// Any state
 	if (m_data.empty())
 	{
-		m_next = Token(m_line, TokenType::Eof, "EOF");
-		return;
+		return Token(m_line, TokenType::Eof, "EOF");
 	}
 
 	if (m_data[0] == '\n')
 	{
-		m_next = Token(m_line, TokenType::Newline, "\\n");
+		Token tok(m_line, TokenType::Newline, "\\n");
 		m_line++;
 		m_data.remove_prefix(1);
 		m_startOfLine = true;
-		return;
+		return tok;
 	}
 
 	if (m_startOfLine && m_data[0] == '\t' || StartsWith(m_data, "    "))
 	{
-		m_next = Token(m_line, TokenType::Indent, "\\t");
+		Token tok(m_line, TokenType::Indent, "\\t");
 		size_t amount = m_data[0] == '\t' ? 1 : sizeof("    ") - 1;
 		m_data.remove_prefix(amount);
-		return;
+		return tok;
 	}
 
 	m_startOfLine = false;
@@ -164,8 +163,7 @@ void Lexer::Lex()
 		{
 			m_data.remove_prefix(1);
 		}
-		Lex();
-		return;
+		return Lex();
 	}
 
 	// Comments
@@ -175,8 +173,7 @@ void Lexer::Lex()
 		{
 			m_data.remove_prefix(1);
 		}
-		Lex();
-		return;
+		return Lex();
 	}
 
 	// Expressions
@@ -194,9 +191,9 @@ void Lexer::Lex()
 				expression.erase(0, 1);
 			}
 		}
-		m_next = Token(m_line, TokenType::Expression, expression);
+		Token tok(m_line, TokenType::Expression, expression);
 		m_state = initial_state;
-		return;
+		return tok;
 	}
 
 	// Patterns
@@ -206,17 +203,17 @@ void Lexer::Lex()
 
 	if (m_state == pattern_identifier_state && m_data[0] == '|')
 	{
-		m_next = Token(m_line, TokenType::Alternator, "|");
+		Token tok(m_line, TokenType::Alternator, "|");
 		m_data.remove_prefix(1);
-		return;
+		return tok;
 	}
 
 	if (m_state == pattern_identifier_state && m_data[0] == ';')
 	{
-		m_next = Token(m_line, TokenType::End, ";");
+		Token tok(m_line, TokenType::End, ";");
 		m_data.remove_prefix(1);
 		m_state = initial_state;
-		return;
+		return tok;
 	}
 
 	IDENTIFIER(pattern_identifier_state, pattern_identifier_state);
@@ -228,10 +225,10 @@ void Lexer::Lex()
 
 	if (m_state == rule_identifier_state && m_data[0] == ';')
 	{
-		m_next = Token(m_line, TokenType::End, ";");
+		Token tok(m_line, TokenType::End, ";");
 		m_data.remove_prefix(1);
 		m_state = initial_state;
-		return;
+		return tok;
 	}
 
 	ACTION("produce-nothing", rule_identifier_state);
@@ -258,20 +255,20 @@ void Lexer::Lex()
 	{
 		m_data.remove_prefix(sizeof("line"));
 		m_state = rule_line_state;
-		Lex();
-		return;
+		return Lex();
 	}
 
 	if (m_state == rule_line_state)
 	{
 		std::string identifier = TakeUntil(m_data, " \t\r\n");
-		m_next = Token(m_line, TokenType::Action, identifier);
+		Token tok(m_line, TokenType::Action, identifier);
 		m_state = rule_identifier_state;
-		return;
+		return tok;
 	}
 
-	m_next = Token(m_line, TokenType::Unknown, std::string(1, m_data[0]));
+	Token tok(m_line, TokenType::Unknown, std::string(1, m_data[0]));
 	m_data.remove_prefix(1);
+	return tok;
 }
 
 bool StartsWith(const std::string_view& toSearch, const std::string find)

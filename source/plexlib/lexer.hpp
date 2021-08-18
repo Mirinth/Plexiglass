@@ -38,7 +38,7 @@ public:
 	const Token& Next() const;
 
 private:
-	void Lex();
+	Token Lex();
 
 	std::string_view m_data;
 	Token m_current;
