@@ -15,6 +15,8 @@ add_library(plexlib STATIC
     source/plexlib/plexlib.cpp
     source/plexlib/RegularExpressionParser.hpp
     source/plexlib/RegularExpressionParser.cpp
+    source/plexlib/token.hpp
+    source/plexlib/token.cpp
 )
 target_include_directories(plexlib PUBLIC source/plexlib)
 target_compile_features(plexlib PUBLIC cxx_std_17)
