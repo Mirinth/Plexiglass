@@ -1,10 +1,11 @@
 #pragma once
 
+#include <string>
 #include <string_view>
 
 #include <lexer/token.hpp>
 
-enum State
+enum class State
 {
 	Invalid = 0,
 	Initial = 1,
@@ -23,3 +24,7 @@ enum State
 
 	All = 0xffffffff,
 };
+
+typedef size_t(*Rule)(std::string_view, State, State&, TokenType&, std::string&);
+
+size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text);

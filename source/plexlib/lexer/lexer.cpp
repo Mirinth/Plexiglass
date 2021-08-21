@@ -82,12 +82,26 @@ Token Lexer::LexHelper()
 		return Token(m_line, TokenType::Eof, "EOF");
 	}
 
-	if (m_data[0] == '\n')
+	State next;
+	TokenType type;
+	std::string text;
+	size_t length = Newline(m_data, m_state, next, type, text);
+
+	if (length)
 	{
-		Token tok(m_line, TokenType::Newline, "\\n");
-		m_line++;
-		m_data.remove_prefix(1);
-		m_startOfLine = true;
+		Token tok(m_line, type, text);
+		m_data.remove_prefix(length);
+
+		if (type == TokenType::Newline)
+		{
+			m_line++;
+			m_startOfLine = true;
+		}
+		else
+		{
+			m_startOfLine = false;
+		}
+
 		return tok;
 	}
 
