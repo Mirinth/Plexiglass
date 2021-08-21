@@ -104,10 +104,6 @@ Token Lexer::LexHelper()
 	}
 
 	// Patterns
-	KEYWORD("pattern", State::PatternKeyword);
-
-	IDENTIFIER(State::PatternKeyword, State::PatternIdentifier);
-
 	if (m_state == State::PatternIdentifier && m_data[0] == '|')
 	{
 		Token tok(m_line, TokenType::Alternator, "|");
