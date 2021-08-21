@@ -3,24 +3,6 @@
 #include <fstream>
 
 
-enum class LexerState
-{
-	Invalid = 0,
-	Initial = 1,
-
-	ExpressionKeyword = 2,
-	ExpressionIdentifier = 4,
-
-	PatternKeyword = 8,
-	PatternIdentifier = 16,
-
-	RuleKeyword = 32,
-	RuleIdentifier = 64,
-	RuleProduce = 128,
-	RuleTransition = 256,
-	RuleLine = 512,
-};
-
 bool StartsWith(const std::string_view& toSearch, const std::string find);
 std::string TakeUntil(std::string_view& data, const std::string find);
 
@@ -29,7 +11,7 @@ std::string TakeUntil(std::string_view& data, const std::string find);
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_line(1)
-	, m_state(LexerState::Initial)
+	, m_state(State::Initial)
 	, m_startOfLine(true)
 {
 	m_current = Lex();
@@ -53,7 +35,7 @@ const Token& Lexer::Next() const
 }
 
 #define KEYWORD(name, next) \
-	if (m_state == LexerState::Initial && StartsWith(m_data, name)) \
+	if (m_state == State::Initial && StartsWith(m_data, name)) \
     { \
 	    Token tok(m_line, TokenType::Keyword, name); \
 		m_data.remove_prefix(sizeof(name) - 1); \
@@ -71,7 +53,7 @@ const Token& Lexer::Next() const
 	}
 
 #define LINE_ACTION(search_name, token_name, next) \
-	if (m_state == LexerState::RuleIdentifier && StartsWith(m_data, search_name)) \
+	if (m_state == State::RuleIdentifier && StartsWith(m_data, search_name)) \
 	{ \
 		Token tok(m_line, TokenType::Action, token_name); \
 		m_data.remove_prefix(sizeof(search_name) - 1); \
@@ -139,11 +121,11 @@ Token Lexer::LexHelper()
 	}
 
 	// Expressions
-	KEYWORD("expression", LexerState::ExpressionKeyword);
+	KEYWORD("expression", State::ExpressionKeyword);
 
-	IDENTIFIER(LexerState::ExpressionKeyword, LexerState::ExpressionIdentifier);
+	IDENTIFIER(State::ExpressionKeyword, State::ExpressionIdentifier);
 
-	if (m_state == LexerState::ExpressionIdentifier)
+	if (m_state == State::ExpressionIdentifier)
 	{
 		std::string expression = TakeUntil(m_data, "\r\n");
 		if (expression.size() > 1 && expression[0] == '\\')
@@ -154,77 +136,77 @@ Token Lexer::LexHelper()
 			}
 		}
 		Token tok(m_line, TokenType::Expression, expression);
-		m_state = LexerState::Initial;
+		m_state = State::Initial;
 		return tok;
 	}
 
 	// Patterns
-	KEYWORD("pattern", LexerState::PatternKeyword);
+	KEYWORD("pattern", State::PatternKeyword);
 
-	IDENTIFIER(LexerState::PatternKeyword, LexerState::PatternIdentifier);
+	IDENTIFIER(State::PatternKeyword, State::PatternIdentifier);
 
-	if (m_state == LexerState::PatternIdentifier && m_data[0] == '|')
+	if (m_state == State::PatternIdentifier && m_data[0] == '|')
 	{
 		Token tok(m_line, TokenType::Alternator, "|");
 		m_data.remove_prefix(1);
 		return tok;
 	}
 
-	if (m_state == LexerState::PatternIdentifier && m_data[0] == ';')
+	if (m_state == State::PatternIdentifier && m_data[0] == ';')
 	{
 		Token tok(m_line, TokenType::End, ";");
 		m_data.remove_prefix(1);
-		m_state = LexerState::Initial;
+		m_state = State::Initial;
 		return tok;
 	}
 
-	IDENTIFIER(LexerState::PatternIdentifier, LexerState::PatternIdentifier);
+	IDENTIFIER(State::PatternIdentifier, State::PatternIdentifier);
 
 	// Rules
-	KEYWORD("rule", LexerState::RuleKeyword);
+	KEYWORD("rule", State::RuleKeyword);
 
-	IDENTIFIER(LexerState::RuleKeyword, LexerState::RuleIdentifier);
+	IDENTIFIER(State::RuleKeyword, State::RuleIdentifier);
 
-	if (m_state == LexerState::RuleIdentifier && m_data[0] == ';')
+	if (m_state == State::RuleIdentifier && m_data[0] == ';')
 	{
 		Token tok(m_line, TokenType::End, ";");
 		m_data.remove_prefix(1);
-		m_state = LexerState::Initial;
+		m_state = State::Initial;
 		return tok;
 	}
 
-	ACTION("produce-nothing", LexerState::RuleIdentifier);
+	ACTION("produce-nothing", State::RuleIdentifier);
 
-	ACTION("produce", LexerState::RuleProduce);
+	ACTION("produce", State::RuleProduce);
 
-	IDENTIFIER(LexerState::RuleProduce, LexerState::RuleIdentifier);
+	IDENTIFIER(State::RuleProduce, State::RuleIdentifier);
 
-	ACTION("rewind", LexerState::RuleIdentifier);
+	ACTION("rewind", State::RuleIdentifier);
 
-	ACTION("transition", LexerState::RuleTransition);
+	ACTION("transition", State::RuleTransition);
 
-	IDENTIFIER(LexerState::RuleTransition, LexerState::RuleIdentifier);
+	IDENTIFIER(State::RuleTransition, State::RuleIdentifier);
 
-	LINE_ACTION("line++", "+1", LexerState::RuleIdentifier);
+	LINE_ACTION("line++", "+1", State::RuleIdentifier);
 
-	LINE_ACTION("++line", "+1", LexerState::RuleIdentifier);
+	LINE_ACTION("++line", "+1", State::RuleIdentifier);
 
-	LINE_ACTION("line--", "-1", LexerState::RuleIdentifier);
+	LINE_ACTION("line--", "-1", State::RuleIdentifier);
 
-	LINE_ACTION("--line", "-1", LexerState::RuleIdentifier);
+	LINE_ACTION("--line", "-1", State::RuleIdentifier);
 
-	if (m_state == LexerState::RuleIdentifier && StartsWith(m_data, "line"))
+	if (m_state == State::RuleIdentifier && StartsWith(m_data, "line"))
 	{
 		m_data.remove_prefix(sizeof("line"));
-		m_state = LexerState::RuleLine;
+		m_state = State::RuleLine;
 		return Token(0, TokenType::Retry, "");
 	}
 
-	if (m_state == LexerState::RuleLine)
+	if (m_state == State::RuleLine)
 	{
 		std::string identifier = TakeUntil(m_data, " \t\r\n");
 		Token tok(m_line, TokenType::Action, identifier);
-		m_state = LexerState::RuleIdentifier;
+		m_state = State::RuleIdentifier;
 		return tok;
 	}
 

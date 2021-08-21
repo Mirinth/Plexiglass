@@ -3,9 +3,8 @@
 #include <string>
 #include <string_view>
 
-#include "token.hpp"
-
-enum class LexerState;
+#include <lexer/rules.hpp>
+#include <lexer/token.hpp>
 
 class Lexer
 {
@@ -23,6 +22,6 @@ private:
 	Token m_current;
 	Token m_next;
 	int m_line;
-	LexerState m_state;
+	State m_state;
 	bool m_startOfLine;
 };

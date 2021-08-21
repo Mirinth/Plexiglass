@@ -16,6 +16,8 @@ add_library(plexlib STATIC
     
     source/plexlib/lexer/lexer.hpp
     source/plexlib/lexer/lexer.cpp
+    source/plexlib/lexer/rules.hpp
+    source/plexlib/lexer/rules.cpp
     source/plexlib/lexer/token.hpp
     source/plexlib/lexer/token.cpp
 )
