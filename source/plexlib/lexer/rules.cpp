@@ -3,6 +3,7 @@
 std::vector<Rule> Rules = {
 	&Newline,
 	&Indent,
+	&KeywordExpression,
 };
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -57,4 +58,27 @@ size_t Indent(std::string_view data, State current, State& next, TokenType& type
 	text = "\\t";
 
 	return data[0] == '\t' ? 1 : 4;
+}
+
+size_t Keyword(std::string_view data, std::string keyword, State possibleNext, State current, State& next, TokenType& type, std::string& text)
+{
+	if ((current & State::Initial) == State::Invalid)
+	{
+		return 0;
+	}
+
+	if (!StartsWith(data, keyword))
+	{
+		return 0;
+	}
+
+	next = possibleNext;
+	type = TokenType::Keyword;
+	text = keyword;
+	return keyword.size();
+}
+
+size_t KeywordExpression(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	return Keyword(data, "expression", State::ExpressionKeyword, current, next, type, text);
 }

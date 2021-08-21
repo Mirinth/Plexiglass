@@ -123,7 +123,6 @@ Token Lexer::LexHelper()
 	}
 
 	// Expressions
-	KEYWORD("expression", State::ExpressionKeyword);
 
 	IDENTIFIER(State::ExpressionKeyword, State::ExpressionIdentifier);
 
