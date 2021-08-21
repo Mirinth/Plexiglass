@@ -82,8 +82,8 @@ Token Lexer::LexHelper()
 
 	for (auto& rule : Rules)
 	{
-		State next;
-		TokenType type;
+		State next = State::Invalid;
+		TokenType type = TokenType::Unknown;
 		std::string text;
 		size_t length = rule(m_data, m_state, next, type, text);
 
