@@ -11,7 +11,6 @@ Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_line(1)
 	, m_state(State::Initial)
-	, m_startOfLine(true)
 {
 	m_current = Lex();
 	m_next = Lex();
@@ -86,7 +85,7 @@ Token Lexer::LexHelper()
 		State next;
 		TokenType type;
 		std::string text;
-		size_t length = Newline(m_data, m_state, next, type, text);
+		size_t length = rule(m_data, m_state, next, type, text);
 
 		if (length)
 		{
@@ -96,26 +95,13 @@ Token Lexer::LexHelper()
 			if (type == TokenType::Newline)
 			{
 				m_line++;
-				m_startOfLine = true;
 			}
-			else
-			{
-				m_startOfLine = false;
-			}
+
+			m_state = next;
 
 			return tok;
 		}
 	}
-
-	if (m_startOfLine && m_data[0] == '\t' || StartsWith(m_data, "    "))
-	{
-		Token tok(m_line, TokenType::Indent, "\\t");
-		size_t amount = m_data[0] == '\t' ? 1 : sizeof("    ") - 1;
-		m_data.remove_prefix(amount);
-		return tok;
-	}
-
-	m_startOfLine = false;
 
 	if (m_data[0] == ' ' || m_data[0] == '\t')
 	{

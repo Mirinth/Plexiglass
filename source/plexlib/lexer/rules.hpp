@@ -23,11 +23,16 @@ enum class State
 	RuleTransition = 256,
 	RuleLine = 512,
 
-	All = 0xffffffff,
+	StartOfLine = 1024,
 };
+
+//State operator|(State left, State right);
+//State operator&(State left, State right);
+//State operator!(State s);
 
 typedef size_t(*Rule)(std::string_view, State, State&, TokenType&, std::string&);
 
 size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+size_t Indent(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 extern std::vector<Rule> Rules;
