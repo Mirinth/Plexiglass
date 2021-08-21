@@ -3,6 +3,7 @@
 std::vector<Rule> Rules = {
 	&Newline,
 	&Indent,
+	&Whitespace,
 	&KeywordExpression,
 };
 
@@ -58,6 +59,18 @@ size_t Indent(std::string_view data, State current, State& next, TokenType& type
 	text = "\\t";
 
 	return data[0] == '\t' ? 1 : 4;
+}
+
+size_t Whitespace(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	if (data[0] != ' ' && data[0] != '\t')
+	{
+		return 0;
+	}
+
+	next = current;
+	type = TokenType::Retry;
+	return data.find_first_not_of(" \t");
 }
 
 size_t Keyword(std::string_view data, std::string keyword, State possibleNext, State current, State& next, TokenType& type, std::string& text)

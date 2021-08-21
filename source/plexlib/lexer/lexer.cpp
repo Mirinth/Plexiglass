@@ -103,15 +103,6 @@ Token Lexer::LexHelper()
 		}
 	}
 
-	if (m_data[0] == ' ' || m_data[0] == '\t')
-	{
-		while (m_data[0] == ' ' || m_data[0] == '\t')
-		{
-			m_data.remove_prefix(1);
-		}
-		return Token(0, TokenType::Retry, "");
-	}
-
 	// Comments
 	if (m_data[0] == '#')
 	{
@@ -123,7 +114,6 @@ Token Lexer::LexHelper()
 	}
 
 	// Expressions
-
 	IDENTIFIER(State::ExpressionKeyword, State::ExpressionIdentifier);
 
 	if (m_state == State::ExpressionIdentifier)
