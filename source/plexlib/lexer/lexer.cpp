@@ -103,16 +103,6 @@ Token Lexer::LexHelper()
 		}
 	}
 
-	// Comments
-	if (m_data[0] == '#')
-	{
-		while (m_data[0] != '\n')
-		{
-			m_data.remove_prefix(1);
-		}
-		return Token(0, TokenType::Retry, "");
-	}
-
 	// Expressions
 	IDENTIFIER(State::ExpressionKeyword, State::ExpressionIdentifier);
 

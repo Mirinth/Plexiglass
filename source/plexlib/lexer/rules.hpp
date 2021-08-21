@@ -35,7 +35,7 @@ typedef size_t(*Rule)(std::string_view, State, State&, TokenType&, std::string&)
 size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Indent(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Whitespace(std::string_view data, State current, State& next, TokenType& type, std::string& text);
-
+size_t Comment(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Keyword(std::string_view data, std::string keyword, State possibleNext, State current, State& next, TokenType& type, std::string& text);
 size_t KeywordExpression(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 

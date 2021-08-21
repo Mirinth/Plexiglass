@@ -4,6 +4,7 @@ std::vector<Rule> Rules = {
 	&Newline,
 	&Indent,
 	&Whitespace,
+	&Comment,
 	&KeywordExpression,
 };
 
@@ -71,6 +72,18 @@ size_t Whitespace(std::string_view data, State current, State& next, TokenType& 
 	next = current;
 	type = TokenType::Retry;
 	return data.find_first_not_of(" \t");
+}
+
+size_t Comment(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	if (data[0] != '#')
+	{
+		return 0;
+	}
+
+	next = current;
+	type = TokenType::Retry;
+	return data.find_first_of('\n');
 }
 
 size_t Keyword(std::string_view data, std::string keyword, State possibleNext, State current, State& next, TokenType& type, std::string& text)
