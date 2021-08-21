@@ -7,6 +7,7 @@ std::vector<Rule> Rules = {
 	&Comment,
 	&ExpressionKeyword,
 	&ExpressionIdentifier,
+	&ExpressionPattern,
 };
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -128,4 +129,26 @@ size_t ExpressionKeyword(std::string_view data, State current, State& next, Toke
 size_t ExpressionIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	return Identifier(data, State::ExpressionKeyword, State::ExpressionIdentifier, current, next, type, text);
+}
+
+size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	if ((current & State::ExpressionIdentifier) == State::Invalid)
+	{
+		return 0;
+	}
+
+	next = State::Initial;
+	type = TokenType::Expression;
+
+	size_t size = data.find_first_of("\r\n");
+	std::string_view substr = data.substr(0, size);
+	text = std::string(substr);
+
+	if (text.size() > 1 && text[0] == '\\' && text[1] == ' ' || text[1] == '\t')
+	{
+		text.erase(0, 1);
+	}
+
+	return size;
 }

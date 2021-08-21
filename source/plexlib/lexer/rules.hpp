@@ -42,5 +42,6 @@ size_t Comment(std::string_view data, State current, State& next, TokenType& typ
 
 size_t ExpressionKeyword(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t ExpressionIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 extern std::vector<Rule> Rules;

@@ -103,22 +103,6 @@ Token Lexer::LexHelper()
 		}
 	}
 
-	// Expressions
-	if (m_state == State::ExpressionIdentifier)
-	{
-		std::string expression = TakeUntil(m_data, "\r\n");
-		if (expression.size() > 1 && expression[0] == '\\')
-		{
-			if (expression[1] == ' ' || expression[1] == '\t')
-			{
-				expression.erase(0, 1);
-			}
-		}
-		Token tok(m_line, TokenType::Expression, expression);
-		m_state = State::Initial;
-		return tok;
-	}
-
 	// Patterns
 	KEYWORD("pattern", State::PatternKeyword);
 
