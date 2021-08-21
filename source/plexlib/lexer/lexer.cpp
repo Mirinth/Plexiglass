@@ -104,8 +104,6 @@ Token Lexer::LexHelper()
 	}
 
 	// Expressions
-	IDENTIFIER(State::ExpressionKeyword, State::ExpressionIdentifier);
-
 	if (m_state == State::ExpressionIdentifier)
 	{
 		std::string expression = TakeUntil(m_data, "\r\n");

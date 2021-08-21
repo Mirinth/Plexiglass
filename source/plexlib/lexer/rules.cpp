@@ -5,7 +5,8 @@ std::vector<Rule> Rules = {
 	&Indent,
 	&Whitespace,
 	&Comment,
-	&KeywordExpression,
+	&ExpressionKeyword,
+	&ExpressionIdentifier,
 };
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -28,6 +29,39 @@ State operator!(State s)
 {
 	auto st = static_cast<std::underlying_type<State>::type>(s);
 	return static_cast<State>(!st);
+}
+
+size_t Keyword(std::string_view data, std::string keyword, State possibleNext, State current, State& next, TokenType& type, std::string& text)
+{
+	if ((current & State::Initial) == State::Invalid)
+	{
+		return 0;
+	}
+
+	if (!StartsWith(data, keyword))
+	{
+		return 0;
+	}
+
+	next = possibleNext;
+	type = TokenType::Keyword;
+	text = keyword;
+	return keyword.size();
+}
+
+size_t Identifier(std::string_view data, State needed, State target, State current, State& next, TokenType& type, std::string& text)
+{
+	if ((current & needed) == State::Invalid)
+	{
+		return 0;
+	}
+
+	next = target;
+	type = TokenType::Identifier;
+	size_t size = data.find_first_of(" \t\r\n");
+	std::string_view substr = data.substr(0, size);
+	text = std::string(substr.begin(), substr.end());
+	return size;
 }
 
 size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text)
@@ -86,25 +120,12 @@ size_t Comment(std::string_view data, State current, State& next, TokenType& typ
 	return data.find_first_of('\n');
 }
 
-size_t Keyword(std::string_view data, std::string keyword, State possibleNext, State current, State& next, TokenType& type, std::string& text)
-{
-	if ((current & State::Initial) == State::Invalid)
-	{
-		return 0;
-	}
-
-	if (!StartsWith(data, keyword))
-	{
-		return 0;
-	}
-
-	next = possibleNext;
-	type = TokenType::Keyword;
-	text = keyword;
-	return keyword.size();
-}
-
-size_t KeywordExpression(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+size_t ExpressionKeyword(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	return Keyword(data, "expression", State::ExpressionKeyword, current, next, type, text);
+}
+
+size_t ExpressionIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	return Identifier(data, State::ExpressionKeyword, State::ExpressionIdentifier, current, next, type, text);
 }
