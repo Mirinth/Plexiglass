@@ -25,10 +25,10 @@ State operator&(State left, State right)
 	return static_cast<State>(lhs & rhs);
 }
 
-State operator!(State s)
+State operator~(State s)
 {
 	auto st = static_cast<std::underlying_type<State>::type>(s);
-	return static_cast<State>(!st);
+	return static_cast<State>(~st);
 }
 
 size_t Keyword(std::string_view data, std::string keyword, State possibleNext, State current, State& next, TokenType& type, std::string& text)
@@ -89,7 +89,7 @@ size_t Indent(std::string_view data, State current, State& next, TokenType& type
 		return 0;
 	}
 
-	next = next & (!State::StartOfLine);
+	next = current & (~State::StartOfLine);
 	type = TokenType::Indent;
 	text = "\\t";
 
