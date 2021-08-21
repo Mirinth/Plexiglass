@@ -2,6 +2,7 @@
 
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <lexer/token.hpp>
 
@@ -28,3 +29,5 @@ enum class State
 typedef size_t(*Rule)(std::string_view, State, State&, TokenType&, std::string&);
 
 size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+
+extern std::vector<Rule> Rules;

@@ -1,5 +1,9 @@
 #include <lexer/rules.hpp>
 
+std::vector<Rule> Rules = {
+	&Newline,
+};
+
 size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	if (data[0] != '\n')

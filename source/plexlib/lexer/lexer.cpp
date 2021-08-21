@@ -1,12 +1,11 @@
 #include "lexer.hpp"
 
 #include <fstream>
+#include <vector>
 
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
 std::string TakeUntil(std::string_view& data, const std::string find);
-
-
 
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
@@ -82,27 +81,30 @@ Token Lexer::LexHelper()
 		return Token(m_line, TokenType::Eof, "EOF");
 	}
 
-	State next;
-	TokenType type;
-	std::string text;
-	size_t length = Newline(m_data, m_state, next, type, text);
-
-	if (length)
+	for (auto& rule : Rules)
 	{
-		Token tok(m_line, type, text);
-		m_data.remove_prefix(length);
+		State next;
+		TokenType type;
+		std::string text;
+		size_t length = Newline(m_data, m_state, next, type, text);
 
-		if (type == TokenType::Newline)
+		if (length)
 		{
-			m_line++;
-			m_startOfLine = true;
-		}
-		else
-		{
-			m_startOfLine = false;
-		}
+			Token tok(m_line, type, text);
+			m_data.remove_prefix(length);
 
-		return tok;
+			if (type == TokenType::Newline)
+			{
+				m_line++;
+				m_startOfLine = true;
+			}
+			else
+			{
+				m_startOfLine = false;
+			}
+
+			return tok;
+		}
 	}
 
 	if (m_startOfLine && m_data[0] == '\t' || StartsWith(m_data, "    "))
