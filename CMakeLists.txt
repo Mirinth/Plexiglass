@@ -9,14 +9,15 @@ project(Plexiglass
 add_library(plexlib STATIC
     source/plexlib/FiniteStateMachine.hpp
     source/plexlib/FiniteStateMachine.cpp
-    source/plexlib/lexer.hpp
-    source/plexlib/lexer.cpp
     source/plexlib/plexlib.hpp
     source/plexlib/plexlib.cpp
     source/plexlib/RegularExpressionParser.hpp
     source/plexlib/RegularExpressionParser.cpp
-    source/plexlib/token.hpp
-    source/plexlib/token.cpp
+    
+    source/plexlib/lexer/lexer.hpp
+    source/plexlib/lexer/lexer.cpp
+    source/plexlib/lexer/token.hpp
+    source/plexlib/lexer/token.cpp
 )
 target_include_directories(plexlib PUBLIC source/plexlib)
 target_compile_features(plexlib PUBLIC cxx_std_17)

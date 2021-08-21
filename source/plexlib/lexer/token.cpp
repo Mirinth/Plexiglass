@@ -1,4 +1,4 @@
-#include <token.hpp>
+#include <lexer/token.hpp>
 
 Token::Token()
 	: line(0), type(TokenType::Eof), text("")
