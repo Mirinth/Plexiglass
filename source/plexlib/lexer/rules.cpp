@@ -6,9 +6,8 @@ std::vector<Rule> Rules = {
 	&Whitespace,
 	&Comment,
 	&Keyword,
-	&ExpressionIdentifier,
+	&Identifier,
 	&ExpressionPattern,
-	&PatternIdentifier,
 	&PatternAlternator,
 };
 
@@ -61,18 +60,30 @@ size_t Keyword(std::string_view data, State current, State& next, TokenType& typ
 	return 0;
 }
 
-size_t Identifier(std::string_view data, State needed, State target, State current, State& next, TokenType& type, std::string& text)
+size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
+	State needed = State::ExpressionKeyword | State::PatternKeyword | State::RuleKeyword;
 	if ((current & needed) == State::Invalid)
 	{
 		return 0;
 	}
 
-	next = target;
+	if (current == State::ExpressionKeyword)
+	{
+		next = State::ExpressionIdentifier;
+	}
+	else if (current == State::PatternKeyword)
+	{
+		next = State::PatternIdentifier;
+	}
+	else if (current == State::RuleKeyword)
+	{
+		next = State::RuleKeyword;
+	}
+
 	type = TokenType::Identifier;
 	size_t size = data.find_first_of(" \t\r\n");
-	std::string_view substr = data.substr(0, size);
-	text = std::string(substr.begin(), substr.end());
+	text = data.substr(0, size);
 	return size;
 }
 
@@ -132,11 +143,6 @@ size_t Comment(std::string_view data, State current, State& next, TokenType& typ
 	return data.find_first_of('\n');
 }
 
-size_t ExpressionIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	return Identifier(data, State::ExpressionKeyword, State::ExpressionIdentifier, current, next, type, text);
-}
-
 size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	if ((current & State::ExpressionIdentifier) == State::Invalid)
@@ -157,11 +163,6 @@ size_t ExpressionPattern(std::string_view data, State current, State& next, Toke
 	}
 
 	return size;
-}
-
-size_t PatternIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	return Identifier(data, State::PatternKeyword, State::PatternIdentifier, current, next, type, text);
 }
 
 size_t PatternAlternator(std::string_view data, State current, State& next, TokenType& type, std::string& text)

@@ -31,7 +31,7 @@ enum class State
 //State operator!(State s);
 
 size_t Keyword(std::string_view data, State current, State& next, TokenType& type, std::string& text);
-size_t Identifier(std::string_view data, State needed, State target, State current, State& next, TokenType& type, std::string& text);
+size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 typedef size_t(*Rule)(std::string_view, State, State&, TokenType&, std::string&);
 
@@ -40,10 +40,8 @@ size_t Indent(std::string_view data, State current, State& next, TokenType& type
 size_t Whitespace(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Comment(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
-size_t ExpressionIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
-size_t PatternIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t PatternAlternator(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 extern std::vector<Rule> Rules;
