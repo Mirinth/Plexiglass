@@ -18,13 +18,14 @@ std::vector<Rule> Rules = {
 	{ State::Initial, PatternKeyword, State::PatternKeyword, TokenType::Keyword },
 	{ State::PatternKeyword, Identifier, State::PatternIdentifier, TokenType::Identifier },
 	{ State::PatternIdentifier, Alternator, State::PatternIdentifier, TokenType::Alternator },
+	{ State::PatternIdentifier, End, State::Initial, TokenType::End },
 
 	{ State::Initial, RuleKeyword, State::RuleKeyword, TokenType::Keyword },
 	{ State::RuleKeyword, Identifier, State::RuleIdentifier, TokenType::Identifier },
+	{ State::RuleIdentifier, End, State::Initial, TokenType::End },
 };
 
 std::vector<Matcher> Matchers = {
-	&End,
 	&Action,
 	&LineAction,
 	&LineMulti,
@@ -103,6 +104,16 @@ MatcherResult Identifier(std::string_view data)
 	return { size, std::string(data.substr(0, size)) };
 }
 
+MatcherResult End(std::string_view data)
+{
+	if (data[0] != ';')
+	{
+		return NoMatch;
+	}
+
+	return { 1, ";" };
+}
+
 MatcherResult ExpressionKeyword(std::string_view data)
 {
 	if (!StartsWith(data, "expression"))
@@ -154,25 +165,6 @@ MatcherResult RuleKeyword(std::string_view data)
 	}
 
 	return { sizeof("rule") - 1, "rule" };
-}
-
-size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	State needed = State::PatternIdentifier | State::RuleIdentifier;
-	if ((current & needed) == State::Invalid)
-	{
-		return 0;
-	}
-
-	if (data[0] != ';')
-	{
-		return 0;
-	}
-
-	next = State::Initial;
-	type = TokenType::End;
-	text = ";";
-	return 1;
 }
 
 size_t OldIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
