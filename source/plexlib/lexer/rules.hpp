@@ -43,7 +43,12 @@ MatcherResult Comment(std::string_view data);
 MatcherResult Indent(std::string_view data);
 MatcherResult Whitespace(std::string_view data);
 
-size_t Keyword(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+MatcherResult ExpressionKeyword(std::string_view data);
+
+MatcherResult PatternKeyword(std::string_view data);
+
+MatcherResult RuleKeyword(std::string_view data);
+
 size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 

@@ -10,10 +10,14 @@ std::vector<Rule> Rules = {
 	{ State::Any, Newline, State::Any, TokenType::Newline },
 	{ State::Any, Indent, State::Any, TokenType::Indent },
 	{ State::Any, Whitespace, State::Any, TokenType::Retry },
+	{ State::Initial, ExpressionKeyword, State::ExpressionKeyword, TokenType::Keyword },
+
+	{ State::Initial, PatternKeyword, State::PatternKeyword, TokenType::Keyword },
+
+	{ State::Initial, RuleKeyword, State::RuleKeyword, TokenType::Keyword },
 };
 
 std::vector<Matcher> Matchers = {
-	&Keyword,
 	&End,
 	&PatternAlternator,
 	&Action,
@@ -89,34 +93,34 @@ MatcherResult Whitespace(std::string_view data)
 	return { data.find_first_not_of(" \t"), "" };
 }
 
-
-
-
-size_t Keyword(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+MatcherResult ExpressionKeyword(std::string_view data)
 {
-	if ((current & State::Initial) == State::Invalid)
+	if (!StartsWith(data, "expression"))
 	{
-		return 0;
+		return NoMatch;
 	}
 
-	static std::vector<std::tuple<const char* const, size_t, State>> keywords = {
-		{ "expression", sizeof("expression") -1 , State::ExpressionKeyword },
-		{ "pattern", sizeof("pattern") - 1, State::PatternKeyword },
-		{ "rule", sizeof("rule") - 1, State::RuleKeyword },
-	};
+	return { sizeof("expression") - 1, "expression" };
+}
 
-	for (auto& [keyword, size, state] : keywords)
+MatcherResult PatternKeyword(std::string_view data)
+{
+	if (!StartsWith(data, "pattern"))
 	{
-		if (StartsWith(data, keyword))
-		{
-			next = state;
-			type = TokenType::Keyword;
-			text = keyword;
-			return size;
-		}
+		return NoMatch;
 	}
 
-	return 0;
+	return { sizeof("pattern") - 1, "pattern" };
+}
+
+MatcherResult RuleKeyword(std::string_view data)
+{
+	if (!StartsWith(data, "rule"))
+	{
+		return NoMatch;
+	}
+
+	return { sizeof("rule") - 1, "rule" };
 }
 
 size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text)
