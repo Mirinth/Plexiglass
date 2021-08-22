@@ -5,10 +5,9 @@ std::vector<Rule> Rules = {
 	&Indent,
 	&Whitespace,
 	&Comment,
-	&ExpressionKeyword,
+	&Keyword,
 	&ExpressionIdentifier,
 	&ExpressionPattern,
-	&PatternKeyword,
 	&PatternIdentifier,
 	&PatternAlternator,
 };
@@ -35,22 +34,31 @@ State operator~(State s)
 	return static_cast<State>(~st);
 }
 
-size_t Keyword(std::string_view data, std::string keyword, State possibleNext, State current, State& next, TokenType& type, std::string& text)
+size_t Keyword(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	if ((current & State::Initial) == State::Invalid)
 	{
 		return 0;
 	}
 
-	if (!StartsWith(data, keyword))
+	std::vector<std::tuple<const char* const, size_t, State>> keywords = {
+		{ "expression", sizeof("expression") -1 , State::ExpressionKeyword },
+		{ "pattern", sizeof("pattern") - 1, State::PatternKeyword },
+		{ "rule", sizeof("rule") - 1, State::RuleKeyword },
+	};
+
+	for (auto& [keyword, size, state] : keywords)
 	{
-		return 0;
+		if (StartsWith(data, keyword))
+		{
+			next = state;
+			type = TokenType::Keyword;
+			text = keyword;
+			return size;
+		}
 	}
 
-	next = possibleNext;
-	type = TokenType::Keyword;
-	text = keyword;
-	return keyword.size();
+	return 0;
 }
 
 size_t Identifier(std::string_view data, State needed, State target, State current, State& next, TokenType& type, std::string& text)
@@ -124,11 +132,6 @@ size_t Comment(std::string_view data, State current, State& next, TokenType& typ
 	return data.find_first_of('\n');
 }
 
-size_t ExpressionKeyword(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	return Keyword(data, "expression", State::ExpressionKeyword, current, next, type, text);
-}
-
 size_t ExpressionIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	return Identifier(data, State::ExpressionKeyword, State::ExpressionIdentifier, current, next, type, text);
@@ -154,11 +157,6 @@ size_t ExpressionPattern(std::string_view data, State current, State& next, Toke
 	}
 
 	return size;
-}
-
-size_t PatternKeyword(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	return Keyword(data, "pattern", State::PatternKeyword, current, next, type, text);
 }
 
 size_t PatternIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
