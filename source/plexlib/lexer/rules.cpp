@@ -17,6 +17,7 @@ std::vector<Rule> Rules = {
 
 	{ State::Initial, PatternKeyword, State::PatternKeyword, TokenType::Keyword },
 	{ State::PatternKeyword, Identifier, State::PatternIdentifier, TokenType::Identifier },
+	{ State::PatternIdentifier, Alternator, State::PatternIdentifier, TokenType::Alternator },
 
 	{ State::Initial, RuleKeyword, State::RuleKeyword, TokenType::Keyword },
 	{ State::RuleKeyword, Identifier, State::RuleIdentifier, TokenType::Identifier },
@@ -24,7 +25,6 @@ std::vector<Rule> Rules = {
 
 std::vector<Matcher> Matchers = {
 	&End,
-	&PatternAlternator,
 	&Action,
 	&LineAction,
 	&LineMulti,
@@ -136,6 +136,16 @@ MatcherResult PatternKeyword(std::string_view data)
 	return { sizeof("pattern") - 1, "pattern" };
 }
 
+MatcherResult Alternator(std::string_view data)
+{
+	if (data[0] != '|')
+	{
+		return NoMatch;
+	}
+
+	return { 1, "|" };
+}
+
 MatcherResult RuleKeyword(std::string_view data)
 {
 	if (!StartsWith(data, "rule"))
@@ -183,24 +193,6 @@ size_t OldIdentifier(std::string_view data, State current, State& next, TokenTyp
 	size_t size = data.find_first_of(" \t\r\n");
 	text = data.substr(0, size);
 	return size;
-}
-
-size_t PatternAlternator(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	if ((current & State::PatternIdentifier) == State::Invalid)
-	{
-		return 0;
-	}
-
-	if (data[0] != '|')
-	{
-		return 0;
-	}
-
-	next = current;
-	type = TokenType::Alternator;
-	text = "|";
-	return 1;
 }
 
 size_t Action(std::string_view data, State current, State& next, TokenType& type, std::string& text)
