@@ -104,28 +104,12 @@ Token Lexer::LexHelper()
 	}
 
 	// Patterns
-	if (m_state == State::PatternIdentifier && m_data[0] == ';')
-	{
-		Token tok(m_line, TokenType::End, ";");
-		m_data.remove_prefix(1);
-		m_state = State::Initial;
-		return tok;
-	}
-
 	IDENTIFIER(State::PatternIdentifier, State::PatternIdentifier);
 
 	// Rules
 	KEYWORD("rule", State::RuleKeyword);
 
 	IDENTIFIER(State::RuleKeyword, State::RuleIdentifier);
-
-	if (m_state == State::RuleIdentifier && m_data[0] == ';')
-	{
-		Token tok(m_line, TokenType::End, ";");
-		m_data.remove_prefix(1);
-		m_state = State::Initial;
-		return tok;
-	}
 
 	ACTION("produce-nothing", State::RuleIdentifier);
 

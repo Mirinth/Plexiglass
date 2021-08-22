@@ -32,6 +32,7 @@ enum class State
 
 size_t Keyword(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 typedef size_t(*Rule)(std::string_view, State, State&, TokenType&, std::string&);
 

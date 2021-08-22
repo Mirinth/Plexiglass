@@ -6,6 +6,7 @@ std::vector<Rule> Rules = {
 	&Whitespace,
 	&Comment,
 	&Keyword,
+	&End, // needs to be before Identifier
 	&Identifier,
 	&ExpressionPattern,
 	&PatternAlternator,
@@ -58,6 +59,25 @@ size_t Keyword(std::string_view data, State current, State& next, TokenType& typ
 	}
 
 	return 0;
+}
+
+size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	State needed = State::PatternIdentifier | State::RuleIdentifier;
+	if ((current & needed) == State::Invalid)
+	{
+		return 0;
+	}
+
+	if (data[0] != ';')
+	{
+		return 0;
+	}
+
+	next = State::Initial;
+	type = TokenType::End;
+	text = ";";
+	return 1;
 }
 
 size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
