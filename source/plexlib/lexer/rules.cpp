@@ -19,6 +19,7 @@ std::vector<Rule> Rules = {
 	{ State::PatternKeyword, Identifier, State::PatternIdentifier, TokenType::Identifier },
 	{ State::PatternIdentifier, Alternator, State::PatternIdentifier, TokenType::Alternator },
 	{ State::PatternIdentifier, End, State::Initial, TokenType::End },
+	{ State::PatternIdentifier, Identifier, State::PatternIdentifier, TokenType::Identifier },
 
 	{ State::Initial, RuleKeyword, State::RuleKeyword, TokenType::Keyword },
 	{ State::RuleKeyword, Identifier, State::RuleIdentifier, TokenType::Identifier },
@@ -170,7 +171,6 @@ MatcherResult RuleKeyword(std::string_view data)
 size_t OldIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	static std::map<State, State> nextState = {
-		{State::PatternIdentifier, State::PatternIdentifier},
 		{State::RuleProduce, State::RuleIdentifier},
 		{State::RuleTransition, State::RuleIdentifier},
 	};
