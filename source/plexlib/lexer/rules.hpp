@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -34,7 +35,7 @@ size_t Keyword(std::string_view data, State current, State& next, TokenType& typ
 size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
-typedef size_t(*Rule)(std::string_view, State, State&, TokenType&, std::string&);
+typedef std::function<size_t(std::string_view, State, State&, TokenType&, std::string&)> Rule;
 
 size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Indent(std::string_view data, State current, State& next, TokenType& type, std::string& text);
