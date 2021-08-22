@@ -104,13 +104,6 @@ Token Lexer::LexHelper()
 	}
 
 	// Patterns
-	if (m_state == State::PatternIdentifier && m_data[0] == '|')
-	{
-		Token tok(m_line, TokenType::Alternator, "|");
-		m_data.remove_prefix(1);
-		return tok;
-	}
-
 	if (m_state == State::PatternIdentifier && m_data[0] == ';')
 	{
 		Token tok(m_line, TokenType::End, ";");

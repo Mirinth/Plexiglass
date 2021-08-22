@@ -10,6 +10,7 @@ std::vector<Rule> Rules = {
 	&ExpressionPattern,
 	&PatternKeyword,
 	&PatternIdentifier,
+	&PatternAlternator,
 };
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -163,4 +164,22 @@ size_t PatternKeyword(std::string_view data, State current, State& next, TokenTy
 size_t PatternIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	return Identifier(data, State::PatternKeyword, State::PatternIdentifier, current, next, type, text);
+}
+
+size_t PatternAlternator(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	if ((current & State::PatternIdentifier) == State::Invalid)
+	{
+		return 0;
+	}
+
+	if (data[0] != '|')
+	{
+		return 0;
+	}
+
+	next = current;
+	type = TokenType::Alternator;
+	text = "|";
+	return 1;
 }
