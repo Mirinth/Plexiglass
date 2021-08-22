@@ -13,6 +13,7 @@ std::vector<Rule> Rules = {
 	
 	{ State::Initial, ExpressionKeyword, State::ExpressionKeyword, TokenType::Keyword },
 	{ State::ExpressionKeyword, Identifier, State::ExpressionIdentifier, TokenType::Identifier },
+	{ State::ExpressionIdentifier, Regex, State::Initial, TokenType::Expression },
 
 	{ State::Initial, PatternKeyword, State::PatternKeyword, TokenType::Keyword },
 	{ State::PatternKeyword, Identifier, State::PatternIdentifier, TokenType::Identifier },
@@ -27,7 +28,6 @@ std::vector<Matcher> Matchers = {
 	&Action,
 	&LineAction,
 	&LineMulti,
-	&ExpressionPattern,
 	// Identifier needs to come after everything but the error rule since it
 	// interferes with everything that follows it.
 	&OldIdentifier,
@@ -113,6 +113,19 @@ MatcherResult ExpressionKeyword(std::string_view data)
 	return { sizeof("expression") - 1, "expression" };
 }
 
+MatcherResult Regex(std::string_view data)
+{
+	size_t size = data.find_first_of("\r\n");
+	std::string text(data.substr(0, size));
+
+	if (text.size() > 1 && text[0] == '\\' && text[1] == ' ')
+	{
+		text.erase(0, 1);
+	}
+
+	return { size, text };
+}
+
 MatcherResult PatternKeyword(std::string_view data)
 {
 	if (!StartsWith(data, "pattern"))
@@ -169,28 +182,6 @@ size_t OldIdentifier(std::string_view data, State current, State& next, TokenTyp
 	type = TokenType::Identifier;
 	size_t size = data.find_first_of(" \t\r\n");
 	text = data.substr(0, size);
-	return size;
-}
-
-size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	if ((current & State::ExpressionIdentifier) == State::Invalid)
-	{
-		return 0;
-	}
-
-	next = State::Initial;
-	type = TokenType::Expression;
-
-	size_t size = data.find_first_of("\r\n");
-	std::string_view substr = data.substr(0, size);
-	text = std::string(substr);
-
-	if (text.size() > 1 && text[0] == '\\' && text[1] == ' ' || text[1] == '\t')
-	{
-		text.erase(0, 1);
-	}
-
 	return size;
 }
 
