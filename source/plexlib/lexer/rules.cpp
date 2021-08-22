@@ -12,6 +12,7 @@ std::vector<Rule> Rules = {
 	&PatternAlternator,
 	&Action,
 	&LineAction,
+	&LineMulti,
 	&ExpressionPattern,
 	&Identifier, // Identifier needs to be last since it interferes with following rules.
 };
@@ -252,6 +253,34 @@ size_t LineAction(std::string_view data, State current, State& next, TokenType& 
 		type = TokenType::Action;
 		text = "-1";
 		return sizeof("line--") - 1;
+	}
+
+	return 0;
+}
+
+size_t LineMulti(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	State needed = State::RuleIdentifier | State::RuleLine;
+	if ((current & needed) == State::Invalid)
+	{
+		return 0;
+	}
+
+	if (current == State::RuleIdentifier && StartsWith(data, "line"))
+	{
+		next = State::RuleLine;
+		type = TokenType::Retry;
+		text = "";
+		return sizeof("line") - 1;
+	}
+
+	if (current == State::RuleLine)
+	{
+		next = State::RuleIdentifier;
+		type = TokenType::Action;
+		size_t size = data.find_first_of(" \t\r\n");
+		text = data.substr(0, size);
+		return size;
 	}
 
 	return 0;

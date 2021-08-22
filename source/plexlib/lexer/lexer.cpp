@@ -91,22 +91,6 @@ Token Lexer::LexHelper()
 		}
 	}
 
-	// Rules
-	if (m_state == State::RuleIdentifier && StartsWith(m_data, "line"))
-	{
-		m_data.remove_prefix(sizeof("line"));
-		m_state = State::RuleLine;
-		return Token(0, TokenType::Retry, "");
-	}
-
-	if (m_state == State::RuleLine)
-	{
-		std::string identifier = TakeUntil(m_data, " \t\r\n");
-		Token tok(m_line, TokenType::Action, identifier);
-		m_state = State::RuleIdentifier;
-		return tok;
-	}
-
 	Token tok(m_line, TokenType::Unknown, std::string(1, m_data[0]));
 	m_data.remove_prefix(1);
 	return tok;
