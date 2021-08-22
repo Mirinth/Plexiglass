@@ -50,9 +50,6 @@ const Token& Lexer::Next() const
 		return tok; \
 	}
 
-#define ACTION(name, next) \
-	LINE_ACTION(name, name, next)
-
 Token Lexer::Lex()
 {
 	Token tok = LexHelper();
@@ -95,15 +92,7 @@ Token Lexer::LexHelper()
 	}
 
 	// Rules
-	ACTION("produce-nothing", State::RuleIdentifier);
-
-	ACTION("produce", State::RuleProduce);
-
 	IDENTIFIER(State::RuleProduce, State::RuleIdentifier);
-
-	ACTION("rewind", State::RuleIdentifier);
-
-	ACTION("transition", State::RuleTransition);
 
 	IDENTIFIER(State::RuleTransition, State::RuleIdentifier);
 

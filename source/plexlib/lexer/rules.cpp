@@ -8,6 +8,7 @@ std::vector<Rule> Rules = {
 	&Keyword,
 	&End, // needs to be before Identifier
 	&PatternAlternator, // needs to be before Identifier
+	&Action, // needs to be before Identifier
 	&Identifier,
 	&ExpressionPattern,
 };
@@ -41,7 +42,7 @@ size_t Keyword(std::string_view data, State current, State& next, TokenType& typ
 		return 0;
 	}
 
-	std::vector<std::tuple<const char* const, size_t, State>> keywords = {
+	static std::vector<std::tuple<const char* const, size_t, State>> keywords = {
 		{ "expression", sizeof("expression") -1 , State::ExpressionKeyword },
 		{ "pattern", sizeof("pattern") - 1, State::PatternKeyword },
 		{ "rule", sizeof("rule") - 1, State::RuleKeyword },
@@ -98,7 +99,7 @@ size_t Identifier(std::string_view data, State current, State& next, TokenType& 
 	}
 	else if (current == State::RuleKeyword)
 	{
-		next = State::RuleKeyword;
+		next = State::RuleIdentifier;
 	}
 	else if (current == State::PatternIdentifier)
 	{
@@ -205,4 +206,32 @@ size_t PatternAlternator(std::string_view data, State current, State& next, Toke
 	type = TokenType::Alternator;
 	text = "|";
 	return 1;
+}
+
+size_t Action(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	if ((current & State::RuleIdentifier) == State::Invalid)
+	{
+		return 0;
+	}
+
+	static std::vector<std::tuple<std::string, State>> actions = {
+		{"produce-nothing", State::RuleIdentifier},
+		{"produce", State::RuleProduce},
+		{"rewind", State::RuleIdentifier},
+		{"transition", State::RuleTransition},
+	};
+
+	for (auto& [name, state] : actions)
+	{
+		if (StartsWith(data, name))
+		{
+			next = state;
+			type = TokenType::Action;
+			text = name;
+			return text.size();
+		}
+	}
+
+	return 0;
 }
