@@ -2,7 +2,7 @@
 
 #include <map>
 
-std::vector<Rule> Rules = {
+std::vector<Matcher> Matchers = {
 	&Newline,
 	&Indent,
 	&Whitespace,

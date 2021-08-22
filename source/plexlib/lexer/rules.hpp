@@ -35,7 +35,7 @@ size_t Keyword(std::string_view data, State current, State& next, TokenType& typ
 size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
-typedef std::function<size_t(std::string_view, State, State&, TokenType&, std::string&)> Rule;
+typedef std::function<size_t(std::string_view, State, State&, TokenType&, std::string&)> Matcher;
 
 size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Indent(std::string_view data, State current, State& next, TokenType& type, std::string& text);
@@ -52,4 +52,4 @@ size_t LineMulti(std::string_view data, State current, State& next, TokenType& t
 
 size_t Error(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
-extern std::vector<Rule> Rules;
+extern std::vector<Matcher> Matchers;

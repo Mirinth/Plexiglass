@@ -68,7 +68,7 @@ Token Lexer::LexHelper()
 		return Token(m_line, TokenType::Eof, "EOF");
 	}
 
-	for (auto& rule : Rules)
+	for (auto& rule : Matchers)
 	{
 		State next = State::Invalid;
 		TokenType type = TokenType::Unknown;
