@@ -2,10 +2,14 @@
 
 #include <map>
 
+// State, Matcher2, State, TokenType
+std::vector<Rule> Rules = {
+	{ State::Any, Indent, State::Any, TokenType::Indent },
+	{ State::Any, Whitespace, State::Any, TokenType::Retry },
+};
+
 std::vector<Matcher> Matchers = {
 	&Newline,
-	&Indent,
-	&Whitespace,
 	&Comment,
 	&Keyword,
 	&End,
@@ -40,6 +44,27 @@ State operator~(State s)
 {
 	auto st = static_cast<std::underlying_type<State>::type>(s);
 	return static_cast<State>(~st);
+}
+
+MatcherResult Indent(std::string_view data)
+{
+	if (data[0] != '\t' && !StartsWith(data, "    "))
+	{
+		return MatcherResult(0, "");
+	}
+
+	size_t size = data[0] == '\t' ? 1 : 4;
+	return MatcherResult(size, "\\t");
+}
+
+MatcherResult Whitespace(std::string_view data)
+{
+	if (data[0] != ' ' && data[0] != '\t')
+	{
+		return MatcherResult(0, "");
+	}
+
+	return MatcherResult(data.find_first_not_of(" \t"), "");
 }
 
 size_t Keyword(std::string_view data, State current, State& next, TokenType& type, std::string& text)
@@ -122,37 +147,6 @@ size_t Newline(std::string_view data, State current, State& next, TokenType& typ
 	type = TokenType::Newline;
 	text = "\\n";
 	return 1;
-}
-
-size_t Indent(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	if ((current & State::StartOfLine) == State::Invalid)
-	{
-		return 0;
-	}
-
-	if (data[0] != '\t' && !StartsWith(data, "    "))
-	{
-		return 0;
-	}
-
-	next = current & (~State::StartOfLine);
-	type = TokenType::Indent;
-	text = "\\t";
-
-	return data[0] == '\t' ? 1 : 4;
-}
-
-size_t Whitespace(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	if (data[0] != ' ' && data[0] != '\t')
-	{
-		return 0;
-	}
-
-	next = current;
-	type = TokenType::Retry;
-	return data.find_first_not_of(" \t");
 }
 
 size_t Comment(std::string_view data, State current, State& next, TokenType& type, std::string& text)

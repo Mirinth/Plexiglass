@@ -68,6 +68,37 @@ Token Lexer::LexHelper()
 		return Token(m_line, TokenType::Eof, "EOF");
 	}
 
+	for (auto& [current, matcher, next, type] : Rules)
+	{
+		if ((m_state & current) == State::Invalid)
+		{
+			continue;
+		}
+
+		auto& [size, text] = matcher(m_data);
+
+		if (size == 0)
+		{
+			continue;
+		}
+
+		m_data.remove_prefix(size);
+		if (next != State::Any)
+		{
+			m_state = next;
+		}
+		if (type == TokenType::Newline)
+		{
+			m_line++;
+			m_state = m_state | State::StartOfLine;
+		}
+		else
+		{
+			m_state = m_state & (~State::StartOfLine);
+		}
+		return Token(m_line, type, text);
+	}
+
 	for (auto& rule : Matchers)
 	{
 		State next = State::Invalid;

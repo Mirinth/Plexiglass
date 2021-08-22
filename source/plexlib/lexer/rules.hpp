@@ -25,11 +25,21 @@ enum class State
 	RuleLine = 512,
 
 	StartOfLine = 1024,
+
+	Any = ~0,
 };
 
-//State operator|(State left, State right);
-//State operator&(State left, State right);
-//State operator!(State s);
+typedef std::tuple<size_t, std::string> MatcherResult;
+typedef std::function<MatcherResult(std::string_view)> Matcher2;
+typedef std::tuple<State, Matcher2, State, TokenType> Rule;
+extern std::vector<Rule> Rules;
+
+State operator|(State left, State right);
+State operator&(State left, State right);
+State operator~(State s);
+
+MatcherResult Indent(std::string_view data);
+MatcherResult Whitespace(std::string_view data);
 
 size_t Keyword(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
@@ -38,8 +48,6 @@ size_t End(std::string_view data, State current, State& next, TokenType& type, s
 typedef std::function<size_t(std::string_view, State, State&, TokenType&, std::string&)> Matcher;
 
 size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text);
-size_t Indent(std::string_view data, State current, State& next, TokenType& type, std::string& text);
-size_t Whitespace(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t Comment(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text);
