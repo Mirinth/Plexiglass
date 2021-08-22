@@ -92,10 +92,6 @@ Token Lexer::LexHelper()
 	}
 
 	// Rules
-	IDENTIFIER(State::RuleProduce, State::RuleIdentifier);
-
-	IDENTIFIER(State::RuleTransition, State::RuleIdentifier);
-
 	LINE_ACTION("line++", "+1", State::RuleIdentifier);
 
 	LINE_ACTION("++line", "+1", State::RuleIdentifier);

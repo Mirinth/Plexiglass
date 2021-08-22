@@ -85,21 +85,21 @@ size_t End(std::string_view data, State current, State& next, TokenType& type, s
 
 size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
-	State needed = State::ExpressionKeyword | State::PatternKeyword | State::RuleKeyword | State::PatternIdentifier;
-	if ((current & needed) == State::Invalid)
-	{
-		return 0;
-	}
-
 	static std::map<State, State> nextState = {
 		{State::ExpressionKeyword, State::ExpressionIdentifier},
 		{State::PatternKeyword, State::PatternIdentifier},
 		{State::RuleKeyword, State::RuleIdentifier},
 		{State::PatternIdentifier, State::PatternIdentifier},
+		{State::RuleProduce, State::RuleIdentifier},
+		{State::RuleTransition, State::RuleIdentifier},
 	};
 
-	next = nextState[current];
+	if (nextState.count(current) == 0)
+	{
+		return 0;
+	}
 
+	next = nextState[current];
 	type = TokenType::Identifier;
 	size_t size = data.find_first_of(" \t\r\n");
 	text = data.substr(0, size);
