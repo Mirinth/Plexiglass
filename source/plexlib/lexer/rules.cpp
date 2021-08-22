@@ -1,5 +1,7 @@
 #include <lexer/rules.hpp>
 
+#include <map>
+
 std::vector<Rule> Rules = {
 	&Newline,
 	&Indent,
@@ -89,22 +91,14 @@ size_t Identifier(std::string_view data, State current, State& next, TokenType& 
 		return 0;
 	}
 
-	if (current == State::ExpressionKeyword)
-	{
-		next = State::ExpressionIdentifier;
-	}
-	else if (current == State::PatternKeyword)
-	{
-		next = State::PatternIdentifier;
-	}
-	else if (current == State::RuleKeyword)
-	{
-		next = State::RuleIdentifier;
-	}
-	else if (current == State::PatternIdentifier)
-	{
-		next = current;
-	}
+	static std::map<State, State> nextState = {
+		{State::ExpressionKeyword, State::ExpressionIdentifier},
+		{State::PatternKeyword, State::PatternIdentifier},
+		{State::RuleKeyword, State::RuleIdentifier},
+		{State::PatternIdentifier, State::PatternIdentifier},
+	};
+
+	next = nextState[current];
 
 	type = TokenType::Identifier;
 	size_t size = data.find_first_of(" \t\r\n");
