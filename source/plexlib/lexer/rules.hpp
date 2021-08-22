@@ -43,13 +43,15 @@ MatcherResult Comment(std::string_view data);
 MatcherResult Indent(std::string_view data);
 MatcherResult Whitespace(std::string_view data);
 
+MatcherResult Identifier(std::string_view data);
+
 MatcherResult ExpressionKeyword(std::string_view data);
 
 MatcherResult PatternKeyword(std::string_view data);
 
 MatcherResult RuleKeyword(std::string_view data);
 
-size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+size_t OldIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 typedef std::function<size_t(std::string_view, State, State&, TokenType&, std::string&)> Matcher;

@@ -10,11 +10,15 @@ std::vector<Rule> Rules = {
 	{ State::Any, Newline, State::Any, TokenType::Newline },
 	{ State::Any, Indent, State::Any, TokenType::Indent },
 	{ State::Any, Whitespace, State::Any, TokenType::Retry },
+	
 	{ State::Initial, ExpressionKeyword, State::ExpressionKeyword, TokenType::Keyword },
+	{ State::ExpressionKeyword, Identifier, State::ExpressionIdentifier, TokenType::Identifier },
 
 	{ State::Initial, PatternKeyword, State::PatternKeyword, TokenType::Keyword },
+	{ State::PatternKeyword, Identifier, State::PatternIdentifier, TokenType::Identifier },
 
 	{ State::Initial, RuleKeyword, State::RuleKeyword, TokenType::Keyword },
+	{ State::RuleKeyword, Identifier, State::RuleIdentifier, TokenType::Identifier },
 };
 
 std::vector<Matcher> Matchers = {
@@ -26,7 +30,7 @@ std::vector<Matcher> Matchers = {
 	&ExpressionPattern,
 	// Identifier needs to come after everything but the error rule since it
 	// interferes with everything that follows it.
-	&Identifier,
+	&OldIdentifier,
 	&Error,
 };
 
@@ -93,6 +97,12 @@ MatcherResult Whitespace(std::string_view data)
 	return { data.find_first_not_of(" \t"), "" };
 }
 
+MatcherResult Identifier(std::string_view data)
+{
+	size_t size = data.find_first_of(" \t\r\n");
+	return { size, std::string(data.substr(0, size)) };
+}
+
 MatcherResult ExpressionKeyword(std::string_view data)
 {
 	if (!StartsWith(data, "expression"))
@@ -142,12 +152,9 @@ size_t End(std::string_view data, State current, State& next, TokenType& type, s
 	return 1;
 }
 
-size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+size_t OldIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	static std::map<State, State> nextState = {
-		{State::ExpressionKeyword, State::ExpressionIdentifier},
-		{State::PatternKeyword, State::PatternIdentifier},
-		{State::RuleKeyword, State::RuleIdentifier},
 		{State::PatternIdentifier, State::PatternIdentifier},
 		{State::RuleProduce, State::RuleIdentifier},
 		{State::RuleTransition, State::RuleIdentifier},
@@ -164,8 +171,6 @@ size_t Identifier(std::string_view data, State current, State& next, TokenType& 
 	text = data.substr(0, size);
 	return size;
 }
-
-
 
 size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
