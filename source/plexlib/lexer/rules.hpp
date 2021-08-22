@@ -49,4 +49,6 @@ size_t Action(std::string_view data, State current, State& next, TokenType& type
 size_t LineAction(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 size_t LineMulti(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
+size_t Error(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+
 extern std::vector<Rule> Rules;

@@ -14,7 +14,10 @@ std::vector<Rule> Rules = {
 	&LineAction,
 	&LineMulti,
 	&ExpressionPattern,
-	&Identifier, // Identifier needs to be last since it interferes with following rules.
+	// Identifier needs to come after everything but the error rule since it
+	// interferes with everything that follows it.
+	&Identifier,
+	&Error,
 };
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -284,4 +287,12 @@ size_t LineMulti(std::string_view data, State current, State& next, TokenType& t
 	}
 
 	return 0;
+}
+
+size_t Error(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	next = current;
+	type = TokenType::Unknown;
+	text = std::string(1, data[0]);
+	return 1;
 }

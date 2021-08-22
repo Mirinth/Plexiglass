@@ -91,9 +91,7 @@ Token Lexer::LexHelper()
 		}
 	}
 
-	Token tok(m_line, TokenType::Unknown, std::string(1, m_data[0]));
-	m_data.remove_prefix(1);
-	return tok;
+	throw std::exception("Unreachable code reached.");
 }
 
 bool StartsWith(const std::string_view& toSearch, const std::string find)
