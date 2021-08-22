@@ -103,9 +103,6 @@ Token Lexer::LexHelper()
 		}
 	}
 
-	// Patterns
-	IDENTIFIER(State::PatternIdentifier, State::PatternIdentifier);
-
 	// Rules
 	KEYWORD("rule", State::RuleKeyword);
 

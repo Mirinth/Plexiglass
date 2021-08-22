@@ -7,9 +7,9 @@ std::vector<Rule> Rules = {
 	&Comment,
 	&Keyword,
 	&End, // needs to be before Identifier
+	&PatternAlternator, // needs to be before Identifier
 	&Identifier,
 	&ExpressionPattern,
-	&PatternAlternator,
 };
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -82,7 +82,7 @@ size_t End(std::string_view data, State current, State& next, TokenType& type, s
 
 size_t Identifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
-	State needed = State::ExpressionKeyword | State::PatternKeyword | State::RuleKeyword;
+	State needed = State::ExpressionKeyword | State::PatternKeyword | State::RuleKeyword | State::PatternIdentifier;
 	if ((current & needed) == State::Invalid)
 	{
 		return 0;
@@ -99,6 +99,10 @@ size_t Identifier(std::string_view data, State current, State& next, TokenType& 
 	else if (current == State::RuleKeyword)
 	{
 		next = State::RuleKeyword;
+	}
+	else if (current == State::PatternIdentifier)
+	{
+		next = current;
 	}
 
 	type = TokenType::Identifier;
