@@ -8,11 +8,12 @@ std::vector<Rule> Rules = {
 	&Whitespace,
 	&Comment,
 	&Keyword,
-	&End, // needs to be before Identifier
-	&PatternAlternator, // needs to be before Identifier
-	&Action, // needs to be before Identifier
-	&Identifier,
+	&End,
+	&PatternAlternator,
+	&Action,
+	&LineAction,
 	&ExpressionPattern,
+	&Identifier, // Identifier needs to be last since it interferes with following rules.
 };
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -225,6 +226,32 @@ size_t Action(std::string_view data, State current, State& next, TokenType& type
 			text = name;
 			return text.size();
 		}
+	}
+
+	return 0;
+}
+
+size_t LineAction(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+{
+	if ((current & State::RuleIdentifier) == State::Invalid)
+	{
+		return 0;
+	}
+	
+	if (StartsWith(data, "++line") || StartsWith(data, "line++"))
+	{
+		next = State::RuleIdentifier;
+		type = TokenType::Action;
+		text = "+1";
+		return sizeof("line++") - 1;
+	}
+
+	if (StartsWith(data, "--line") || StartsWith(data, "line--"))
+	{
+		next = State::RuleIdentifier;
+		type = TokenType::Action;
+		text = "-1";
+		return sizeof("line--") - 1;
 	}
 
 	return 0;

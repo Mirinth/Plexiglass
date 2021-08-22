@@ -92,14 +92,6 @@ Token Lexer::LexHelper()
 	}
 
 	// Rules
-	LINE_ACTION("line++", "+1", State::RuleIdentifier);
-
-	LINE_ACTION("++line", "+1", State::RuleIdentifier);
-
-	LINE_ACTION("line--", "-1", State::RuleIdentifier);
-
-	LINE_ACTION("--line", "-1", State::RuleIdentifier);
-
 	if (m_state == State::RuleIdentifier && StartsWith(m_data, "line"))
 	{
 		m_data.remove_prefix(sizeof("line"));

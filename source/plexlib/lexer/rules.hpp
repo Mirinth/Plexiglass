@@ -46,5 +46,6 @@ size_t ExpressionPattern(std::string_view data, State current, State& next, Toke
 size_t PatternAlternator(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 size_t Action(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+size_t LineAction(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 extern std::vector<Rule> Rules;
