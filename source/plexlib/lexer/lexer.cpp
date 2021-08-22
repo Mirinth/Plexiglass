@@ -32,15 +32,6 @@ const Token& Lexer::Next() const
 	return m_next;
 }
 
-#define KEYWORD(name, next) \
-	if (m_state == State::Initial && StartsWith(m_data, name)) \
-    { \
-	    Token tok(m_line, TokenType::Keyword, name); \
-		m_data.remove_prefix(sizeof(name) - 1); \
-		m_state = next; \
-		return tok; \
-	}
-
 #define IDENTIFIER(current, next) \
 	if (m_state == current) \
 	{ \
@@ -104,10 +95,6 @@ Token Lexer::LexHelper()
 	}
 
 	// Rules
-	KEYWORD("rule", State::RuleKeyword);
-
-	IDENTIFIER(State::RuleKeyword, State::RuleIdentifier);
-
 	ACTION("produce-nothing", State::RuleIdentifier);
 
 	ACTION("produce", State::RuleProduce);
