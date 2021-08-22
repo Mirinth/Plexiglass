@@ -38,6 +38,8 @@ State operator|(State left, State right);
 State operator&(State left, State right);
 State operator~(State s);
 
+MatcherResult Newline(std::string_view data);
+MatcherResult Comment(std::string_view data);
 MatcherResult Indent(std::string_view data);
 MatcherResult Whitespace(std::string_view data);
 
@@ -46,9 +48,6 @@ size_t Identifier(std::string_view data, State current, State& next, TokenType& 
 size_t End(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 typedef std::function<size_t(std::string_view, State, State&, TokenType&, std::string&)> Matcher;
-
-size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text);
-size_t Comment(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 
 size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text);
 

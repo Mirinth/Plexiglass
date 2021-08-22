@@ -2,15 +2,17 @@
 
 #include <map>
 
+MatcherResult NoMatch(0, "");
+
 // State, Matcher2, State, TokenType
 std::vector<Rule> Rules = {
+	{ State::Any, Comment, State::Any, TokenType::Retry },
+	{ State::Any, Newline, State::Any, TokenType::Newline },
 	{ State::Any, Indent, State::Any, TokenType::Indent },
 	{ State::Any, Whitespace, State::Any, TokenType::Retry },
 };
 
 std::vector<Matcher> Matchers = {
-	&Newline,
-	&Comment,
 	&Keyword,
 	&End,
 	&PatternAlternator,
@@ -46,26 +48,49 @@ State operator~(State s)
 	return static_cast<State>(~st);
 }
 
+MatcherResult Comment(std::string_view data)
+{
+	if (data[0] != '#')
+	{
+		return NoMatch;
+	}
+
+	return { data.find_first_of('\n'), "" };
+}
+
+MatcherResult Newline(std::string_view data)
+{
+	if (data[0] != '\n')
+	{
+		return NoMatch;
+	}
+
+	return { 1, "\\n" };
+}
+
 MatcherResult Indent(std::string_view data)
 {
 	if (data[0] != '\t' && !StartsWith(data, "    "))
 	{
-		return MatcherResult(0, "");
+		return NoMatch;
 	}
 
 	size_t size = data[0] == '\t' ? 1 : 4;
-	return MatcherResult(size, "\\t");
+	return { size, "\\t" };
 }
 
 MatcherResult Whitespace(std::string_view data)
 {
 	if (data[0] != ' ' && data[0] != '\t')
 	{
-		return MatcherResult(0, "");
+		return NoMatch;
 	}
 
-	return MatcherResult(data.find_first_not_of(" \t"), "");
+	return { data.find_first_not_of(" \t"), "" };
 }
+
+
+
 
 size_t Keyword(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
@@ -136,30 +161,7 @@ size_t Identifier(std::string_view data, State current, State& next, TokenType& 
 	return size;
 }
 
-size_t Newline(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	if (data[0] != '\n')
-	{
-		return 0;
-	}
 
-	next = current | State::StartOfLine;
-	type = TokenType::Newline;
-	text = "\\n";
-	return 1;
-}
-
-size_t Comment(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	if (data[0] != '#')
-	{
-		return 0;
-	}
-
-	next = current;
-	type = TokenType::Retry;
-	return data.find_first_of('\n');
-}
 
 size_t ExpressionPattern(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
