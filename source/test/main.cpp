@@ -43,10 +43,9 @@ bool CompareOutput(std::string basePath, std::string outPath)
 	return false;
 }
 
-void RunTest()
+std::string ReadFile(std::string path)
 {
-	std::ifstream in("../../../tests/lexer/01-in.txt");
-	std::ofstream out("../../../tests/lexer/01-out.txt");
+	std::ifstream in(path);
 	std::string data;
 
 	// https://stackoverflow.com/a/2602060
@@ -55,6 +54,14 @@ void RunTest()
 	in.seekg(0, std::ios::beg);
 	data.assign((std::istreambuf_iterator<char>(in)),
 		std::istreambuf_iterator<char>());
+
+	return data;
+}
+
+void RunTest()
+{
+	std::ofstream out("../../../tests/lexer/01-out.txt");
+	std::string data = ReadFile("../../../tests/lexer/01-in.txt");
 
 	Lexer lexer(data);
 
