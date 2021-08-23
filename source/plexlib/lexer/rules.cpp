@@ -10,7 +10,7 @@ std::vector<Rule> Rules = {
 	{ State::Any, Newline, State::Any, TokenType::Newline },
 	{ State::Any, Indent, State::Any, TokenType::Indent },
 	{ State::Any, Whitespace, State::Any, TokenType::Retry },
-	
+
 	{ State::Initial, ExpressionKeyword, State::ExpressionKeyword, TokenType::Keyword },
 	{ State::ExpressionKeyword, Identifier, State::ExpressionIdentifier, TokenType::Identifier },
 	{ State::ExpressionIdentifier, Regex, State::Initial, TokenType::Expression },
@@ -25,8 +25,10 @@ std::vector<Rule> Rules = {
 	{ State::RuleKeyword, Identifier, State::RuleIdentifier, TokenType::Identifier },
 	{ State::RuleIdentifier, ProduceNothingAction, State::RuleIdentifier, TokenType::Action},
 	{ State::RuleIdentifier, ProduceAction, State::RuleProduce, TokenType::Action},
+	{ State::RuleProduce, Identifier, State::RuleIdentifier, TokenType::Identifier },
 	{ State::RuleIdentifier, RewindAction, State::RuleIdentifier, TokenType::Action},
 	{ State::RuleIdentifier, TransitionAction, State::RuleTransition, TokenType::Action},
+	{ State::RuleTransition, Identifier, State::RuleIdentifier, TokenType::Identifier },
 	{ State::RuleIdentifier, LineAction, State::RuleIdentifier, TokenType::Action },
 	{ State::RuleIdentifier, MultilineStart, State::RuleLine, TokenType::Retry },
 	{ State::RuleLine, MultilineEnd, State::RuleIdentifier, TokenType::Action },
@@ -36,7 +38,6 @@ std::vector<Rule> Rules = {
 std::vector<Matcher> Matchers = {
 	// Identifier needs to come after everything but the error rule since it
 	// interferes with everything that follows it.
-	&OldIdentifier,
 	&Error,
 };
 
@@ -242,25 +243,6 @@ MatcherResult MultilineEnd(std::string_view data)
 	size_t size = data.find_first_of(" \t\r\n");
 	std::string text(data.substr(0, size));
 	return { size, text };
-}
-
-size_t OldIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	static std::map<State, State> nextState = {
-		{State::RuleProduce, State::RuleIdentifier},
-		{State::RuleTransition, State::RuleIdentifier},
-	};
-
-	if (nextState.count(current) == 0)
-	{
-		return 0;
-	}
-
-	next = nextState[current];
-	type = TokenType::Identifier;
-	size_t size = data.find_first_of(" \t\r\n");
-	text = data.substr(0, size);
-	return size;
 }
 
 size_t Error(std::string_view data, State current, State& next, TokenType& type, std::string& text)
