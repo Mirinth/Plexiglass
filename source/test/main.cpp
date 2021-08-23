@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include <lexer/lexer.hpp>
@@ -19,6 +20,27 @@ std::vector<std::string> GetTestStems(std::string directory)
 	}
 
 	return stems;
+}
+
+bool CompareOutput(std::string basePath, std::string outPath)
+{
+	std::ifstream base(basePath);
+	std::ifstream out(outPath);
+
+	while (base.good() && out.good())
+	{
+		if (base.get() != out.get())
+		{
+			return false;
+		}
+	}
+
+	if (base.eof() && out.eof())
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void RunTest()
@@ -43,34 +65,12 @@ void RunTest()
 	}
 }
 
-bool CompareOutput()
-{
-	std::ifstream base("../../../tests/lexer/01-base.txt");
-	std::ifstream out("../../../tests/lexer/01-out.txt");
 
-	bool good = true;
-
-	while (base.good() && out.good())
-	{
-		if (base.get() != out.get())
-		{
-			good = false;
-			break;
-		}
-	}
-
-	if (base.eof() && out.eof() && good)
-	{
-		return true;
-	}
-
-	return false;
-}
 
 int main()
 {
 	RunTest();
-	bool success = CompareOutput();
+	bool success = CompareOutput("../../../tests/lexer/01-base.txt", "../../../tests/lexer/01-out.txt");
 
 	if (success)
 	{
