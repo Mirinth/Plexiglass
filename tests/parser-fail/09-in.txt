@@ -1,0 +1,2 @@
+# Rule with no identifier
+rule ;

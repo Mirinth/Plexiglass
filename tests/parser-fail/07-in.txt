@@ -1,0 +1,5 @@
+# Rule with | character
+rule some-name
+      line++
+	| rewind
+	;
