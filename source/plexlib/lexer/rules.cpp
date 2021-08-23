@@ -42,8 +42,6 @@ std::vector<Rule> Rules = {
 	{ State::Any,                  Error,                State::Any,                 TokenType::Unknown },
 };
 
-bool StartsWith(const std::string_view& toSearch, const std::string find);
-
 State operator|(State left, State right)
 {
 	auto lhs = static_cast<std::underlying_type<State>::type>(left);
@@ -114,6 +112,18 @@ MatcherResult MultilineEnd(std::string_view data)
 MatcherResult Error(std::string_view data)
 {
 	return { 1, std::string(1, data[0]) };
+}
+
+bool StartsWith(const std::string_view& toSearch, const std::string find)
+{
+	for (size_t i = 0; i < toSearch.size() && i < find.size(); i++)
+	{
+		if (toSearch[i] != find[i])
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 Matcher Literal(std::string value)
