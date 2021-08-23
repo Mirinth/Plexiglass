@@ -99,29 +99,6 @@ Token Lexer::LexHelper()
 		return Token(m_line, type, text);
 	}
 
-	for (auto& rule : Matchers)
-	{
-		State next = State::Invalid;
-		TokenType type = TokenType::Unknown;
-		std::string text;
-		size_t length = rule(m_data, m_state, next, type, text);
-
-		if (length)
-		{
-			Token tok(m_line, type, text);
-			m_data.remove_prefix(length);
-
-			if (type == TokenType::Newline)
-			{
-				m_line++;
-			}
-
-			m_state = next;
-
-			return tok;
-		}
-	}
-
 	throw std::exception("Unreachable code reached.");
 }
 

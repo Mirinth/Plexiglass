@@ -37,11 +37,6 @@ std::vector<Rule> Rules = {
 	{ State::Any, Error, State::Any, TokenType::Unknown },
 };
 
-std::vector<Matcher> Matchers = {
-	// Identifier needs to come after everything but the error rule since it
-	// interferes with everything that follows it.
-};
-
 bool StartsWith(const std::string_view& toSearch, const std::string find);
 
 State operator|(State left, State right)
