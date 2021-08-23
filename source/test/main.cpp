@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -6,6 +7,24 @@
 
 #include <lexer/lexer.hpp>
 
+bool IsInputFile(std::filesystem::path file)
+{
+	if (file.extension() != ".txt")
+	{
+		return false;
+	}
+
+	std::string stem = file.stem().string();
+	std::string suffix = "-in";
+
+	if (stem.size() < suffix.size())
+	{
+		return false;
+	}
+
+	return std::equal(suffix.rbegin(), suffix.rend(), stem.rbegin());
+}
+
 std::vector<std::string> GetTestStems(std::string directory)
 {
 	std::vector<std::string> stems;
@@ -13,11 +32,18 @@ std::vector<std::string> GetTestStems(std::string directory)
 
 	for (auto& file : std::filesystem::directory_iterator(base))
 	{
+		if (!IsInputFile(file))
+		{
+			continue;
+		}
+
 		std::string stem = file.path().stem().string();
 		size_t location = stem.rfind('-');
 		stem.erase(location);
 		stems.push_back((base / stem).string());
 	}
+
+	std::sort(stems.begin(), stems.end());
 
 	return stems;
 }
