@@ -27,11 +27,11 @@ std::vector<Rule> Rules = {
 	{ State::RuleIdentifier, ProduceAction, State::RuleProduce, TokenType::Action},
 	{ State::RuleIdentifier, RewindAction, State::RuleIdentifier, TokenType::Action},
 	{ State::RuleIdentifier, TransitionAction, State::RuleTransition, TokenType::Action},
+	{ State::RuleIdentifier, LineAction, State::RuleIdentifier, TokenType::Action },
 	{ State::RuleIdentifier, End, State::Initial, TokenType::End },
 };
 
 std::vector<Matcher> Matchers = {
-	&LineAction,
 	&LineMulti,
 	// Identifier needs to come after everything but the error rule since it
 	// interferes with everything that follows it.
@@ -211,6 +211,21 @@ MatcherResult TransitionAction(std::string_view data)
 	return { sizeof("transition") - 1, "transition" };
 }
 
+MatcherResult LineAction(std::string_view data)
+{
+	if (StartsWith(data, "++line") || StartsWith(data, "line++"))
+	{
+		return { sizeof("line++") - 1, "+1" };
+	}
+
+	if (StartsWith(data, "--line") || StartsWith(data, "line--"))
+	{
+		return { sizeof("line--") - 1, "-1" };
+	}
+
+	return NoMatch;
+}
+
 size_t OldIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	static std::map<State, State> nextState = {
@@ -228,32 +243,6 @@ size_t OldIdentifier(std::string_view data, State current, State& next, TokenTyp
 	size_t size = data.find_first_of(" \t\r\n");
 	text = data.substr(0, size);
 	return size;
-}
-
-size_t LineAction(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	if ((current & State::RuleIdentifier) == State::Invalid)
-	{
-		return 0;
-	}
-	
-	if (StartsWith(data, "++line") || StartsWith(data, "line++"))
-	{
-		next = State::RuleIdentifier;
-		type = TokenType::Action;
-		text = "+1";
-		return sizeof("line++") - 1;
-	}
-
-	if (StartsWith(data, "--line") || StartsWith(data, "line--"))
-	{
-		next = State::RuleIdentifier;
-		type = TokenType::Action;
-		text = "-1";
-		return sizeof("line--") - 1;
-	}
-
-	return 0;
 }
 
 size_t LineMulti(std::string_view data, State current, State& next, TokenType& type, std::string& text)
