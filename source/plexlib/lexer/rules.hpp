@@ -44,21 +44,12 @@ MatcherResult Indent(std::string_view data);
 MatcherResult Whitespace(std::string_view data);
 
 MatcherResult Identifier(std::string_view data);
-MatcherResult End(std::string_view data);
 
-MatcherResult ExpressionKeyword(std::string_view data);
 MatcherResult Regex(std::string_view data);
 
-MatcherResult PatternKeyword(std::string_view data);
-MatcherResult Alternator(std::string_view data);
-
-MatcherResult RuleKeyword(std::string_view data);
-MatcherResult ProduceNothingAction(std::string_view data);
-MatcherResult ProduceAction(std::string_view data);
-MatcherResult RewindAction(std::string_view data);
-MatcherResult TransitionAction(std::string_view data);
 MatcherResult LineAction(std::string_view data);
-MatcherResult MultilineStart(std::string_view data);
 MatcherResult MultilineEnd(std::string_view data);
 
 MatcherResult Error(std::string_view data);
+
+Matcher Literal(std::string value);

@@ -10,28 +10,28 @@ std::vector<Rule> Rules = {
 	{ State::Any,                  Indent,              State::Any,                  TokenType::Indent },
 	{ State::Any,                  Whitespace,          State::Any,                  TokenType::Retry },
 
-	{ State::Initial,              ExpressionKeyword,   State::ExpressionKeyword,    TokenType::Keyword },
+	{ State::Initial,              Literal("expression"),   State::ExpressionKeyword,    TokenType::Keyword },
 	{ State::ExpressionKeyword,    Identifier,          State::ExpressionIdentifier, TokenType::Identifier },
 	{ State::ExpressionIdentifier, Regex,               State::Initial,              TokenType::Expression },
 
-	{ State::Initial,              PatternKeyword,      State::PatternKeyword,       TokenType::Keyword },
+	{ State::Initial,              Literal("pattern"),      State::PatternKeyword,       TokenType::Keyword },
 	{ State::PatternKeyword,       Identifier,          State::PatternIdentifier,    TokenType::Identifier },
-	{ State::PatternIdentifier,    Alternator,          State::PatternIdentifier,    TokenType::Alternator },
-	{ State::PatternIdentifier,    End,                 State::Initial,              TokenType::End },
+	{ State::PatternIdentifier,    Literal("|"),          State::PatternIdentifier,    TokenType::Alternator },
+	{ State::PatternIdentifier,    Literal(";"),        State::Initial,              TokenType::End },
 	{ State::PatternIdentifier,    Identifier,          State::PatternIdentifier,    TokenType::Identifier },
 
-	{ State::Initial,              RuleKeyword,          State::RuleKeyword,         TokenType::Keyword },
+	{ State::Initial,              Literal("rule"),          State::RuleKeyword,         TokenType::Keyword },
 	{ State::RuleKeyword,          Identifier,           State::RuleIdentifier,      TokenType::Identifier },
-	{ State::RuleIdentifier,       ProduceNothingAction, State::RuleIdentifier,      TokenType::Action},
-	{ State::RuleIdentifier,       ProduceAction,        State::RuleProduce,         TokenType::Action},
+	{ State::RuleIdentifier,       Literal("produce-nothing"), State::RuleIdentifier,      TokenType::Action},
+	{ State::RuleIdentifier,       Literal("produce"),        State::RuleProduce,         TokenType::Action},
 	{ State::RuleProduce,          Identifier,           State::RuleIdentifier,      TokenType::Identifier },
-	{ State::RuleIdentifier,       RewindAction,         State::RuleIdentifier,      TokenType::Action},
-	{ State::RuleIdentifier,       TransitionAction,     State::RuleTransition,      TokenType::Action},
+	{ State::RuleIdentifier,       Literal("rewind"),         State::RuleIdentifier,      TokenType::Action},
+	{ State::RuleIdentifier,       Literal("transition"),     State::RuleTransition,      TokenType::Action},
 	{ State::RuleTransition,       Identifier,           State::RuleIdentifier,      TokenType::Identifier },
 	{ State::RuleIdentifier,       LineAction,           State::RuleIdentifier,      TokenType::Action },
-	{ State::RuleIdentifier,       MultilineStart,       State::RuleLine,            TokenType::Retry },
+	{ State::RuleIdentifier,       Literal("line"),       State::RuleLine,            TokenType::Retry },
 	{ State::RuleLine,             MultilineEnd,         State::RuleIdentifier,      TokenType::Action },
-	{ State::RuleIdentifier,       End,                  State::Initial,             TokenType::End },
+	{ State::RuleIdentifier,       Literal(";"),         State::Initial,             TokenType::End },
 
 	{ State::Any,                  Error,                State::Any,                 TokenType::Unknown },
 };
@@ -105,26 +105,6 @@ MatcherResult Identifier(std::string_view data)
 	return { size, std::string(data.substr(0, size)) };
 }
 
-MatcherResult End(std::string_view data)
-{
-	if (data[0] != ';')
-	{
-		return NoMatch;
-	}
-
-	return { 1, ";" };
-}
-
-MatcherResult ExpressionKeyword(std::string_view data)
-{
-	if (!StartsWith(data, "expression"))
-	{
-		return NoMatch;
-	}
-
-	return { sizeof("expression") - 1, "expression" };
-}
-
 MatcherResult Regex(std::string_view data)
 {
 	size_t size = data.find_first_of("\r\n");
@@ -136,76 +116,6 @@ MatcherResult Regex(std::string_view data)
 	}
 
 	return { size, text };
-}
-
-MatcherResult PatternKeyword(std::string_view data)
-{
-	if (!StartsWith(data, "pattern"))
-	{
-		return NoMatch;
-	}
-
-	return { sizeof("pattern") - 1, "pattern" };
-}
-
-MatcherResult Alternator(std::string_view data)
-{
-	if (data[0] != '|')
-	{
-		return NoMatch;
-	}
-
-	return { 1, "|" };
-}
-
-MatcherResult RuleKeyword(std::string_view data)
-{
-	if (!StartsWith(data, "rule"))
-	{
-		return NoMatch;
-	}
-
-	return { sizeof("rule") - 1, "rule" };
-}
-
-MatcherResult ProduceNothingAction(std::string_view data)
-{
-	if (!StartsWith(data, "produce-nothing"))
-	{
-		return NoMatch;
-	}
-
-	return { sizeof("produce-nothing") - 1, "produce-nothing" };
-}
-
-MatcherResult ProduceAction(std::string_view data)
-{
-	if (!StartsWith(data, "produce"))
-	{
-		return NoMatch;
-	}
-
-	return { sizeof("produce") - 1, "produce" };
-}
-
-MatcherResult RewindAction(std::string_view data)
-{
-	if (!StartsWith(data, "rewind"))
-	{
-		return NoMatch;
-	}
-
-	return { sizeof("rewind") - 1, "rewind" };
-}
-
-MatcherResult TransitionAction(std::string_view data)
-{
-	if (!StartsWith(data, "transition"))
-	{
-		return NoMatch;
-	}
-
-	return { sizeof("transition") - 1, "transition" };
 }
 
 MatcherResult LineAction(std::string_view data)
@@ -223,16 +133,6 @@ MatcherResult LineAction(std::string_view data)
 	return NoMatch;
 }
 
-MatcherResult MultilineStart(std::string_view data)
-{
-	if (!StartsWith(data, "line"))
-	{
-		return NoMatch;
-	}
-
-	return { sizeof("line") - 1, "line" };
-}
-
 MatcherResult MultilineEnd(std::string_view data)
 {
 	size_t size = data.find_first_of(" \t\r\n");
@@ -243,4 +143,17 @@ MatcherResult MultilineEnd(std::string_view data)
 MatcherResult Error(std::string_view data)
 {
 	return { 1, std::string(1, data[0]) };
+}
+
+Matcher Literal(std::string value)
+{
+	return [value](std::string_view data)
+	{
+		if (!StartsWith(data, value))
+		{
+			return NoMatch;
+		}
+
+		return MatcherResult(value.size(), value);
+	};
 }
