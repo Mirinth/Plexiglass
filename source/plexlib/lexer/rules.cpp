@@ -4,7 +4,6 @@
 
 MatcherResult NoMatch(0, "");
 
-// State, Matcher2, State, TokenType
 std::vector<Rule> Rules = {
 	{ State::Any, Comment, State::Any, TokenType::Retry },
 	{ State::Any, Newline, State::Any, TokenType::Newline },

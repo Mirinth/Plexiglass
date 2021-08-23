@@ -30,8 +30,8 @@ enum class State
 };
 
 typedef std::tuple<size_t, std::string> MatcherResult;
-typedef std::function<MatcherResult(std::string_view)> Matcher2;
-typedef std::tuple<State, Matcher2, State, TokenType> Rule;
+typedef std::function<MatcherResult(std::string_view)> Matcher;
+typedef std::tuple<State, Matcher, State, TokenType> Rule;
 extern std::vector<Rule> Rules;
 
 State operator|(State left, State right);
