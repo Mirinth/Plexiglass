@@ -128,11 +128,10 @@ int main()
 {
 	bool success = TestLexer();
 	
-	if (success)
+	if (!success)
 	{
-		return 0;
+		return 1;
 	}
 
-	std::cout << "Files different\n";
-	return 1;
+	return 0;
 }
