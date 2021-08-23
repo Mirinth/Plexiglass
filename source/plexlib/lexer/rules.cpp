@@ -6,8 +6,9 @@ MatcherResult NoMatch(0, "");
 
 std::vector<Rule> Rules = {
 	{ State::Any,                  Comment,             State::Any,                  TokenType::Retry },
-	{ State::Any,                  Newline,             State::Any,                  TokenType::Newline },
-	{ State::Any,                  Indent,              State::Any,                  TokenType::Indent },
+	{ State::Any,                  Literal("\n", "\\n"),             State::Any,                  TokenType::Newline },
+	{ State::Any,                  Literal("\t", "\\t"),              State::Any,                  TokenType::Indent },
+	{ State::Any,                  Literal("    ", "\\t"),              State::Any,                  TokenType::Indent },
 	{ State::Any,                  Whitespace,          State::Any,                  TokenType::Retry },
 
 	{ State::Initial,              Literal("expression"),   State::ExpressionKeyword,    TokenType::Keyword },
@@ -28,7 +29,12 @@ std::vector<Rule> Rules = {
 	{ State::RuleIdentifier,       Literal("rewind"),         State::RuleIdentifier,      TokenType::Action},
 	{ State::RuleIdentifier,       Literal("transition"),     State::RuleTransition,      TokenType::Action},
 	{ State::RuleTransition,       Identifier,           State::RuleIdentifier,      TokenType::Identifier },
-	{ State::RuleIdentifier,       LineAction,           State::RuleIdentifier,      TokenType::Action },
+	
+	{ State::RuleIdentifier,       Literal("++line", "+1"),           State::RuleIdentifier,      TokenType::Action },
+	{ State::RuleIdentifier,       Literal("line++", "+1"),           State::RuleIdentifier,      TokenType::Action },
+	{ State::RuleIdentifier,       Literal("--line", "-1"),           State::RuleIdentifier,      TokenType::Action },
+	{ State::RuleIdentifier,       Literal("line--", "-1"),           State::RuleIdentifier,      TokenType::Action },
+
 	{ State::RuleIdentifier,       Literal("line"),       State::RuleLine,            TokenType::Retry },
 	{ State::RuleLine,             MultilineEnd,         State::RuleIdentifier,      TokenType::Action },
 	{ State::RuleIdentifier,       Literal(";"),         State::Initial,             TokenType::End },
@@ -68,27 +74,6 @@ MatcherResult Comment(std::string_view data)
 	return { data.find_first_of('\n'), "" };
 }
 
-MatcherResult Newline(std::string_view data)
-{
-	if (data[0] != '\n')
-	{
-		return NoMatch;
-	}
-
-	return { 1, "\\n" };
-}
-
-MatcherResult Indent(std::string_view data)
-{
-	if (data[0] != '\t' && !StartsWith(data, "    "))
-	{
-		return NoMatch;
-	}
-
-	size_t size = data[0] == '\t' ? 1 : 4;
-	return { size, "\\t" };
-}
-
 MatcherResult Whitespace(std::string_view data)
 {
 	if (data[0] != ' ' && data[0] != '\t')
@@ -118,27 +103,13 @@ MatcherResult Regex(std::string_view data)
 	return { size, text };
 }
 
-MatcherResult LineAction(std::string_view data)
-{
-	if (StartsWith(data, "++line") || StartsWith(data, "line++"))
-	{
-		return { sizeof("line++") - 1, "+1" };
-	}
-
-	if (StartsWith(data, "--line") || StartsWith(data, "line--"))
-	{
-		return { sizeof("line--") - 1, "-1" };
-	}
-
-	return NoMatch;
-}
-
 MatcherResult MultilineEnd(std::string_view data)
 {
 	size_t size = data.find_first_of(" \t\r\n");
 	std::string text(data.substr(0, size));
 	return { size, text };
 }
+
 
 MatcherResult Error(std::string_view data)
 {
@@ -155,5 +126,18 @@ Matcher Literal(std::string value)
 		}
 
 		return MatcherResult(value.size(), value);
+	};
+}
+
+Matcher Literal(std::string match, std::string produce)
+{
+	return [match, produce](std::string_view data)
+	{
+		if (!StartsWith(data, match))
+		{
+			return NoMatch;
+		}
+
+		return MatcherResult(match.size(), produce);
 	};
 }

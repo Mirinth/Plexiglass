@@ -38,18 +38,16 @@ State operator|(State left, State right);
 State operator&(State left, State right);
 State operator~(State s);
 
-MatcherResult Newline(std::string_view data);
 MatcherResult Comment(std::string_view data);
-MatcherResult Indent(std::string_view data);
 MatcherResult Whitespace(std::string_view data);
 
 MatcherResult Identifier(std::string_view data);
 
 MatcherResult Regex(std::string_view data);
 
-MatcherResult LineAction(std::string_view data);
 MatcherResult MultilineEnd(std::string_view data);
 
 MatcherResult Error(std::string_view data);
 
 Matcher Literal(std::string value);
+Matcher Literal(std::string match, std::string produce);
