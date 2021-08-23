@@ -61,8 +61,10 @@ MatcherResult LineAction(std::string_view data);
 MatcherResult MultilineStart(std::string_view data);
 MatcherResult MultilineEnd(std::string_view data);
 
+MatcherResult Error(std::string_view data);
+
 typedef std::function<size_t(std::string_view, State, State&, TokenType&, std::string&)> Matcher;
 
-size_t Error(std::string_view data, State current, State& next, TokenType& type, std::string& text);
+
 
 extern std::vector<Matcher> Matchers;

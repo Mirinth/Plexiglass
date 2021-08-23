@@ -33,12 +33,13 @@ std::vector<Rule> Rules = {
 	{ State::RuleIdentifier, MultilineStart, State::RuleLine, TokenType::Retry },
 	{ State::RuleLine, MultilineEnd, State::RuleIdentifier, TokenType::Action },
 	{ State::RuleIdentifier, End, State::Initial, TokenType::End },
+
+	{ State::Any, Error, State::Any, TokenType::Unknown },
 };
 
 std::vector<Matcher> Matchers = {
 	// Identifier needs to come after everything but the error rule since it
 	// interferes with everything that follows it.
-	&Error,
 };
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -245,10 +246,7 @@ MatcherResult MultilineEnd(std::string_view data)
 	return { size, text };
 }
 
-size_t Error(std::string_view data, State current, State& next, TokenType& type, std::string& text)
+MatcherResult Error(std::string_view data)
 {
-	next = current;
-	type = TokenType::Unknown;
-	text = std::string(1, data[0]);
-	return 1;
+	return { 1, std::string(1, data[0]) };
 }
