@@ -28,11 +28,12 @@ std::vector<Rule> Rules = {
 	{ State::RuleIdentifier, RewindAction, State::RuleIdentifier, TokenType::Action},
 	{ State::RuleIdentifier, TransitionAction, State::RuleTransition, TokenType::Action},
 	{ State::RuleIdentifier, LineAction, State::RuleIdentifier, TokenType::Action },
+	{ State::RuleIdentifier, MultilineStart, State::RuleLine, TokenType::Retry },
+	{ State::RuleLine, MultilineEnd, State::RuleIdentifier, TokenType::Action },
 	{ State::RuleIdentifier, End, State::Initial, TokenType::End },
 };
 
 std::vector<Matcher> Matchers = {
-	&LineMulti,
 	// Identifier needs to come after everything but the error rule since it
 	// interferes with everything that follows it.
 	&OldIdentifier,
@@ -226,6 +227,23 @@ MatcherResult LineAction(std::string_view data)
 	return NoMatch;
 }
 
+MatcherResult MultilineStart(std::string_view data)
+{
+	if (!StartsWith(data, "line"))
+	{
+		return NoMatch;
+	}
+
+	return { sizeof("line") - 1, "line" };
+}
+
+MatcherResult MultilineEnd(std::string_view data)
+{
+	size_t size = data.find_first_of(" \t\r\n");
+	std::string text(data.substr(0, size));
+	return { size, text };
+}
+
 size_t OldIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	static std::map<State, State> nextState = {
@@ -243,34 +261,6 @@ size_t OldIdentifier(std::string_view data, State current, State& next, TokenTyp
 	size_t size = data.find_first_of(" \t\r\n");
 	text = data.substr(0, size);
 	return size;
-}
-
-size_t LineMulti(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	State needed = State::RuleIdentifier | State::RuleLine;
-	if ((current & needed) == State::Invalid)
-	{
-		return 0;
-	}
-
-	if (current == State::RuleIdentifier && StartsWith(data, "line"))
-	{
-		next = State::RuleLine;
-		type = TokenType::Retry;
-		text = "";
-		return sizeof("line") - 1;
-	}
-
-	if (current == State::RuleLine)
-	{
-		next = State::RuleIdentifier;
-		type = TokenType::Action;
-		size_t size = data.find_first_of(" \t\r\n");
-		text = data.substr(0, size);
-		return size;
-	}
-
-	return 0;
 }
 
 size_t Error(std::string_view data, State current, State& next, TokenType& type, std::string& text)
