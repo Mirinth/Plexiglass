@@ -1,7 +1,25 @@
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 #include <lexer/lexer.hpp>
+
+std::vector<std::string> GetTestStems(std::string directory)
+{
+	std::vector<std::string> stems;
+	std::filesystem::path base = std::filesystem::absolute("../../../tests/" + directory).lexically_normal();
+
+	for (auto& file : std::filesystem::directory_iterator(base))
+	{
+		std::string stem = file.path().stem().string();
+		size_t location = stem.rfind('-');
+		stem.erase(location);
+		stems.push_back((base / stem).string());
+	}
+
+	return stems;
+}
 
 void RunTest()
 {
