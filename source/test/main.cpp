@@ -58,11 +58,10 @@ std::string ReadFile(std::string path)
 	return data;
 }
 
-void RunTest()
+bool RunLexerTest(std::string stem)
 {
-	std::ofstream out("../../../tests/lexer/01-out.txt");
-	std::string data = ReadFile("../../../tests/lexer/01-in.txt");
-
+	std::ofstream out(stem + "-out.txt");
+	std::string data = ReadFile(stem + "-in.txt");
 	Lexer lexer(data);
 
 	while (lexer.Current().type != TokenType::Eof)
@@ -70,15 +69,39 @@ void RunTest()
 		out << lexer.Current() << "\n";
 		lexer.Shift();
 	}
+
+	out.close();
+	return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 }
 
+bool TestLexer()
+{
+	auto stems = GetTestStems("lexer");
 
+	for (auto& stem : stems)
+	{
+		std::cout << stem + "-in.txt : ";
+
+		bool pass = RunLexerTest(stem);
+
+		if (pass)
+		{
+			std::cout << "PASS\n";
+		}
+		else
+		{
+			std::cout << "FAIL\n";
+			return false;
+		}
+	}
+	
+	return true;
+}
 
 int main()
 {
-	RunTest();
-	bool success = CompareOutput("../../../tests/lexer/01-base.txt", "../../../tests/lexer/01-out.txt");
-
+	bool success = TestLexer();
+	
 	if (success)
 	{
 		return 0;
