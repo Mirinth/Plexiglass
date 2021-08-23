@@ -23,11 +23,14 @@ std::vector<Rule> Rules = {
 
 	{ State::Initial, RuleKeyword, State::RuleKeyword, TokenType::Keyword },
 	{ State::RuleKeyword, Identifier, State::RuleIdentifier, TokenType::Identifier },
+	{ State::RuleIdentifier, ProduceNothingAction, State::RuleIdentifier, TokenType::Action},
+	{ State::RuleIdentifier, ProduceAction, State::RuleProduce, TokenType::Action},
+	{ State::RuleIdentifier, RewindAction, State::RuleIdentifier, TokenType::Action},
+	{ State::RuleIdentifier, TransitionAction, State::RuleTransition, TokenType::Action},
 	{ State::RuleIdentifier, End, State::Initial, TokenType::End },
 };
 
 std::vector<Matcher> Matchers = {
-	&Action,
 	&LineAction,
 	&LineMulti,
 	// Identifier needs to come after everything but the error rule since it
@@ -168,6 +171,46 @@ MatcherResult RuleKeyword(std::string_view data)
 	return { sizeof("rule") - 1, "rule" };
 }
 
+MatcherResult ProduceNothingAction(std::string_view data)
+{
+	if (!StartsWith(data, "produce-nothing"))
+	{
+		return NoMatch;
+	}
+
+	return { sizeof("produce-nothing") - 1, "produce-nothing" };
+}
+
+MatcherResult ProduceAction(std::string_view data)
+{
+	if (!StartsWith(data, "produce"))
+	{
+		return NoMatch;
+	}
+
+	return { sizeof("produce") - 1, "produce" };
+}
+
+MatcherResult RewindAction(std::string_view data)
+{
+	if (!StartsWith(data, "rewind"))
+	{
+		return NoMatch;
+	}
+
+	return { sizeof("rewind") - 1, "rewind" };
+}
+
+MatcherResult TransitionAction(std::string_view data)
+{
+	if (!StartsWith(data, "transition"))
+	{
+		return NoMatch;
+	}
+
+	return { sizeof("transition") - 1, "transition" };
+}
+
 size_t OldIdentifier(std::string_view data, State current, State& next, TokenType& type, std::string& text)
 {
 	static std::map<State, State> nextState = {
@@ -185,34 +228,6 @@ size_t OldIdentifier(std::string_view data, State current, State& next, TokenTyp
 	size_t size = data.find_first_of(" \t\r\n");
 	text = data.substr(0, size);
 	return size;
-}
-
-size_t Action(std::string_view data, State current, State& next, TokenType& type, std::string& text)
-{
-	if ((current & State::RuleIdentifier) == State::Invalid)
-	{
-		return 0;
-	}
-
-	static std::vector<std::tuple<std::string, State>> actions = {
-		{"produce-nothing", State::RuleIdentifier},
-		{"produce", State::RuleProduce},
-		{"rewind", State::RuleIdentifier},
-		{"transition", State::RuleTransition},
-	};
-
-	for (auto& [name, state] : actions)
-	{
-		if (StartsWith(data, name))
-		{
-			next = state;
-			type = TokenType::Action;
-			text = name;
-			return text.size();
-		}
-	}
-
-	return 0;
 }
 
 size_t LineAction(std::string_view data, State current, State& next, TokenType& type, std::string& text)
