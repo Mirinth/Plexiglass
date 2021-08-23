@@ -118,17 +118,17 @@ void collapse(std::vector<operation>& opStack, std::vector<fsm>& fsmStack)
 	}
 }
 
-fsm concatenate(fsm lhs, fsm rhs)
+fsm concatenate(fsm /*lhs*/, fsm /*rhs*/)
 {
 	return 0;
 }
 
-fsm alternate(fsm lhs, fsm rhs)
+fsm alternate(fsm /*lhs*/, fsm /*rhs*/)
 {
 	return 0;
 }
 
-fsm symbol(char c)
+fsm symbol(char /*c*/)
 {
 	return 0;
 }
@@ -138,7 +138,7 @@ fsm lambda()
 	return 7;
 }
 
-fsm kleene(fsm m)
+fsm kleene(fsm /*m*/)
 {
 	return 0;
 }

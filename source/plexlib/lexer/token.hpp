@@ -23,7 +23,7 @@ class Token
 public:
 	Token();
 	Token(size_t line, TokenType type, std::string text);
-	int line;
+	size_t line;
 	TokenType type;
 	std::string text;
 };
