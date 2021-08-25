@@ -27,22 +27,21 @@ enum class State
 	Any = ~0,
 };
 
-typedef std::tuple<size_t, std::string> MatcherResult;
-typedef std::function<MatcherResult(std::string_view)> Matcher;
+typedef std::function<size_t(std::string_view)> Matcher;
 typedef std::tuple<State, Matcher, State, TokenType> Rule;
 extern std::vector<Rule> Rules;
 
 State operator&(State left, State right);
 
-MatcherResult Comment(std::string_view data);
-MatcherResult Whitespace(std::string_view data);
+size_t Comment(std::string_view data);
+size_t Whitespace(std::string_view data);
 
-MatcherResult Identifier(std::string_view data);
+size_t Identifier(std::string_view data);
 
-MatcherResult Regex(std::string_view data);
+size_t Regex(std::string_view data);
 
-MatcherResult MultilineEnd(std::string_view data);
+size_t MultilineEnd(std::string_view data);
 
-MatcherResult Error(std::string_view data);
+size_t Error(std::string_view data);
 
 Matcher Literal(std::string value);

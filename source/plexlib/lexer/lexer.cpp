@@ -53,7 +53,7 @@ Token Lexer::LexHelper()
 			continue;
 		}
 
-		auto[size, _] = matcher(m_data);
+		size_t size = matcher(m_data);
 
 		if (size == 0)
 		{

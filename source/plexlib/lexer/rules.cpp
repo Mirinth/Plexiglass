@@ -2,7 +2,7 @@
 
 #include <map>
 
-MatcherResult NoMatch(0, "");
+size_t NoMatch = 0;
 
 std::vector<Rule> Rules = {
 	{ State::Any,                  Comment,                    State::Any,                  TokenType::Retry },
@@ -45,33 +45,33 @@ State operator&(State left, State right)
 	return static_cast<State>(lhs & rhs);
 }
 
-MatcherResult Comment(std::string_view data)
+size_t Comment(std::string_view data)
 {
 	if (data[0] != '#')
 	{
 		return NoMatch;
 	}
 
-	return { data.find_first_of('\n'), "" };
+	return data.find_first_of('\n');
 }
 
-MatcherResult Whitespace(std::string_view data)
+size_t Whitespace(std::string_view data)
 {
 	if (data[0] != ' ' && data[0] != '\t')
 	{
 		return NoMatch;
 	}
 
-	return { data.find_first_not_of(" \t"), "" };
+	return data.find_first_not_of(" \t");
 }
 
-MatcherResult Identifier(std::string_view data)
+size_t Identifier(std::string_view data)
 {
 	size_t size = data.find_first_of(" \t\r\n");
-	return { size, std::string(data.substr(0, size)) };
+	return size;
 }
 
-MatcherResult Regex(std::string_view data)
+size_t Regex(std::string_view data)
 {
 	size_t size = data.find_first_of("\r\n");
 	std::string text(data.substr(0, size));
@@ -81,20 +81,20 @@ MatcherResult Regex(std::string_view data)
 		text.erase(0, 1);
 	}
 
-	return { size, text };
+	return size;
 }
 
-MatcherResult MultilineEnd(std::string_view data)
+size_t MultilineEnd(std::string_view data)
 {
 	size_t size = data.find_first_of(" \t\r\n");
 	std::string text(data.substr(0, size));
-	return { size, text };
+	return size;
 }
 
 
-MatcherResult Error(std::string_view data)
+size_t Error(std::string_view /*data*/)
 {
-	return { 1, std::string(1, data[0]) };
+	return 1;
 }
 
 bool StartsWith(const std::string_view& toSearch, const std::string find)
@@ -118,6 +118,6 @@ Matcher Literal(std::string value)
 			return NoMatch;
 		}
 
-		return MatcherResult(value.size(), value);
+		return value.size();
 	};
 }
