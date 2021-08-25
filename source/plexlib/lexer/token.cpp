@@ -33,9 +33,6 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	case TokenType::Identifier:
 		name = "identifier";
 		break;
-	case TokenType::Indent:
-		name = "indent";
-		break;
 	case TokenType::Keyword:
 		name = "keyword";
 		break;

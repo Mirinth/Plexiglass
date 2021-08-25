@@ -7,8 +7,6 @@ MatcherResult NoMatch(0, "");
 std::vector<Rule> Rules = {
 	{ State::Any,                  Comment,                    State::Any,                  TokenType::Retry },
 	{ State::Any,                  Literal("\n", "\\n"),       State::Any,                  TokenType::Newline },
-	{ State::Any,                  Literal("\t", "\\t"),       State::Any,                  TokenType::Indent },
-	{ State::Any,                  Literal("    ", "\\t"),     State::Any,                  TokenType::Indent },
 	{ State::Any,                  Whitespace,                 State::Any,                  TokenType::Retry },
 
 	{ State::Initial,              Literal("expression"),      State::ExpressionKeyword,    TokenType::Keyword },

@@ -11,7 +11,6 @@ enum class TokenType
 	Eof,
 	Expression,
 	Identifier,
-	Indent,
 	Keyword,
 	Newline,
 	Retry,
