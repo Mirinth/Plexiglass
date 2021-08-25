@@ -24,8 +24,6 @@ enum class State
 	RuleTransition = 256,
 	RuleLine = 512,
 
-	StartOfLine = 1024,
-
 	Any = ~0,
 };
 
@@ -34,9 +32,7 @@ typedef std::function<MatcherResult(std::string_view)> Matcher;
 typedef std::tuple<State, Matcher, State, TokenType> Rule;
 extern std::vector<Rule> Rules;
 
-State operator|(State left, State right);
 State operator&(State left, State right);
-State operator~(State s);
 
 MatcherResult Comment(std::string_view data);
 MatcherResult Whitespace(std::string_view data);

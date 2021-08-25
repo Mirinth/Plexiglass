@@ -68,11 +68,6 @@ Token Lexer::LexHelper()
 		if (type == TokenType::Newline)
 		{
 			m_line++;
-			m_state = m_state | State::StartOfLine;
-		}
-		else
-		{
-			m_state = m_state & (~State::StartOfLine);
 		}
 		return Token(m_line, type, text);
 	}

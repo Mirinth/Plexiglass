@@ -40,24 +40,11 @@ std::vector<Rule> Rules = {
 	{ State::Any,                  Error,                      State::Any,                 TokenType::Unknown },
 };
 
-State operator|(State left, State right)
-{
-	auto lhs = static_cast<std::underlying_type<State>::type>(left);
-	auto rhs = static_cast<std::underlying_type<State>::type>(right);
-	return static_cast<State>(lhs | rhs);
-}
-
 State operator&(State left, State right)
 {
 	auto lhs = static_cast<std::underlying_type<State>::type>(left);
 	auto rhs = static_cast<std::underlying_type<State>::type>(right);
 	return static_cast<State>(lhs & rhs);
-}
-
-State operator~(State s)
-{
-	auto st = static_cast<std::underlying_type<State>::type>(s);
-	return static_cast<State>(~st);
 }
 
 MatcherResult Comment(std::string_view data)
