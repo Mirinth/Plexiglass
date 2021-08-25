@@ -15,28 +15,29 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	std::string name;
 	switch (token.type)
 	{
-	case TokenType::Action:
+	case TokenType::ActDec:
+	case TokenType::ActInc:
+	case TokenType::ActProduce:
+	case TokenType::ActProduceNil:
+	case TokenType::ActRewind:
+	case TokenType::ActTransition:
 		name = "action";
 		break;
 	case TokenType::Alternator:
 		name = "alternator";
 		break;
-	case TokenType::End:
-		name = "end";
-		break;
 	case TokenType::Eof:
 		name = "eof";
 		break;
-	case TokenType::Expression:
+	case TokenType::Regex:
 		name = "expression";
 		break;
 	case TokenType::Identifier:
 		name = "identifier";
 		break;
-	case TokenType::Indent:
-		name = "indent";
-		break;
-	case TokenType::Keyword:
+	case TokenType::KwdExpression:
+	case TokenType::KwdPattern:
+	case TokenType::KwdRule:
 		name = "keyword";
 		break;
 	case TokenType::Newline:

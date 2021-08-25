@@ -6,7 +6,6 @@
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_line(1)
-	, m_state(State::Initial)
 {
 	m_current = Lex();
 	m_next = Lex();
@@ -46,36 +45,27 @@ Token Lexer::LexHelper()
 		return Token(m_line, TokenType::Eof, "EOF");
 	}
 
-	for (auto& [current, matcher, next, type] : Rules)
+	size_t longestSize = 0;
+	TokenType longestToken = TokenType::Unknown;
+
+	for (auto& [matcher, type] : Rules)
 	{
-		if ((m_state & current) == State::Invalid)
+		size_t size = matcher(m_data);
+		if (size > longestSize)
 		{
-			continue;
+			longestSize = size;
+			longestToken = type;
 		}
-
-		auto[size, text] = matcher(m_data);
-
-		if (size == 0)
-		{
-			continue;
-		}
-
-		m_data.remove_prefix(size);
-		if (next != State::Any)
-		{
-			m_state = next;
-		}
-		if (type == TokenType::Newline)
-		{
-			m_line++;
-			m_state = m_state | State::StartOfLine;
-		}
-		else
-		{
-			m_state = m_state & (~State::StartOfLine);
-		}
-		return Token(m_line, type, text);
 	}
 
-	throw std::exception("Unreachable code reached.");
+	std::string text(m_data.substr(0, longestSize));
+	m_data.remove_prefix(longestSize);
+	
+	if (longestToken == TokenType::Newline)
+	{
+		m_line++;
+		return Token(m_line, TokenType::Retry, "");
+	}
+
+	return Token(m_line, longestToken, text);
 }

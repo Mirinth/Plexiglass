@@ -8,19 +8,18 @@ An expression looks like:
 
 ```
 expression some-name
-	[a-bA-Y09]lyoun(kkol)?
+	^[a-bA-Y09]lyoun(kkol)?
 ```
 
 `expression` is a keyword that indicates this is an expression. `some-name` is
 the name you want to refer to the expression by later. It can contain letters,
 numbers, hyphens and underscores.
 
-Following the name is a regular expression. This can be on the same line or the
+Following the name is a regular expression. Regular expressions always start
+a `^` character. Expressions can be on the same line as the name or the
 following line. If on the following line, indenting is encouraged for
 readability. Leading whitespace will be discarded in the expression, and it will
-continue to the end of the line. If you want the expression to start with a
-space, you can escape the first space with a `\`. Any spaces after the first
-unescaped one will be included in the expression.
+continue to the end of the line.
 
 The expression's syntax has not yet been decided. Right now it's just whatever
 the underlying regex engine will accept. Backreferences won't be supported long

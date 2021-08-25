@@ -21,5 +21,4 @@ private:
 	Token m_current;
 	Token m_next;
 	int m_line;
-	State m_state;
 };

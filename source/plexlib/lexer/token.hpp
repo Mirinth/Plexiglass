@@ -5,15 +5,20 @@
 
 enum class TokenType
 {
-	Action,
+	ActDec,
+	ActInc,
+	ActProduce,
+	ActProduceNil,
+	ActRewind,
+	ActTransition,
 	Alternator,
-	End,
 	Eof,
-	Expression,
 	Identifier,
-	Indent,
-	Keyword,
+	KwdExpression,
+	KwdPattern,
+	KwdRule,
 	Newline,
+	Regex,
 	Retry,
 	Unknown,
 };
