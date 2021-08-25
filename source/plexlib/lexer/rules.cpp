@@ -14,7 +14,6 @@ std::vector<Rule> Rules = {
 
 	{ Literal("pattern"),         TokenType::KwdPattern },
 	{ Literal("|"),               TokenType::Alternator },
-	{ Literal(";"),               TokenType::End },
 	
 	{ Literal("rule"),            TokenType::KwdRule },
 	{ Literal("produce-nothing"), TokenType::ActProduceNil },
@@ -26,8 +25,6 @@ std::vector<Rule> Rules = {
 	{ Literal("line++"),          TokenType::ActInc },
 	{ Literal("--line"),          TokenType::ActDec },
 	{ Literal("line--"),          TokenType::ActDec },
-
-	{ Literal(";"),		          TokenType::End },
 
 	{ Identifier,                 TokenType::Identifier },
 

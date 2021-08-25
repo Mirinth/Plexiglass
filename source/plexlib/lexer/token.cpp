@@ -26,9 +26,6 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	case TokenType::Alternator:
 		name = "alternator";
 		break;
-	case TokenType::End:
-		name = "end";
-		break;
 	case TokenType::Eof:
 		name = "eof";
 		break;

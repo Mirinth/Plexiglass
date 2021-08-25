@@ -12,7 +12,6 @@ enum class TokenType
 	ActRewind,
 	ActTransition,
 	Alternator,
-	End,
 	Eof,
 	Identifier,
 	KwdExpression,

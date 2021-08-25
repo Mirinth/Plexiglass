@@ -25,7 +25,6 @@ identifier klmno
 identifier pqrs
 alternator |
 identifier wxyz
-end ;
 keyword rule
 identifier what-to-match
 action produce-nothing
@@ -38,4 +37,3 @@ action ++line
 action line++
 action --line
 action line--
-end ;
