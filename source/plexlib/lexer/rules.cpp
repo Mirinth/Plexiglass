@@ -72,6 +72,11 @@ size_t Identifier(std::string_view data)
 
 size_t Regex(std::string_view data)
 {
+	if (data[0] != '^')
+	{
+		return NoMatch;
+	}
+
 	return data.find_first_of("\r\n");
 }
 

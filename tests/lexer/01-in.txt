@@ -2,12 +2,12 @@
 # Here's a comment
 # Comments are allowed at the end of the line
 expression some-name # here's a comment
-	[a-bA-Y09]lyoun(kkol)?
+	^[a-bA-Y09]lyoun(kkol)?
 
-expression another-name [a-z0-9]{3}
+expression another-name ^[a-z0-9]{3}
 
 expression third-name
-	\ expression with space
+	^ expression with space
 
 pattern some-name# comments aren't allowed at the end of the line
 	  abcde

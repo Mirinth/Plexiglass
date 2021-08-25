@@ -1,12 +1,12 @@
 keyword expression
 identifier some-name
-expression [a-bA-Y09]lyoun(kkol)?
+expression ^[a-bA-Y09]lyoun(kkol)?
 keyword expression
 identifier another-name
-expression [a-z0-9]{3}
+expression ^[a-z0-9]{3}
 keyword expression
 identifier third-name
-expression \ expression with space
+expression ^ expression with space
 keyword pattern
 identifier some-name#
 identifier comments
