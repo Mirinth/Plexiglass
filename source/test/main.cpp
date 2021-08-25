@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <lexer/lexer.hpp>
+#include <parser/parser.hpp>
 
 bool IsInputFile(std::filesystem::path file)
 {
@@ -124,10 +125,56 @@ bool TestLexer()
 	return true;
 }
 
+bool RunParserFailTest(std::string stem)
+{
+	std::string data = ReadFile(stem + "-in.txt");
+	
+	try
+	{
+		Parse(data);
+	}
+	catch (ParseException exc)
+	{
+		std::ofstream out(stem + "-out.txt");
+		out << exc.what() << std::endl;
+	}
+
+	return CompareOutput(stem + "-base.txt", stem + "-out.txt");
+}
+
+bool TestParser()
+{
+	auto stems = GetTestStems("parser-fail");
+
+	for (auto& stem : stems)
+	{
+		std::cout << stem + "-in.txt : ";
+
+		bool pass = RunParserFailTest(stem);
+
+		if (pass)
+		{
+			std::cout << "PASS\n";
+		}
+		else
+		{
+			std::cout << "FAIL\n";
+			return false;
+		}
+	}
+
+	return true;
+}
+
 int main()
 {
 	bool success = TestLexer();
-	
+	if (!success)
+	{
+		return 1;
+	}
+
+	success = TestParser();
 	if (!success)
 	{
 		return 1;
