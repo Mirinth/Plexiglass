@@ -31,8 +31,6 @@ typedef std::function<size_t(std::string_view)> Matcher;
 typedef std::tuple<State, Matcher, State, TokenType> Rule;
 extern std::vector<Rule> Rules;
 
-State operator&(State left, State right);
-
 size_t Comment(std::string_view data);
 size_t Whitespace(std::string_view data);
 

@@ -38,13 +38,6 @@ std::vector<Rule> Rules = {
 	{ State::Any,                  Error,                      State::Any,                 TokenType::Unknown },
 };
 
-State operator&(State left, State right)
-{
-	auto lhs = static_cast<std::underlying_type<State>::type>(left);
-	auto rhs = static_cast<std::underlying_type<State>::type>(right);
-	return static_cast<State>(lhs & rhs);
-}
-
 size_t Comment(std::string_view data)
 {
 	if (data[0] != '#')

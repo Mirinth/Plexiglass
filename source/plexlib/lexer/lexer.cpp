@@ -52,7 +52,7 @@ Token Lexer::LexHelper()
 
 	for (auto& [current, matcher, next, type] : Rules)
 	{
-		if ((m_state & current) == State::Invalid)
+		if (m_state != current && current != State::Any)
 		{
 			continue;
 		}
