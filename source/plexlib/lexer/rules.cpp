@@ -9,17 +9,17 @@ std::vector<Rule> Rules = {
 	{ State::Any,                  Literal("\n", "\\n"),       State::Any,                  TokenType::Newline },
 	{ State::Any,                  Whitespace,                 State::Any,                  TokenType::Retry },
 
-	{ State::Initial,              Literal("expression"),      State::ExpressionKeyword,    TokenType::Keyword },
+	{ State::Initial,              Literal("expression"),      State::ExpressionKeyword,    TokenType::KwdExpression },
 	{ State::ExpressionKeyword,    Identifier,                 State::ExpressionIdentifier, TokenType::Identifier },
 	{ State::ExpressionIdentifier, Regex,                      State::Initial,              TokenType::Regex },
 
-	{ State::Initial,              Literal("pattern"),         State::PatternKeyword,       TokenType::Keyword },
+	{ State::Initial,              Literal("pattern"),         State::PatternKeyword,       TokenType::KwdPattern },
 	{ State::PatternKeyword,       Identifier,                 State::PatternIdentifier,    TokenType::Identifier },
 	{ State::PatternIdentifier,    Literal("|"),               State::PatternIdentifier,    TokenType::Alternator },
 	{ State::PatternIdentifier,    Literal(";"),               State::Initial,              TokenType::End },
 	{ State::PatternIdentifier,    Identifier,                 State::PatternIdentifier,    TokenType::Identifier },
 
-	{ State::Initial,              Literal("rule"),            State::RuleKeyword,         TokenType::Keyword },
+	{ State::Initial,              Literal("rule"),            State::RuleKeyword,         TokenType::KwdRule },
 	{ State::RuleKeyword,          Identifier,                 State::RuleIdentifier,      TokenType::Identifier },
 	{ State::RuleIdentifier,       Literal("produce-nothing"), State::RuleIdentifier,      TokenType::Action},
 	{ State::RuleIdentifier,       Literal("produce"),         State::RuleProduce,         TokenType::Action},

@@ -33,7 +33,9 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	case TokenType::Identifier:
 		name = "identifier";
 		break;
-	case TokenType::Keyword:
+	case TokenType::KwdExpression:
+	case TokenType::KwdPattern:
+	case TokenType::KwdRule:
 		name = "keyword";
 		break;
 	case TokenType::Newline:
