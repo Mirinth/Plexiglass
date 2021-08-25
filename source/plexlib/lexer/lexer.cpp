@@ -46,6 +46,10 @@ Token Lexer::LexHelper()
 		return Token(m_line, TokenType::Eof, "EOF");
 	}
 
+	size_t longestSize = 0;
+	TokenType longestToken = TokenType::Unknown;
+	State longestState = State::Invalid;
+
 	for (auto& [current, matcher, next, type] : Rules)
 	{
 		if ((m_state & current) == State::Invalid)
@@ -54,25 +58,27 @@ Token Lexer::LexHelper()
 		}
 
 		size_t size = matcher(m_data);
-
-		if (size == 0)
+		if (size > longestSize)
 		{
-			continue;
+			longestSize = size;
+			longestToken = type;
+			longestState = next;
 		}
-
-		std::string text(m_data.substr(0, size));
-		m_data.remove_prefix(size);
-		if (next != State::Any)
-		{
-			m_state = next;
-		}
-		if (type == TokenType::Newline)
-		{
-			m_line++;
-			return Token(m_line, TokenType::Retry, "");
-		}
-		return Token(m_line, type, text);
 	}
 
-	throw std::exception("Unreachable code reached.");
+	std::string text(m_data.substr(0, longestSize));
+	m_data.remove_prefix(longestSize);
+	
+	if (longestState != State::Any)
+	{
+		m_state = longestState;
+	}
+	
+	if (longestToken == TokenType::Newline)
+	{
+		m_line++;
+		return Token(m_line, TokenType::Retry, "");
+	}
+
+	return Token(m_line, longestToken, text);
 }
