@@ -6,7 +6,6 @@
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_line(1)
-	, m_state(State::Initial)
 {
 	m_current = Lex();
 	m_next = Lex();
@@ -48,31 +47,19 @@ Token Lexer::LexHelper()
 
 	size_t longestSize = 0;
 	TokenType longestToken = TokenType::Unknown;
-	State longestState = State::Invalid;
 
-	for (auto& [current, matcher, next, type] : Rules)
+	for (auto& [matcher, type] : Rules)
 	{
-		if (m_state != current && current != State::Any)
-		{
-			continue;
-		}
-
 		size_t size = matcher(m_data);
 		if (size > longestSize)
 		{
 			longestSize = size;
 			longestToken = type;
-			longestState = next;
 		}
 	}
 
 	std::string text(m_data.substr(0, longestSize));
 	m_data.remove_prefix(longestSize);
-	
-	if (longestState != State::Any)
-	{
-		m_state = longestState;
-	}
 	
 	if (longestToken == TokenType::Newline)
 	{

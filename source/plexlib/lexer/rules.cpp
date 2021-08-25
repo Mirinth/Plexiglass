@@ -5,37 +5,33 @@
 size_t NoMatch = 0;
 
 std::vector<Rule> Rules = {
-	{ State::Any,                  Comment,                    State::Any,                  TokenType::Retry },
-	{ State::Any,                  Literal("\n"),              State::Any,                  TokenType::Newline },
-	{ State::Any,                  Whitespace,                 State::Any,                  TokenType::Retry },
+	{ Comment,                    TokenType::Retry },
+	{ Literal("\n"),              TokenType::Newline },
+	{ Whitespace,                 TokenType::Retry },
 
-	{ State::Initial,              Literal("expression"),      State::ExpressionKeyword,    TokenType::KwdExpression },
-	{ State::ExpressionKeyword,    Identifier,                 State::ExpressionIdentifier, TokenType::Identifier },
-	{ State::ExpressionIdentifier, Regex,                      State::Initial,              TokenType::Regex },
+	{ Literal("expression"),      TokenType::KwdExpression },
+	{ Regex,                      TokenType::Regex },
 
-	{ State::Initial,              Literal("pattern"),         State::PatternKeyword,       TokenType::KwdPattern },
-	{ State::PatternKeyword,       Identifier,                 State::PatternIdentifier,    TokenType::Identifier },
-	{ State::PatternIdentifier,    Literal("|"),               State::PatternIdentifier,    TokenType::Alternator },
-	{ State::PatternIdentifier,    Literal(";"),               State::Initial,              TokenType::End },
-	{ State::PatternIdentifier,    Identifier,                 State::PatternIdentifier,    TokenType::Identifier },
-
-	{ State::Initial,              Literal("rule"),            State::RuleKeyword,         TokenType::KwdRule },
-	{ State::RuleKeyword,          Identifier,                 State::RuleIdentifier,      TokenType::Identifier },
-	{ State::RuleIdentifier,       Literal("produce-nothing"), State::RuleIdentifier,      TokenType::ActProduceNil },
-	{ State::RuleIdentifier,       Literal("produce"),         State::RuleProduce,         TokenType::ActProduce },
-	{ State::RuleProduce,          Identifier,                 State::RuleIdentifier,      TokenType::Identifier },
-	{ State::RuleIdentifier,       Literal("rewind"),          State::RuleIdentifier,      TokenType::ActRewind },
-	{ State::RuleIdentifier,       Literal("transition"),      State::RuleTransition,      TokenType::ActTransition },
-	{ State::RuleTransition,       Identifier,                 State::RuleIdentifier,      TokenType::Identifier },
+	{ Literal("pattern"),         TokenType::KwdPattern },
+	{ Literal("|"),               TokenType::Alternator },
+	{ Literal(";"),               TokenType::End },
 	
-	{ State::RuleIdentifier,       Literal("++line"),          State::RuleIdentifier,      TokenType::ActInc },
-	{ State::RuleIdentifier,       Literal("line++"),          State::RuleIdentifier,      TokenType::ActInc },
-	{ State::RuleIdentifier,       Literal("--line"),          State::RuleIdentifier,      TokenType::ActDec },
-	{ State::RuleIdentifier,       Literal("line--"),          State::RuleIdentifier,      TokenType::ActDec },
+	{ Literal("rule"),            TokenType::KwdRule },
+	{ Literal("produce-nothing"), TokenType::ActProduceNil },
+	{ Literal("produce"),         TokenType::ActProduce },
+	{ Literal("rewind"),          TokenType::ActRewind },
+	{ Literal("transition"),      TokenType::ActTransition },
+	
+	{ Literal("++line"),          TokenType::ActInc },
+	{ Literal("line++"),          TokenType::ActInc },
+	{ Literal("--line"),          TokenType::ActDec },
+	{ Literal("line--"),          TokenType::ActDec },
 
-	{ State::RuleIdentifier,       Literal(";"),		       State::Initial,             TokenType::End },
+	{ Literal(";"),		          TokenType::End },
 
-	{ State::Any,                  Error,                      State::Any,                 TokenType::Unknown },
+	{ Identifier,                 TokenType::Identifier },
+
+	{ Error,                      TokenType::Unknown },
 };
 
 size_t Comment(std::string_view data)
