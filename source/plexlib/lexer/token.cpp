@@ -27,7 +27,7 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	case TokenType::Eof:
 		name = "eof";
 		break;
-	case TokenType::Expression:
+	case TokenType::Regex:
 		name = "expression";
 		break;
 	case TokenType::Identifier:

@@ -11,7 +11,7 @@ std::vector<Rule> Rules = {
 
 	{ State::Initial,              Literal("expression"),      State::ExpressionKeyword,    TokenType::Keyword },
 	{ State::ExpressionKeyword,    Identifier,                 State::ExpressionIdentifier, TokenType::Identifier },
-	{ State::ExpressionIdentifier, Regex,                      State::Initial,              TokenType::Expression },
+	{ State::ExpressionIdentifier, Regex,                      State::Initial,              TokenType::Regex },
 
 	{ State::Initial,              Literal("pattern"),         State::PatternKeyword,       TokenType::Keyword },
 	{ State::PatternKeyword,       Identifier,                 State::PatternIdentifier,    TokenType::Identifier },

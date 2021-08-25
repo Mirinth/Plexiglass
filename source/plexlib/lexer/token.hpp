@@ -9,10 +9,10 @@ enum class TokenType
 	Alternator,
 	End,
 	Eof,
-	Expression,
 	Identifier,
 	Keyword,
 	Newline,
+	Regex,
 	Retry,
 	Unknown,
 };
