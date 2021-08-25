@@ -15,7 +15,12 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 	std::string name;
 	switch (token.type)
 	{
-	case TokenType::Action:
+	case TokenType::ActDec:
+	case TokenType::ActInc:
+	case TokenType::ActProduce:
+	case TokenType::ActProduceNil:
+	case TokenType::ActRewind:
+	case TokenType::ActTransition:
 		name = "action";
 		break;
 	case TokenType::Alternator:

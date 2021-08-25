@@ -38,6 +38,4 @@ action +1
 action +1
 action -1
 action -1
-action +2
-action -9
 end ;

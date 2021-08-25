@@ -24,6 +24,4 @@ rule what-to-match
 	line++
 	--line
 	line--
-	line +2
-	line -9
 	;

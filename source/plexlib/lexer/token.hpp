@@ -5,7 +5,12 @@
 
 enum class TokenType
 {
-	Action,
+	ActDec,
+	ActInc,
+	ActProduce,
+	ActProduceNil,
+	ActRewind,
+	ActTransition,
 	Alternator,
 	End,
 	Eof,

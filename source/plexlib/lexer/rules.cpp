@@ -21,20 +21,18 @@ std::vector<Rule> Rules = {
 
 	{ State::Initial,              Literal("rule"),            State::RuleKeyword,         TokenType::KwdRule },
 	{ State::RuleKeyword,          Identifier,                 State::RuleIdentifier,      TokenType::Identifier },
-	{ State::RuleIdentifier,       Literal("produce-nothing"), State::RuleIdentifier,      TokenType::Action},
-	{ State::RuleIdentifier,       Literal("produce"),         State::RuleProduce,         TokenType::Action},
+	{ State::RuleIdentifier,       Literal("produce-nothing"), State::RuleIdentifier,      TokenType::ActProduceNil },
+	{ State::RuleIdentifier,       Literal("produce"),         State::RuleProduce,         TokenType::ActProduce },
 	{ State::RuleProduce,          Identifier,                 State::RuleIdentifier,      TokenType::Identifier },
-	{ State::RuleIdentifier,       Literal("rewind"),          State::RuleIdentifier,      TokenType::Action},
-	{ State::RuleIdentifier,       Literal("transition"),      State::RuleTransition,      TokenType::Action},
+	{ State::RuleIdentifier,       Literal("rewind"),          State::RuleIdentifier,      TokenType::ActRewind },
+	{ State::RuleIdentifier,       Literal("transition"),      State::RuleTransition,      TokenType::ActTransition },
 	{ State::RuleTransition,       Identifier,                 State::RuleIdentifier,      TokenType::Identifier },
 	
-	{ State::RuleIdentifier,       Literal("++line", "+1"),    State::RuleIdentifier,      TokenType::Action },
-	{ State::RuleIdentifier,       Literal("line++", "+1"),    State::RuleIdentifier,      TokenType::Action },
-	{ State::RuleIdentifier,       Literal("--line", "-1"),    State::RuleIdentifier,      TokenType::Action },
-	{ State::RuleIdentifier,       Literal("line--", "-1"),    State::RuleIdentifier,      TokenType::Action },
+	{ State::RuleIdentifier,       Literal("++line", "+1"),    State::RuleIdentifier,      TokenType::ActInc },
+	{ State::RuleIdentifier,       Literal("line++", "+1"),    State::RuleIdentifier,      TokenType::ActInc },
+	{ State::RuleIdentifier,       Literal("--line", "-1"),    State::RuleIdentifier,      TokenType::ActDec },
+	{ State::RuleIdentifier,       Literal("line--", "-1"),    State::RuleIdentifier,      TokenType::ActDec },
 
-	{ State::RuleIdentifier,       Literal("line"),            State::RuleLine,            TokenType::Retry },
-	{ State::RuleLine,             MultilineEnd,               State::RuleIdentifier,      TokenType::Action },
 	{ State::RuleIdentifier,       Literal(";"),		       State::Initial,             TokenType::End },
 
 	{ State::Any,                  Error,                      State::Any,                 TokenType::Unknown },
