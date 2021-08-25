@@ -67,28 +67,17 @@ size_t Whitespace(std::string_view data)
 
 size_t Identifier(std::string_view data)
 {
-	size_t size = data.find_first_of(" \t\r\n");
-	return size;
+	return data.find_first_of(" \t\r\n");
 }
 
 size_t Regex(std::string_view data)
 {
-	size_t size = data.find_first_of("\r\n");
-	std::string text(data.substr(0, size));
-
-	if (text.size() > 1 && text[0] == '\\' && text[1] == ' ')
-	{
-		text.erase(0, 1);
-	}
-
-	return size;
+	return data.find_first_of("\r\n");
 }
 
 size_t MultilineEnd(std::string_view data)
 {
-	size_t size = data.find_first_of(" \t\r\n");
-	std::string text(data.substr(0, size));
-	return size;
+	return data.find_first_of(" \t\r\n");
 }
 
 
