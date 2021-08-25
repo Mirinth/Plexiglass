@@ -68,6 +68,7 @@ Token Lexer::LexHelper()
 		if (type == TokenType::Newline)
 		{
 			m_line++;
+			return Token(m_line, TokenType::Retry, "");
 		}
 		return Token(m_line, type, text);
 	}
