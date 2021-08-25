@@ -6,7 +6,7 @@ MatcherResult NoMatch(0, "");
 
 std::vector<Rule> Rules = {
 	{ State::Any,                  Comment,                    State::Any,                  TokenType::Retry },
-	{ State::Any,                  Literal("\n", "\\n"),       State::Any,                  TokenType::Newline },
+	{ State::Any,                  Literal("\n"),              State::Any,                  TokenType::Newline },
 	{ State::Any,                  Whitespace,                 State::Any,                  TokenType::Retry },
 
 	{ State::Initial,              Literal("expression"),      State::ExpressionKeyword,    TokenType::KwdExpression },
@@ -28,10 +28,10 @@ std::vector<Rule> Rules = {
 	{ State::RuleIdentifier,       Literal("transition"),      State::RuleTransition,      TokenType::ActTransition },
 	{ State::RuleTransition,       Identifier,                 State::RuleIdentifier,      TokenType::Identifier },
 	
-	{ State::RuleIdentifier,       Literal("++line", "+1"),    State::RuleIdentifier,      TokenType::ActInc },
-	{ State::RuleIdentifier,       Literal("line++", "+1"),    State::RuleIdentifier,      TokenType::ActInc },
-	{ State::RuleIdentifier,       Literal("--line", "-1"),    State::RuleIdentifier,      TokenType::ActDec },
-	{ State::RuleIdentifier,       Literal("line--", "-1"),    State::RuleIdentifier,      TokenType::ActDec },
+	{ State::RuleIdentifier,       Literal("++line"),          State::RuleIdentifier,      TokenType::ActInc },
+	{ State::RuleIdentifier,       Literal("line++"),          State::RuleIdentifier,      TokenType::ActInc },
+	{ State::RuleIdentifier,       Literal("--line"),          State::RuleIdentifier,      TokenType::ActDec },
+	{ State::RuleIdentifier,       Literal("line--"),          State::RuleIdentifier,      TokenType::ActDec },
 
 	{ State::RuleIdentifier,       Literal(";"),		       State::Initial,             TokenType::End },
 
@@ -119,18 +119,5 @@ Matcher Literal(std::string value)
 		}
 
 		return MatcherResult(value.size(), value);
-	};
-}
-
-Matcher Literal(std::string match, std::string produce)
-{
-	return [match, produce](std::string_view data)
-	{
-		if (!StartsWith(data, match))
-		{
-			return NoMatch;
-		}
-
-		return MatcherResult(match.size(), produce);
 	};
 }

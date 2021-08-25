@@ -6,7 +6,7 @@ identifier another-name
 expression [a-z0-9]{3}
 keyword expression
 identifier third-name
-expression  expression with space
+expression \ expression with space
 keyword pattern
 identifier some-name#
 identifier comments
@@ -34,8 +34,8 @@ identifier token-name
 action rewind
 action transition
 identifier another-state
-action +1
-action +1
-action -1
-action -1
+action ++line
+action line++
+action --line
+action line--
 end ;

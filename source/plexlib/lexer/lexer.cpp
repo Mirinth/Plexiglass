@@ -53,13 +53,14 @@ Token Lexer::LexHelper()
 			continue;
 		}
 
-		auto[size, text] = matcher(m_data);
+		auto[size, _] = matcher(m_data);
 
 		if (size == 0)
 		{
 			continue;
 		}
 
+		std::string text(m_data.substr(0, size));
 		m_data.remove_prefix(size);
 		if (next != State::Any)
 		{

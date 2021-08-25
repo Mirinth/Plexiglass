@@ -46,4 +46,3 @@ MatcherResult MultilineEnd(std::string_view data);
 MatcherResult Error(std::string_view data);
 
 Matcher Literal(std::string value);
-Matcher Literal(std::string match, std::string produce);
