@@ -5,6 +5,11 @@ Token::Token()
 {
 }
 
+Token::Token(TokenType type, std::string text /* = "" */)
+	: line(0), type(type), text(text)
+{
+}
+
 Token::Token(size_t line, TokenType type, std::string text)
 	: line(line), type(type), text(text)
 {
