@@ -38,7 +38,8 @@ size_t Comment(std::string_view data)
 		return NoMatch;
 	}
 
-	return data.find_first_of('\n');
+	size_t size = data.find_first_of('\n');
+	return size == std::string_view::npos ? data.size() : size;
 }
 
 size_t Whitespace(std::string_view data)
@@ -48,12 +49,14 @@ size_t Whitespace(std::string_view data)
 		return NoMatch;
 	}
 
-	return data.find_first_not_of(" \t");
+	size_t size = data.find_first_not_of(" \t");
+	return size == std::string_view::npos ? data.size() : size;
 }
 
 size_t Identifier(std::string_view data)
 {
-	return data.find_first_of(" \t\r\n");
+	size_t size = data.find_first_of(" \t\r\n");
+	return size == std::string_view::npos ? data.size() : size;
 }
 
 size_t Regex(std::string_view data)
@@ -63,12 +66,8 @@ size_t Regex(std::string_view data)
 		return NoMatch;
 	}
 
-	return data.find_first_of("\r\n");
-}
-
-size_t MultilineEnd(std::string_view data)
-{
-	return data.find_first_of(" \t\r\n");
+	size_t size = data.find_first_of("\r\n");
+	return size == std::string_view::npos ? data.size() : size;
 }
 
 
