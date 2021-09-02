@@ -132,6 +132,8 @@ bool RunParserFailTest(std::string stem)
 	try
 	{
 		Parse(data);
+		std::ofstream out(stem + "-out.txt");
+		out << "No errors" << std::endl;
 	}
 	catch (ParseException exc)
 	{
