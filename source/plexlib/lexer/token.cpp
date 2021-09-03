@@ -58,6 +58,11 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 		throw std::exception("Unrecognized token type in operator<<(Token)");
 	}
 
-	os << name << " " << token.text;
+	os << name;
+	if (!token.text.empty())
+	{
+		os << " " << token.text;
+	}
+
 	return os;
 }
