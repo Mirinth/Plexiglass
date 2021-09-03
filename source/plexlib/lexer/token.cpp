@@ -5,6 +5,11 @@ Token::Token()
 {
 }
 
+Token::Token(TokenType type, std::string text /* = "" */)
+	: line(0), type(type), text(text)
+{
+}
+
 Token::Token(size_t line, TokenType type, std::string text)
 	: line(line), type(type), text(text)
 {
@@ -53,6 +58,11 @@ std::ostream& operator<<(std::ostream& os, const Token token)
 		throw std::exception("Unrecognized token type in operator<<(Token)");
 	}
 
-	os << name << " " << token.text;
+	os << name;
+	if (!token.text.empty())
+	{
+		os << " " << token.text;
+	}
+
 	return os;
 }

@@ -27,6 +27,7 @@ class Token
 {
 public:
 	Token();
+	Token(TokenType type, std::string text = "");
 	Token(size_t line, TokenType type, std::string text);
 	size_t line;
 	TokenType type;

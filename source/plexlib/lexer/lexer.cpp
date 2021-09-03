@@ -3,6 +3,8 @@
 #include <fstream>
 #include <vector>
 
+#include <lexer/rules.hpp>
+
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_line(1)
