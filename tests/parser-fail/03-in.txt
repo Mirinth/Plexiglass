@@ -1,5 +1,0 @@
-# Pattern with multiple | characters
-pattern some-name
-      abcd
-	|| efgh
-	;

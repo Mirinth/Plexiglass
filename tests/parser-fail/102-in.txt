@@ -1,0 +1,2 @@
+# regex with expression instead of name
+expression ^[a-b]

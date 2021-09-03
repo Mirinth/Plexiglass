@@ -1,2 +1,0 @@
-# Pattern with no identifier
-pattern ;

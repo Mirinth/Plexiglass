@@ -1,2 +1,0 @@
-# Rule with no content
-rule some-name ;

@@ -1,0 +1,4 @@
+# rule with empty produce
+rule name
+	produce
+	rewind

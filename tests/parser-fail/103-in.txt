@@ -1,0 +1,2 @@
+# regex with no expression
+expression some-name

@@ -1,0 +1,2 @@
+# pattern with bad name
+pattern rule

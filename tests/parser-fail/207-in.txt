@@ -1,0 +1,3 @@
+# rule with transition at eof
+rule name
+	transition

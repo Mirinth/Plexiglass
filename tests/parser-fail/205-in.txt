@@ -1,0 +1,3 @@
+# rule with produce at eof
+rule name
+	produce

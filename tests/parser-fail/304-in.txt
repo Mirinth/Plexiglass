@@ -1,0 +1,3 @@
+# pattern with bad identifier
+pattern name
+	rewind

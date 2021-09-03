@@ -1,5 +1,0 @@
-# Rule with multiple end characters
-rule some-name
-	rewind
-	;
-	;
