@@ -1,0 +1,3 @@
+# rule with bad action
+rule some-name
+	junk

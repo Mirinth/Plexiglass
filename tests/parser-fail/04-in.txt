@@ -1,5 +1,0 @@
-# Pattern with multiple end characters
-pattern some-name
-	abcd
-	;
-	;

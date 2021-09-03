@@ -1,0 +1,3 @@
+# pattern with duplicate |
+pattern name
+	  abcde || fghij

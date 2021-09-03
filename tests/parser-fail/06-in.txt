@@ -1,2 +1,0 @@
-# Pattern with no content
-pattern some-name ;

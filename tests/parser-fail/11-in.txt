@@ -1,4 +1,0 @@
-# Rule with invalid action
-rule some-name
-	garbage
-	;

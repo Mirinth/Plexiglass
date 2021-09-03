@@ -1,0 +1,4 @@
+# rule with empty transition
+rule name
+	transition
+	rewind
