@@ -8,25 +8,18 @@
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_line(1)
+	, m_current(Lex())
 {
-	m_current = Lex();
-	m_next = Lex();
 }
 
 void Lexer::Shift()
 {
-	m_current = m_next;
-	m_next = Lex();
+	m_current = Lex();
 }
 
-const Token& Lexer::Current() const
+const Token& Lexer::Peek() const
 {
 	return m_current;
-}
-
-const Token& Lexer::Next() const
-{
-	return m_next;
 }
 
 Token Lexer::Lex()

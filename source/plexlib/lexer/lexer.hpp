@@ -9,8 +9,7 @@ class Lexer
 public:
 	Lexer(std::string_view data);
 	void Shift();
-	const Token& Current() const;
-	const Token& Next() const;
+	const Token& Peek() const;
 
 private:
 	Token Lex();
@@ -18,6 +17,5 @@ private:
 
 	std::string_view m_data;
 	Token m_current;
-	Token m_next;
 	int m_line;
 };
