@@ -13,9 +13,9 @@ public:
 	const Token& Peek() const;
 
 private:
-	Token Lex();
-	Token LexHelper();
+	Token LexHelper(std::string_view& line);
 	std::string_view GetLine();
+	void LexLine();
 	void FillBuffer();
 
 	std::string_view m_data;

@@ -23,21 +23,9 @@ const Token& Lexer::Peek() const
 	return m_buffer.front();
 }
 
-Token Lexer::Lex()
+Token Lexer::LexHelper(std::string_view& line)
 {
-	Token tok = LexHelper();
-	while (tok.type == TokenType::Retry)
-	{
-		tok = LexHelper();
-	}
-	return tok;
-}
-
-Token Lexer::LexHelper()
-{
-	// Any state
-	m_line = GetLine();
-	if (m_line.empty())
+	if (line.empty())
 	{
 		return Token(m_lineNumber, TokenType::Eof, "EOF");
 	}
@@ -47,7 +35,7 @@ Token Lexer::LexHelper()
 
 	for (auto& [matcher, type] : Rules)
 	{
-		size_t size = matcher(m_line);
+		size_t size = matcher(line);
 		if (size > longestSize)
 		{
 			longestSize = size;
@@ -55,8 +43,8 @@ Token Lexer::LexHelper()
 		}
 	}
 
-	std::string text(m_line.substr(0, longestSize));
-	m_line.remove_prefix(longestSize);
+	std::string text(line.substr(0, longestSize));
+	line.remove_prefix(longestSize);
 	
 	if (longestToken == TokenType::Newline)
 	{
@@ -90,7 +78,37 @@ std::string_view Lexer::GetLine()
 	return line;
 }
 
+/// <summary>
+/// Break an entire line into tokens, pushing them all into m_buffer.
+/// m_buffer may still be empty after a call to LexLine if the line
+/// contained no tokens.
+/// </summary>
+void Lexer::LexLine()
+{
+	if (m_data.empty())
+	{
+		m_buffer.push(Token(TokenType::Eof));
+		return;
+	}
+
+	std::string_view line = GetLine();
+	while (!line.empty())
+	{
+		Token tok = LexHelper(line);
+		if (tok.type != TokenType::Retry)
+		{
+			m_buffer.push(tok);
+		}
+	}
+}
+
+/// <summary>
+/// Ensure there is at least one token in the buffer.
+/// </summary>
 void Lexer::FillBuffer()
 {
-	m_buffer.push(Lex());
+	while (m_buffer.empty())
+	{
+		LexLine();
+	}
 }
