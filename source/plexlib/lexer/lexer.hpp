@@ -1,5 +1,6 @@
 #pragma once
 
+#include <queue>
 #include <string_view>
 
 #include <lexer/token.hpp>
@@ -15,9 +16,10 @@ private:
 	Token Lex();
 	Token LexHelper();
 	std::string_view GetLine();
+	void FillBuffer();
 
 	std::string_view m_data;
 	std::string_view m_line;
-	Token m_current;
+	std::queue<Token> m_buffer;
 	int m_lineNumber;
 };

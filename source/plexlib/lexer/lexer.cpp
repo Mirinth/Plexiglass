@@ -8,18 +8,19 @@
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_lineNumber(1)
-	, m_current(Lex())
 {
+	FillBuffer();
 }
 
 void Lexer::Shift()
 {
-	m_current = Lex();
+	m_buffer.pop();
+	FillBuffer();
 }
 
 const Token& Lexer::Peek() const
 {
-	return m_current;
+	return m_buffer.front();
 }
 
 Token Lexer::Lex()
@@ -87,4 +88,9 @@ std::string_view Lexer::GetLine()
 	}
 
 	return line;
+}
+
+void Lexer::FillBuffer()
+{
+	m_buffer.push(Lex());
 }
