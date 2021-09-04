@@ -14,8 +14,10 @@ public:
 private:
 	Token Lex();
 	Token LexHelper();
+	std::string_view GetLine();
 
 	std::string_view m_data;
+	std::string_view m_line;
 	Token m_current;
-	int m_line;
+	int m_lineNumber;
 };
