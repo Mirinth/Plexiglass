@@ -1,10 +1,11 @@
 #include "lexer.hpp"
 
-#include <fstream>
-#include <vector>
-
 #include <lexer/rules.hpp>
 
+/// <summary>
+/// Construct a lexer.
+/// </summary>
+/// <param name="data">The data to lex.</param>
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
 	, m_lineNumber(1)
@@ -12,12 +13,19 @@ Lexer::Lexer(std::string_view data)
 	FillBuffer();
 }
 
+/// <summary>
+/// Advance the lexer to the next token.
+/// </summary>
 void Lexer::Shift()
 {
 	m_buffer.pop();
 	FillBuffer();
 }
 
+/// <summary>
+/// Get the current token.
+/// </summary>
+/// <returns>The current token.</returns>
 const Token& Lexer::Peek() const
 {
 	return m_buffer.front();
@@ -55,11 +63,19 @@ Token Lexer::LexHelper(std::string_view& line)
 	return Token(m_lineNumber, longestToken, text);
 }
 
+/// <summary>
+/// Get the first line in m_data. After returning, m_data will be modified
+/// to remove the returned line from its content.
+/// </summary>
+/// <returns>
+/// The first line in m_data. All lines but the last will have a trailing
+/// newline. May be empty if m_data is empty.
+/// </returns>
 std::string_view Lexer::GetLine()
 {
-	if (!m_line.empty() || m_data.empty())
+	if (m_data.empty())
 	{
-		return m_line;
+		return std::string_view();
 	}
 
 	std::string_view line;
