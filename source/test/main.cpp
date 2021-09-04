@@ -93,7 +93,7 @@ bool RunLexerTest(std::string stem)
 
 	while (lexer.Peek().type != TokenType::Eof)
 	{
-		out << lexer.Peek() << "\n";
+		out << lexer.Peek().ToString() << "\n";
 		lexer.Shift();
 	}
 
