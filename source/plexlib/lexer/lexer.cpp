@@ -1,6 +1,6 @@
 #include "lexer.hpp"
 
-#include <lexer/rules.hpp>
+#include <map>
 
 constexpr char* whitespace = " \t\r\n";
 
@@ -41,23 +41,45 @@ const Token& Lexer::Peek() const
 
 Token Lexer::LexToken(std::string_view& line)
 {
-	size_t longestSize = 0;
-	TokenType longestToken = TokenType::Unknown;
+	static std::map<std::string, TokenType> map = {
+		{ "expression",      TokenType::KwdExpression },
 
-	for (auto& [matcher, type] : Rules)
+		{ "pattern",         TokenType::KwdPattern },
+		{ "|",               TokenType::Alternator },
+
+		{ "rule",            TokenType::KwdRule },
+		{ "produce-nothing", TokenType::ActProduceNil },
+		{ "produce",         TokenType::ActProduce },
+		{ "rewind",          TokenType::ActRewind },
+		{ "transition",      TokenType::ActTransition },
+
+		{ "++line",          TokenType::ActInc },
+		{ "line++",          TokenType::ActInc },
+		{ "--line",          TokenType::ActDec },
+		{ "line--",          TokenType::ActDec },
+	};
+
+	size_t space = line.find_first_of(whitespace);
+	std::string text;
+	if (space == std::string_view::npos)
 	{
-		size_t size = matcher(line);
-		if (size > longestSize)
-		{
-			longestSize = size;
-			longestToken = type;
-		}
+		text = std::string(line);
+		line = std::string_view();
+	}
+	else
+	{
+		text = std::string(line.substr(0, space));
+		line.remove_prefix(space + 1); // Remove the space too
 	}
 
-	std::string text(line.substr(0, longestSize));
-	line.remove_prefix(longestSize);
-	
-	return Token(m_lineNumber, longestToken, text);
+	if (map.count(text) == 0)
+	{
+		return Token(m_lineNumber, TokenType::Identifier, text);
+	}
+	else
+	{
+		return Token(m_lineNumber, map[text], text);
+	}
 }
 
 /// <summary>
