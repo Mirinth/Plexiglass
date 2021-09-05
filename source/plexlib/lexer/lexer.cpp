@@ -39,11 +39,6 @@ const Token& Lexer::Peek() const
 
 Token Lexer::LexToken(std::string_view& line)
 {
-	if (line.empty())
-	{
-		return Token(m_lineNumber, TokenType::Eof, "EOF");
-	}
-
 	size_t longestSize = 0;
 	TokenType longestToken = TokenType::Unknown;
 
