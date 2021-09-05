@@ -8,16 +8,7 @@ keyword expression
 identifier third-name
 expression ^ expression with space
 keyword pattern
-identifier some-name#
-identifier comments
-identifier aren't
-identifier allowed
-identifier at
-identifier the
-identifier end
-identifier of
-identifier the
-identifier line
+identifier some-name
 identifier abcde
 alternator |
 identifier fghij

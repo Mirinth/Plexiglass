@@ -5,7 +5,6 @@
 size_t NoMatch = 0;
 
 std::vector<Rule> Rules = {
-	{ Comment,                    TokenType::Retry },
 	{ Literal("\n"),              TokenType::Newline },
 	{ Whitespace,                 TokenType::Retry },
 
@@ -30,17 +29,6 @@ std::vector<Rule> Rules = {
 
 	{ Error,                      TokenType::Unknown },
 };
-
-size_t Comment(std::string_view data)
-{
-	if (data[0] != '#')
-	{
-		return NoMatch;
-	}
-
-	size_t size = data.find_first_of('\n');
-	return size == std::string_view::npos ? data.size() : size;
-}
 
 size_t Whitespace(std::string_view data)
 {

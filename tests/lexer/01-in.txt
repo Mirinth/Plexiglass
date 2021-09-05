@@ -9,7 +9,7 @@ expression another-name ^[a-z0-9]{3}
 expression third-name
 	^ expression with space
 
-pattern some-name# comments aren't allowed at the end of the line
+pattern some-name# comments are allowed at the end of the line
 	  abcde
 	| fghij klmno pqrs # comment
 	| wxyz

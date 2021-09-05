@@ -15,7 +15,7 @@ public:
 private:
 	Token LexHelper(std::string_view& line);
 	std::string_view GetLine();
-	void LexLine();
+	void LexLine(std::string_view line);
 	void FillBuffer();
 
 	std::string_view m_data;
