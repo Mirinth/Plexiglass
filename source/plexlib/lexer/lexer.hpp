@@ -13,7 +13,7 @@ public:
 	const Token& Peek() const;
 
 private:
-	Token LexHelper(std::string_view& line);
+	Token LexToken(std::string_view& line);
 	std::string_view GetLine();
 	void LexLine(std::string_view line);
 	void FillBuffer();

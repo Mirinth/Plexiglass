@@ -36,7 +36,7 @@ const Token& Lexer::Peek() const
 	return m_buffer.front();
 }
 
-Token Lexer::LexHelper(std::string_view& line)
+Token Lexer::LexToken(std::string_view& line)
 {
 	if (line.empty())
 	{
@@ -109,7 +109,7 @@ void Lexer::LexLine(std::string_view line)
 {
 	while (!line.empty())
 	{
-		Token tok = LexHelper(line);
+		Token tok = LexToken(line);
 		if (tok.type != TokenType::Retry)
 		{
 			m_buffer.push(tok);
