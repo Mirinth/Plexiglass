@@ -17,7 +17,6 @@ enum class TokenType
 	KwdPattern,
 	KwdRule,
 	Regex,
-	Retry,
 	Unknown,
 };
 

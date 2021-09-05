@@ -5,8 +5,6 @@
 size_t NoMatch = 0;
 
 std::vector<Rule> Rules = {
-	{ Whitespace,                 TokenType::Retry },
-
 	{ Literal("expression"),      TokenType::KwdExpression },
 	{ Regex,                      TokenType::Regex },
 
@@ -28,17 +26,6 @@ std::vector<Rule> Rules = {
 
 	{ Error,                      TokenType::Unknown },
 };
-
-size_t Whitespace(std::string_view data)
-{
-	if (data[0] != ' ' && data[0] != '\t')
-	{
-		return NoMatch;
-	}
-
-	size_t size = data.find_first_not_of(" \t");
-	return size == std::string_view::npos ? data.size() : size;
-}
 
 size_t Identifier(std::string_view data)
 {

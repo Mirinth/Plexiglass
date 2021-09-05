@@ -45,9 +45,6 @@ std::string Token::ToString() const
 	case TokenType::KwdRule:
 		str = "keyword";
 		break;
-	case TokenType::Retry:
-		str = "retry";
-		break;
 	case TokenType::Unknown:
 		str = "unknown";
 		break;

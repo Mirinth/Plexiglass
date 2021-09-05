@@ -5,6 +5,7 @@
 constexpr char* whitespace = " \t\r\n";
 
 std::string_view StripComment(std::string_view line);
+std::string_view StripWhitespace(std::string_view line);
 bool IsBlank(std::string_view line);
 
 /// <summary>
@@ -104,11 +105,9 @@ void Lexer::LexLine(std::string_view line)
 {
 	while (!IsBlank(line))
 	{
+		line = StripWhitespace(line);
 		Token tok = LexToken(line);
-		if (tok.type != TokenType::Retry)
-		{
-			m_buffer.push(tok);
-		}
+		m_buffer.push(tok);
 	}
 }
 
@@ -147,6 +146,22 @@ std::string_view StripComment(std::string_view line)
 	}
 
 	return line.substr(0, marker);
+}
+
+/// <summary>
+/// Remove any leading whitespace in a line.
+/// </summary>
+/// <param name="line">The line to strip.</param>
+/// <returns>The stripped line.</returns>
+std::string_view StripWhitespace(std::string_view line)
+{
+	size_t start = line.find_first_not_of(whitespace);
+	if (start != std::string_view::npos)
+	{
+		return line.substr(start);
+	}
+
+	return line;
 }
 
 /// <summary>
