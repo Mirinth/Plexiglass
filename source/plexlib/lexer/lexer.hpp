@@ -21,4 +21,5 @@ private:
 	std::string_view m_data;
 	std::queue<Token> m_buffer;
 	int m_lineNumber;
+	bool m_expectExpression;
 };

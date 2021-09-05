@@ -13,6 +13,7 @@ enum class TokenType
 	Alternator,
 	Eof,
 	Identifier,
+	Indent,
 	KwdExpression,
 	KwdPattern,
 	KwdRule,

@@ -4,6 +4,7 @@
 
 constexpr char* whitespace = " \t\r\n";
 
+bool StartsWith(const std::string_view& toSearch, const std::string find);
 std::string_view StripComment(std::string_view line);
 std::string_view StripWhitespace(std::string_view line);
 bool IsBlank(std::string_view line);
@@ -14,6 +15,7 @@ bool IsBlank(std::string_view line);
 /// <param name="data">The data to lex.</param>
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
+	, m_expectExpression(false)
 	, m_lineNumber(0)
 {
 	FillBuffer();
@@ -98,6 +100,31 @@ std::string_view Lexer::GetLine()
 /// </summary>
 void Lexer::LexLine(std::string_view line)
 {
+	line = StripComment(line);
+	if (IsBlank(line))
+	{
+		return;
+	}
+
+	if (StartsWith(line, "    ") || StartsWith(line, "\t"))
+	{
+		m_buffer.push(Token(TokenType::Indent));
+	}
+	line = StripWhitespace(line);
+
+	if (m_expectExpression)
+	{
+		m_expectExpression = false;
+		line.remove_suffix(1); // The trailing newline
+		m_buffer.push(Token(m_lineNumber, TokenType::Regex, std::string(line)));
+		return;
+	}
+
+	if (StartsWith(line, "expression"))
+	{
+		m_expectExpression = true;
+	}
+
 	while (!IsBlank(line))
 	{
 		line = StripWhitespace(line);
@@ -114,11 +141,7 @@ void Lexer::FillBuffer()
 	while (m_buffer.empty() && !m_data.empty())
 	{
 		std::string_view line = GetLine();
-		line = StripComment(line);
-		if (!IsBlank(line))
-		{
-			LexLine(line);
-		}
+		LexLine(line);
 	}
 
 	if (m_buffer.empty())

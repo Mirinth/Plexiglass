@@ -40,6 +40,9 @@ std::string Token::ToString() const
 	case TokenType::Identifier:
 		str = "identifier";
 		break;
+	case TokenType::Indent:
+		str = "indent";
+		break;
 	case TokenType::KwdExpression:
 	case TokenType::KwdPattern:
 	case TokenType::KwdRule:

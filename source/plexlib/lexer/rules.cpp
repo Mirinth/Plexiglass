@@ -6,7 +6,6 @@ size_t NoMatch = 0;
 
 std::vector<Rule> Rules = {
 	{ Literal("expression"),      TokenType::KwdExpression },
-	{ Regex,                      TokenType::Regex },
 
 	{ Literal("pattern"),         TokenType::KwdPattern },
 	{ Literal("|"),               TokenType::Alternator },
@@ -32,18 +31,6 @@ size_t Identifier(std::string_view data)
 	size_t size = data.find_first_of(" \t\r\n");
 	return size == std::string_view::npos ? data.size() : size;
 }
-
-size_t Regex(std::string_view data)
-{
-	if (data[0] != '^')
-	{
-		return NoMatch;
-	}
-
-	size_t size = data.find_first_of("\r\n");
-	return size == std::string_view::npos ? data.size() : size;
-}
-
 
 size_t Error(std::string_view /*data*/)
 {

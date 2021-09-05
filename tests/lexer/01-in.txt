@@ -4,7 +4,8 @@
 expression some-name # here's a comment
 	^[a-bA-Y09]lyoun(kkol)?
 
-expression another-name ^[a-z0-9]{3}
+expression another-name
+	^[a-z0-9]{3}
 
 expression third-name
 	^ expression with space

@@ -1,30 +1,44 @@
 keyword expression
 identifier some-name
+indent
 expression ^[a-bA-Y09]lyoun(kkol)?
 keyword expression
 identifier another-name
+indent
 expression ^[a-z0-9]{3}
 keyword expression
 identifier third-name
+indent
 expression ^ expression with space
 keyword pattern
 identifier some-name
+indent
 identifier abcde
+indent
 alternator |
 identifier fghij
 identifier klmno
 identifier pqrs
+indent
 alternator |
 identifier wxyz
 keyword rule
 identifier what-to-match
+indent
 action produce-nothing
+indent
 action produce
 identifier token-name
+indent
 action rewind
+indent
 action transition
 identifier another-state
+indent
 action ++line
+indent
 action line++
+indent
 action --line
+indent
 action line--
