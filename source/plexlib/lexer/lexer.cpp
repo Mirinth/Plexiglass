@@ -39,6 +39,11 @@ const Token& Lexer::Peek() const
 	return m_buffer.front();
 }
 
+/// <summary>
+/// Lex a single token out of a line. Assumes line has something to lex.
+/// </summary>
+/// <param name="line">The line to lex a token from. Token is stripped from line.</param>
+/// <returns>The lexed token.</returns>
 Token Lexer::LexToken(std::string_view& line)
 {
 	static std::map<std::string, TokenType> map = {
@@ -170,6 +175,24 @@ void Lexer::FillBuffer()
 	{
 		m_buffer.push(Token(TokenType::Eof));
 	}
+}
+
+/// <summary>
+/// Determine whether toSearch starts with find.
+/// </summary>
+/// <param name="toSearch">What to search.</param>
+/// <param name="find">What to find.</param>
+/// <returns>Whether toSearch starts with find.</returns>
+bool StartsWith(const std::string_view& toSearch, const std::string find)
+{
+	for (size_t i = 0; i < toSearch.size() && i < find.size(); i++)
+	{
+		if (toSearch[i] != find[i])
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 /// <summary>
