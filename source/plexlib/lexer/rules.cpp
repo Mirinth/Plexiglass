@@ -5,7 +5,6 @@
 size_t NoMatch = 0;
 
 std::vector<Rule> Rules = {
-	{ Literal("\n"),              TokenType::Newline },
 	{ Whitespace,                 TokenType::Retry },
 
 	{ Literal("expression"),      TokenType::KwdExpression },

@@ -59,11 +59,6 @@ Token Lexer::LexToken(std::string_view& line)
 	std::string text(line.substr(0, longestSize));
 	line.remove_prefix(longestSize);
 	
-	if (longestToken == TokenType::Newline)
-	{
-		return Token(m_lineNumber, TokenType::Retry, "");
-	}
-
 	return Token(m_lineNumber, longestToken, text);
 }
 
@@ -107,7 +102,7 @@ std::string_view Lexer::GetLine()
 /// </summary>
 void Lexer::LexLine(std::string_view line)
 {
-	while (!line.empty())
+	while (!IsBlank(line))
 	{
 		Token tok = LexToken(line);
 		if (tok.type != TokenType::Retry)
