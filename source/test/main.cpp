@@ -91,9 +91,9 @@ bool RunLexerTest(std::string stem)
 	std::string data = ReadFile(stem + "-in.txt");
 	Lexer lexer(data);
 
-	while (lexer.Current().type != TokenType::Eof)
+	while (lexer.Peek().type != TokenType::Eof)
 	{
-		out << lexer.Current() << "\n";
+		out << lexer.Peek().ToString() << "\n";
 		lexer.Shift();
 	}
 

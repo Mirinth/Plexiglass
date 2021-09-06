@@ -15,54 +15,37 @@ Token::Token(size_t line, TokenType type, std::string text)
 {
 }
 
-std::ostream& operator<<(std::ostream& os, const Token token)
+std::string Token::ToString() const
 {
-	std::string name;
-	switch (token.type)
+	std::string str;
+	switch (type)
 	{
-	case TokenType::ActDec:
-	case TokenType::ActInc:
-	case TokenType::ActProduce:
-	case TokenType::ActProduceNil:
-	case TokenType::ActRewind:
-	case TokenType::ActTransition:
-		name = "action";
-		break;
-	case TokenType::Alternator:
-		name = "alternator";
-		break;
 	case TokenType::Eof:
-		name = "eof";
+		str = "eof";
 		break;
 	case TokenType::Regex:
-		name = "expression";
+		str = "expression";
 		break;
-	case TokenType::Identifier:
-		name = "identifier";
+	case TokenType::Indent:
+		str = "indent";
 		break;
-	case TokenType::KwdExpression:
-	case TokenType::KwdPattern:
-	case TokenType::KwdRule:
-		name = "keyword";
+	case TokenType::Keyword:
+		str = "keyword";
 		break;
-	case TokenType::Newline:
-		name = "newline";
-		break;
-	case TokenType::Retry:
-		name = "retry";
+	case TokenType::Text:
+		str = "text";
 		break;
 	case TokenType::Unknown:
-		name = "unknown";
+		str = "unknown";
 		break;
 	default:
 		throw std::exception("Unrecognized token type in operator<<(Token)");
 	}
 
-	os << name;
-	if (!token.text.empty())
+	if (!text.empty())
 	{
-		os << " " << token.text;
+		str += " " + text;
 	}
 
-	return os;
+	return str;
 }

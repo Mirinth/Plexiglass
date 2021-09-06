@@ -1,25 +1,14 @@
 #pragma once
 
-#include <ostream>
 #include <string>
 
 enum class TokenType
 {
-	ActDec,
-	ActInc,
-	ActProduce,
-	ActProduceNil,
-	ActRewind,
-	ActTransition,
-	Alternator,
 	Eof,
-	Identifier,
-	KwdExpression,
-	KwdPattern,
-	KwdRule,
-	Newline,
+	Indent,
+	Keyword,
 	Regex,
-	Retry,
+	Text,
 	Unknown,
 };
 
@@ -29,8 +18,8 @@ public:
 	Token();
 	Token(TokenType type, std::string text = "");
 	Token(size_t line, TokenType type, std::string text);
+	std::string ToString() const;
 	size_t line;
 	TokenType type;
 	std::string text;
 };
-std::ostream& operator<<(std::ostream& os, const Token token);
