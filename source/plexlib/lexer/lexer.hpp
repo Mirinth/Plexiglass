@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <string>
 #include <string_view>
 
 #include <lexer/token.hpp>
@@ -13,7 +14,7 @@ public:
 	const Token& Peek() const;
 
 private:
-	Token LexToken(std::string_view& line);
+	std::string LexToken(std::string_view& line);
 	std::string_view GetLine();
 	void LexLine(std::string_view line);
 	void FillBuffer();

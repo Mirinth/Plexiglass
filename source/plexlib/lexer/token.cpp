@@ -43,10 +43,14 @@ std::string Token::ToString() const
 	case TokenType::Indent:
 		str = "indent";
 		break;
+	case TokenType::Keyword:
 	case TokenType::KwdExpression:
 	case TokenType::KwdPattern:
 	case TokenType::KwdRule:
 		str = "keyword";
+		break;
+	case TokenType::Text:
+		str = "text";
 		break;
 	case TokenType::Unknown:
 		str = "unknown";

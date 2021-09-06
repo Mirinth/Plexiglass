@@ -14,10 +14,12 @@ enum class TokenType
 	Eof,
 	Identifier,
 	Indent,
+	Keyword,
 	KwdExpression,
 	KwdPattern,
 	KwdRule,
 	Regex,
+	Text,
 	Unknown,
 };
 

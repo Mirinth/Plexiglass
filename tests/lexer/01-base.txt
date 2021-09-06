@@ -1,44 +1,44 @@
 keyword expression
-identifier some-name
+text some-name
 indent
 expression ^[a-bA-Y09]lyoun(kkol)?
 keyword expression
-identifier another-name
+text another-name
 indent
 expression ^[a-z0-9]{3}
 keyword expression
-identifier third-name
+text third-name
 indent
 expression ^ expression with space
 keyword pattern
-identifier some-name
+text some-name
 indent
-identifier abcde
+text abcde
 indent
-alternator |
-identifier fghij
-identifier klmno
-identifier pqrs
+text |
+text fghij
+text klmno
+text pqrs
 indent
-alternator |
-identifier wxyz
+text |
+text wxyz
 keyword rule
-identifier what-to-match
+text what-to-match
 indent
-action produce-nothing
+text produce-nothing
 indent
-action produce
-identifier token-name
+text produce
+text token-name
 indent
-action rewind
+text rewind
 indent
-action transition
-identifier another-state
+text transition
+text another-state
 indent
-action ++line
+text ++line
 indent
-action line++
+text line++
 indent
-action --line
+text --line
 indent
-action line--
+text line--

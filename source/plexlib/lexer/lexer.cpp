@@ -40,30 +40,12 @@ const Token& Lexer::Peek() const
 }
 
 /// <summary>
-/// Lex a single token out of a line. Assumes line has something to lex.
+/// Lex a single token's text out of a line. Assumes line has something to lex.
 /// </summary>
-/// <param name="line">The line to lex a token from. Token is stripped from line.</param>
-/// <returns>The lexed token.</returns>
-Token Lexer::LexToken(std::string_view& line)
+/// <param name="line">The line to lex from. Token is stripped from line.</param>
+/// <returns>The lexed token's text.</returns>
+std::string Lexer::LexToken(std::string_view& line)
 {
-	static std::map<std::string, TokenType> map = {
-		{ "expression",      TokenType::KwdExpression },
-
-		{ "pattern",         TokenType::KwdPattern },
-		{ "|",               TokenType::Alternator },
-
-		{ "rule",            TokenType::KwdRule },
-		{ "produce-nothing", TokenType::ActProduceNil },
-		{ "produce",         TokenType::ActProduce },
-		{ "rewind",          TokenType::ActRewind },
-		{ "transition",      TokenType::ActTransition },
-
-		{ "++line",          TokenType::ActInc },
-		{ "line++",          TokenType::ActInc },
-		{ "--line",          TokenType::ActDec },
-		{ "line--",          TokenType::ActDec },
-	};
-
 	size_t space = line.find_first_of(whitespace);
 	std::string text;
 	if (space == std::string_view::npos)
@@ -77,14 +59,7 @@ Token Lexer::LexToken(std::string_view& line)
 		line.remove_prefix(space + 1); // Remove the space too
 	}
 
-	if (map.count(text) == 0)
-	{
-		return Token(m_lineNumber, TokenType::Identifier, text);
-	}
-	else
-	{
-		return Token(m_lineNumber, map[text], text);
-	}
+	return text;
 }
 
 /// <summary>
@@ -145,18 +120,31 @@ void Lexer::LexLine(std::string_view line)
 			m_buffer.push(Token(m_lineNumber, TokenType::Regex, std::string(line)));
 			return;
 		}
-	}
 
-	if (StartsWith(line, "expression"))
-	{
-		m_expectExpression = true;
+		while (!IsBlank(line))
+		{
+			line = StripWhitespace(line);
+			std::string text = LexToken(line);
+			m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+		}
 	}
-
-	while (!IsBlank(line))
+	else
 	{
 		line = StripWhitespace(line);
-		Token tok = LexToken(line);
-		m_buffer.push(tok);
+		std::string text = LexToken(line);
+		m_buffer.push(Token(m_lineNumber, TokenType::Keyword, text));
+
+		if (text == "expression")
+		{
+			m_expectExpression = true;
+		}
+
+		while (!IsBlank(line))
+		{
+			line = StripWhitespace(line);
+			text = LexToken(line);
+			m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+		}
 	}
 }
 
