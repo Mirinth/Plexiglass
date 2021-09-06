@@ -136,15 +136,15 @@ void Lexer::LexLine(std::string_view line)
 	if (StartsWith(line, "    ") || StartsWith(line, "\t"))
 	{
 		m_buffer.push(Token(TokenType::Indent));
-	}
-	line = StripWhitespace(line);
+		line = StripWhitespace(line);
 
-	if (m_expectExpression)
-	{
-		m_expectExpression = false;
-		line.remove_suffix(1); // The trailing newline
-		m_buffer.push(Token(m_lineNumber, TokenType::Regex, std::string(line)));
-		return;
+		if (m_expectExpression)
+		{
+			m_expectExpression = false;
+			line.remove_suffix(1); // The trailing newline
+			m_buffer.push(Token(m_lineNumber, TokenType::Regex, std::string(line)));
+			return;
+		}
 	}
 
 	if (StartsWith(line, "expression"))
