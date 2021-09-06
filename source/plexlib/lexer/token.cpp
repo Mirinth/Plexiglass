@@ -20,33 +20,16 @@ std::string Token::ToString() const
 	std::string str;
 	switch (type)
 	{
-	case TokenType::ActDec:
-	case TokenType::ActInc:
-	case TokenType::ActProduce:
-	case TokenType::ActProduceNil:
-	case TokenType::ActRewind:
-	case TokenType::ActTransition:
-		str = "action";
-		break;
-	case TokenType::Alternator:
-		str = "alternator";
-		break;
 	case TokenType::Eof:
 		str = "eof";
 		break;
 	case TokenType::Regex:
 		str = "expression";
 		break;
-	case TokenType::Identifier:
-		str = "identifier";
-		break;
 	case TokenType::Indent:
 		str = "indent";
 		break;
 	case TokenType::Keyword:
-	case TokenType::KwdExpression:
-	case TokenType::KwdPattern:
-	case TokenType::KwdRule:
 		str = "keyword";
 		break;
 	case TokenType::Text:
