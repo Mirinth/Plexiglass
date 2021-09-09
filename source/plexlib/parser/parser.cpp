@@ -9,6 +9,7 @@ ParseException::ParseException(const char* msg)
 {}
 
 void File(Lexer& lexer);
+void Keyword(Lexer& lexer);
 
 void Error(std::string expected, const Token found);
 
@@ -20,10 +21,20 @@ void Parse(std::string_view data)
 
 void File(Lexer& lexer)
 {
+	while (lexer.Peek().type == TokenType::Keyword)
+	{
+		Keyword(lexer);
+	}
+
 	if (lexer.Peek().type == TokenType::Eof)
 	{
 		Error("keyword", lexer.Peek());
 	}
+}
+
+void Keyword(Lexer& lexer)
+{
+	Error("'expression', 'pattern', or 'rule'", lexer.Peek());
 }
 
 void Error(std::string expected, const Token tok)
