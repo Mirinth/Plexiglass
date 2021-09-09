@@ -39,7 +39,7 @@ std::string Token::ToString() const
 		str = "unknown";
 		break;
 	default:
-		throw std::exception("Unrecognized token type in operator<<(Token)");
+		throw std::exception("Unrecognized token type in Token::ToString()");
 	}
 
 	if (!text.empty())
