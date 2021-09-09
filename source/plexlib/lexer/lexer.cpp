@@ -110,7 +110,7 @@ void Lexer::LexLine(std::string_view line)
 
 	if (StartsWith(line, "    ") || StartsWith(line, "\t"))
 	{
-		m_buffer.push(Token(TokenType::Indent));
+		m_buffer.push(Token(m_lineNumber, TokenType::Indent));
 		line = StripWhitespace(line);
 
 		if (m_expectExpression)
