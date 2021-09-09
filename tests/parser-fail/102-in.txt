@@ -1,2 +1,2 @@
-# regex with expression instead of name
-expression ^[a-b]
+# regex with no expression
+expression some-name
