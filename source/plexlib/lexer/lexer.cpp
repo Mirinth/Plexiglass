@@ -161,7 +161,7 @@ void Lexer::FillBuffer()
 
 	if (m_buffer.empty())
 	{
-		m_buffer.push(Token(TokenType::Eof));
+		m_buffer.push(Token(m_lineNumber, TokenType::Eof));
 	}
 }
 

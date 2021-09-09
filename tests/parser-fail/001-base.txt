@@ -1,1 +1,1 @@
-Syntax error on line 0: Expected keyword found eof
+Syntax error on line 1: Expected keyword found eof
