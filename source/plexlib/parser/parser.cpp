@@ -1,5 +1,6 @@
 #include <parser/parser.hpp>
 
+#include <set>
 #include <sstream>
 
 #include <lexer/lexer.hpp>
@@ -15,7 +16,7 @@ void Keyword(Lexer& lexer);
 void Rule(Lexer& lexer);
 
 void Error(std::string expected, const Token found);
-void Require(Lexer& lexer, std::string name, TokenType type, std::string value = "");
+Token Require(Lexer& lexer, std::string name, TokenType type, std::string value = "");
 
 /// <summary>
 /// Parse a block of data.
@@ -33,8 +34,20 @@ void Parse(std::string_view data)
 /// <param name="lexer">Lexer to parse from.</param>
 void Action(Lexer& lexer)
 {
+	static std::set<std::string> unitActions = { "produce-nothing", "rewind", "++line", "line++", "--line", "line--" };
+	static std::set<std::string> compositeActions = {"produce", "transition" };
+
 	Require(lexer, "indent", TokenType::Indent);
-	Require(lexer, "action", TokenType::Text);
+	Token action = Require(lexer, "action", TokenType::Text);
+
+	if (unitActions.count(action.text) > 0 || compositeActions.count(action.text) > 0)
+	{
+		return;
+	}
+	else
+	{
+		Error("action", action);
+	}
 }
 
 /// <summary>
@@ -133,7 +146,8 @@ void Error(std::string expected, const Token tok)
 /// <param name="name">Name of what was expected. Used for error reporting.</param>
 /// <param name="type">Type of token expected.</param>
 /// <param name="value">Token text expected. If empty, any text is allowed.</param>
-void Require(Lexer& lexer, std::string name, TokenType type, std::string value /*= ""*/)
+/// <returns>The token shifted.</returns>
+Token Require(Lexer& lexer, std::string name, TokenType type, std::string value /*= ""*/)
 {
 	if (lexer.Peek().type != type)
 	{
@@ -145,5 +159,7 @@ void Require(Lexer& lexer, std::string name, TokenType type, std::string value /
 		Error(name, lexer.Peek());
 	}
 
+	Token tok = lexer.Peek();
 	lexer.Shift();
+	return tok;
 }
