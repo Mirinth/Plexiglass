@@ -14,6 +14,7 @@ void Action(Lexer& lexer);
 void Expression(Lexer& lexer);
 void File(Lexer& lexer);
 void Keyword(Lexer& lexer);
+void Pattern(Lexer& lexer);
 void Rule(Lexer& lexer);
 
 void Error(size_t line, std::string message);
@@ -114,10 +115,23 @@ void Keyword(Lexer& lexer)
 	{
 		Rule(lexer);
 	}
+	else if (tok.text == "pattern")
+	{
+		Pattern(lexer);
+	}
 	else
 	{
 		Error(tok.line, "Unrecognized keyword " + tok.text);
 	}
+}
+
+/// <summary>
+/// Parse a pattern statement.
+/// </summary>
+/// <param name="lexer">Lexer to parse from.</param>
+void Pattern(Lexer& lexer)
+{
+	Require(lexer, "identifier", TokenType::Text);
 }
 
 /// <summary>
