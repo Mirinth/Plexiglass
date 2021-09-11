@@ -132,6 +132,7 @@ void Keyword(Lexer& lexer)
 void Pattern(Lexer& lexer)
 {
 	Require(lexer, "identifier", TokenType::Text);
+	Require(lexer, "indent", TokenType::Indent);
 }
 
 /// <summary>
