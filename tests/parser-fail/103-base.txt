@@ -1,0 +1,1 @@
+Syntax error on line 3: Regex contains one of `*?+{` not preceeded by valid regular expression.

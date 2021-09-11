@@ -1,0 +1,3 @@
+# expression with invalid regex
+expression some-name
+	?
