@@ -72,16 +72,9 @@ void Expression(Lexer& lexer)
 	{
 		std::regex dummy(tok.text);
 	}
-	catch(std::regex_error& exc)
+	catch(std::regex_error&)
 	{
-		if (exc.code() == std::regex_constants::error_badrepeat)
-		{
-			Error(tok.line, "Regex contains one of `*?+{` not preceeded by valid regular expression.");
-		}
-		else
-		{
-			Error(tok.line, "Regex has unspecified error.");
-		}
+		Error(tok.line, "Malformed regex.");
 	}
 }
 
