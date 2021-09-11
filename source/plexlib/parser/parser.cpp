@@ -48,6 +48,10 @@ void Action(Lexer& lexer)
 	}
 	else if (compositeActions.count(action.text) > 0)
 	{
+		if (lexer.Peek().type != TokenType::Text)
+		{
+			Error(action.line, "Expected identifier before end of line");
+		}
 		Require(lexer, "identifier", TokenType::Text);
 		return;
 	}

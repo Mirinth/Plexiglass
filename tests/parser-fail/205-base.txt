@@ -1,1 +1,1 @@
-Syntax error on line 3: Expected identifier found eof
+Syntax error on line 3: Expected identifier before end of line

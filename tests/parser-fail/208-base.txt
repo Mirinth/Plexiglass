@@ -1,1 +1,1 @@
-Syntax error on line 4: Expected identifier found indent
+Syntax error on line 3: Expected identifier before end of line
