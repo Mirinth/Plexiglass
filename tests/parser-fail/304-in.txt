@@ -1,0 +1,3 @@
+# extra stuff on first line
+pattern some-name junk
+	abcde
