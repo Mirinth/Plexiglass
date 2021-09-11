@@ -67,7 +67,6 @@ void Action(Lexer& lexer)
 /// <param name="lexer">Lexer to parse from.</param>
 void Expression(Lexer& lexer)
 {
-	Require(lexer, "'expression'", TokenType::Keyword, "expression");
 	Require(lexer, "identifier", TokenType::Text);
 	Require(lexer, "indent", TokenType::Indent);
 	Token tok = Require(lexer, "regular expression", TokenType::Regex);
@@ -93,14 +92,9 @@ void File(Lexer& lexer)
 		Error("keyword", lexer.Peek());
 	}
 
-	while (lexer.Peek().type == TokenType::Keyword)
+	while (lexer.Peek().type != TokenType::Eof)
 	{
 		Keyword(lexer);
-	}
-
-	if (lexer.Peek().type != TokenType::Eof)
-	{
-		Error("keyword", lexer.Peek());
 	}
 }
 
@@ -110,17 +104,19 @@ void File(Lexer& lexer)
 /// <param name="lexer">Lexer to parse from.</param>
 void Keyword(Lexer& lexer)
 {
-	if (lexer.Peek().text == "expression")
+	Token tok = Require(lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
+
+	if (tok.text == "expression")
 	{
 		Expression(lexer);
 	}
-	else if (lexer.Peek().text == "rule")
+	else if (tok.text == "rule")
 	{
 		Rule(lexer);
 	}
 	else
 	{
-		Error("'expression', 'pattern', or 'rule'", lexer.Peek());
+		Error(tok.line, "Unrecognized keyword " + tok.text);
 	}
 }
 
@@ -130,7 +126,6 @@ void Keyword(Lexer& lexer)
 /// <param name="lexer">Lexer to parse from.</param>
 void Rule(Lexer& lexer)
 {
-	Require(lexer, "'rule'", TokenType::Keyword, "rule");
 	Require(lexer, "identifier", TokenType::Text);
 
 	if (lexer.Peek().type != TokenType::Indent)
