@@ -8,6 +8,7 @@ ParseException::ParseException(const char* msg)
 	: std::exception(msg)
 {}
 
+void Action(Lexer& lexer);
 void Expression(Lexer& lexer);
 void File(Lexer& lexer);
 void Keyword(Lexer& lexer);
@@ -24,6 +25,16 @@ void Parse(std::string_view data)
 {
 	Lexer lexer(data);
 	File(lexer);
+}
+
+/// <summary>
+/// Parse an action.
+/// </summary>
+/// <param name="lexer">Lexer to parse from.</param>
+void Action(Lexer& lexer)
+{
+	Require(lexer, "indent", TokenType::Indent);
+	Require(lexer, "action", TokenType::Text);
 }
 
 /// <summary>
@@ -87,6 +98,16 @@ void Rule(Lexer& lexer)
 {
 	Require(lexer, "'rule'", TokenType::Keyword, "rule");
 	Require(lexer, "identifier", TokenType::Text);
+
+	if (lexer.Peek().type != TokenType::Indent)
+	{
+		Error("indent", lexer.Peek());
+	}
+
+	while (lexer.Peek().type == TokenType::Indent)
+	{
+		Action(lexer);
+	}
 	/*Require(lexer, "regular expression", TokenType::Regex);*/
 }
 
