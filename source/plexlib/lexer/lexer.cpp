@@ -116,7 +116,10 @@ void Lexer::LexLine(std::string_view line)
 		if (m_expectExpression)
 		{
 			m_expectExpression = false;
-			line.remove_suffix(1); // The trailing newline
+			if (line.back() == '\n')
+			{
+				line.remove_suffix(1);
+			}
 			m_buffer.push(Token(m_lineNumber, TokenType::Regex, std::string(line)));
 			return;
 		}
