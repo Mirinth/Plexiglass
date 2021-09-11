@@ -1,2 +1,0 @@
-# pattern with no indent
-pattern some-name

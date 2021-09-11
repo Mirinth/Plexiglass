@@ -1,2 +1,3 @@
 # pattern with | at start
-pattern name |
+pattern name
+	|
