@@ -40,8 +40,13 @@ void Action(Lexer& lexer)
 	Require(lexer, "indent", TokenType::Indent);
 	Token action = Require(lexer, "action", TokenType::Text);
 
-	if (unitActions.count(action.text) > 0 || compositeActions.count(action.text) > 0)
+	if (unitActions.count(action.text) > 0)
 	{
+		return;
+	}
+	else if (compositeActions.count(action.text) > 0)
+	{
+		Require(lexer, "identifier", TokenType::Text);
 		return;
 	}
 	else
