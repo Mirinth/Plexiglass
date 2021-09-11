@@ -128,7 +128,14 @@ void Lexer::LexLine(std::string_view line)
 		{
 			line = StripWhitespace(line);
 			std::string text = LexToken(line);
-			m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+			if (text == "|")
+			{
+				m_buffer.push(Token(m_lineNumber, TokenType::Alternator, text));
+			}
+			else
+			{
+				m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+			}
 		}
 	}
 	else
