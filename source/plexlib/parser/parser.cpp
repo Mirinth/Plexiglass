@@ -11,6 +11,7 @@ ParseException::ParseException(const char* msg)
 void Expression(Lexer& lexer);
 void File(Lexer& lexer);
 void Keyword(Lexer& lexer);
+void Rule(Lexer& lexer);
 
 void Error(std::string expected, const Token found);
 void Require(Lexer& lexer, std::string name, TokenType type, std::string value = "");
@@ -63,8 +64,23 @@ void Keyword(Lexer& lexer)
 	{
 		Expression(lexer);
 	}
+	else if (lexer.Peek().text == "rule")
+	{
+		Rule(lexer);
+	}
 
 	Error("'expression', 'pattern', or 'rule'", lexer.Peek());
+}
+
+/// <summary>
+/// Parse a rule statement.
+/// </summary>
+/// <param name="lexer">Lexer to parse from.</param>
+void Rule(Lexer& lexer)
+{
+	Require(lexer, "'rule'", TokenType::Keyword, "rule");
+	Require(lexer, "identifier", TokenType::Text);
+	/*Require(lexer, "regular expression", TokenType::Regex);*/
 }
 
 /// <summary>
