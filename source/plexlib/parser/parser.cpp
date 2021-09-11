@@ -1,5 +1,6 @@
 #include <parser/parser.hpp>
 
+#include <regex>
 #include <set>
 #include <sstream>
 
@@ -15,6 +16,7 @@ void File(Lexer& lexer);
 void Keyword(Lexer& lexer);
 void Rule(Lexer& lexer);
 
+void Error(size_t line, std::string message);
 void Error(std::string expected, const Token found);
 Token Require(Lexer& lexer, std::string name, TokenType type, std::string value = "");
 
@@ -64,7 +66,16 @@ void Expression(Lexer& lexer)
 	Require(lexer, "'expression'", TokenType::Keyword, "expression");
 	Require(lexer, "identifier", TokenType::Text);
 	Require(lexer, "indent", TokenType::Indent);
-	Require(lexer, "regular expression", TokenType::Regex);
+	Token tok = Require(lexer, "regular expression", TokenType::Regex);
+
+	try
+	{
+		std::regex dummy(tok.text);
+	}
+	catch(std::regex_error&)
+	{
+		Error(tok.line, "Malformed regex.");
+	}
 }
 
 /// <summary>
@@ -128,6 +139,19 @@ void Rule(Lexer& lexer)
 		Action(lexer);
 	}
 	/*Require(lexer, "regular expression", TokenType::Regex);*/
+}
+
+/// <summary>
+/// Generate an error message and stop parsing.
+/// </summary>
+/// <param name="line">The line the error occurred on.</param>
+/// <param name="message">The message to display.</param>
+void Error(size_t line, std::string message)
+{
+	std::stringstream out;
+	out << "Syntax error on line " << line
+		<< ": " << message;
+	throw ParseException(out.str().c_str());
 }
 
 /// <summary>
