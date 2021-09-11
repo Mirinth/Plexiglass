@@ -1,2 +1,0 @@
-# rule with action instead of name
-rule rewind
