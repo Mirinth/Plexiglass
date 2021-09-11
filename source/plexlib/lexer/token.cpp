@@ -28,6 +28,9 @@ std::string Token::ToString() const
 	std::string str;
 	switch (type)
 	{
+	case TokenType::Alternator:
+		str = "alternator";
+		break;
 	case TokenType::Eof:
 		str = "eof";
 		break;

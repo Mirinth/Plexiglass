@@ -15,12 +15,12 @@ text some-name
 indent
 text abcde
 indent
-text |
+alternator |
 text fghij
 text klmno
 text pqrs
 indent
-text |
+alternator |
 text wxyz
 keyword rule
 text what-to-match

@@ -127,8 +127,16 @@ void Lexer::LexLine(std::string_view line)
 		while (!IsBlank(line))
 		{
 			line = StripWhitespace(line);
-			std::string text = LexToken(line);
-			m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+			if (line[0] == '|')
+			{
+				m_buffer.push(Token(m_lineNumber, TokenType::Alternator, "|"));
+				line.remove_prefix(1);
+			}
+			else
+			{
+				std::string text = LexToken(line);
+				m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+			}
 		}
 	}
 	else

@@ -13,7 +13,9 @@ ParseException::ParseException(const char* msg)
 void Action(Lexer& lexer);
 void Expression(Lexer& lexer);
 void File(Lexer& lexer);
+void IdentifierSequence(Lexer& lexer, bool initial);
 void Keyword(Lexer& lexer);
+void Pattern(Lexer& lexer);
 void Rule(Lexer& lexer);
 
 void Error(size_t line, std::string message);
@@ -67,7 +69,6 @@ void Action(Lexer& lexer)
 /// <param name="lexer">Lexer to parse from.</param>
 void Expression(Lexer& lexer)
 {
-	Require(lexer, "'expression'", TokenType::Keyword, "expression");
 	Require(lexer, "identifier", TokenType::Text);
 	Require(lexer, "indent", TokenType::Indent);
 	Token tok = Require(lexer, "regular expression", TokenType::Regex);
@@ -93,14 +94,29 @@ void File(Lexer& lexer)
 		Error("keyword", lexer.Peek());
 	}
 
-	while (lexer.Peek().type == TokenType::Keyword)
+	while (lexer.Peek().type != TokenType::Eof)
 	{
 		Keyword(lexer);
 	}
+}
 
-	if (lexer.Peek().type != TokenType::Eof)
+/// <summary>
+/// Parse a sequence of identifiers.
+/// </summary>
+/// <param name="lexer">Lexer to parse from.</param>
+/// <param name="initial">Whether this is the initial sequence or a followup one.
+void IdentifierSequence(Lexer& lexer, bool initial)
+{
+	Require(lexer, "indent", TokenType::Indent);
+	if (!initial)
 	{
-		Error("keyword", lexer.Peek());
+		Require(lexer, "alternator", TokenType::Alternator);
+	}
+	Require(lexer, "identifier", TokenType::Text);
+
+	while (lexer.Peek().type == TokenType::Text)
+	{
+		Require(lexer, "identifier", TokenType::Text);
 	}
 }
 
@@ -110,17 +126,39 @@ void File(Lexer& lexer)
 /// <param name="lexer">Lexer to parse from.</param>
 void Keyword(Lexer& lexer)
 {
-	if (lexer.Peek().text == "expression")
+	Token tok = Require(lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
+
+	if (tok.text == "expression")
 	{
 		Expression(lexer);
 	}
-	else if (lexer.Peek().text == "rule")
+	else if (tok.text == "rule")
 	{
 		Rule(lexer);
 	}
+	else if (tok.text == "pattern")
+	{
+		Pattern(lexer);
+	}
 	else
 	{
-		Error("'expression', 'pattern', or 'rule'", lexer.Peek());
+		Error(tok.line, "Unrecognized keyword " + tok.text);
+	}
+}
+
+/// <summary>
+/// Parse a pattern statement.
+/// </summary>
+/// <param name="lexer">Lexer to parse from.</param>
+void Pattern(Lexer& lexer)
+{
+	Require(lexer, "identifier", TokenType::Text);
+	
+	IdentifierSequence(lexer, true);
+
+	while (lexer.Peek().type == TokenType::Indent)
+	{
+		IdentifierSequence(lexer, false);
 	}
 }
 
@@ -130,7 +168,6 @@ void Keyword(Lexer& lexer)
 /// <param name="lexer">Lexer to parse from.</param>
 void Rule(Lexer& lexer)
 {
-	Require(lexer, "'rule'", TokenType::Keyword, "rule");
 	Require(lexer, "identifier", TokenType::Text);
 
 	if (lexer.Peek().type != TokenType::Indent)

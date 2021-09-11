@@ -4,6 +4,7 @@
 
 enum class TokenType
 {
+	Alternator,
 	Eof,
 	Indent,
 	Keyword,
