@@ -43,12 +43,17 @@ void Expression(Lexer& lexer)
 /// <param name="lexer">Lexer to parse from.</param>
 void File(Lexer& lexer)
 {
+	if (lexer.Peek().type == TokenType::Eof)
+	{
+		Error("keyword", lexer.Peek());
+	}
+
 	while (lexer.Peek().type == TokenType::Keyword)
 	{
 		Keyword(lexer);
 	}
 
-	if (lexer.Peek().type == TokenType::Eof)
+	if (lexer.Peek().type != TokenType::Eof)
 	{
 		Error("keyword", lexer.Peek());
 	}
@@ -68,8 +73,10 @@ void Keyword(Lexer& lexer)
 	{
 		Rule(lexer);
 	}
-
-	Error("'expression', 'pattern', or 'rule'", lexer.Peek());
+	else
+	{
+		Error("'expression', 'pattern', or 'rule'", lexer.Peek());
+	}
 }
 
 /// <summary>
