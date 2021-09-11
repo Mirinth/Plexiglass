@@ -63,6 +63,7 @@ void Expression(Lexer& lexer)
 {
 	Require(lexer, "'expression'", TokenType::Keyword, "expression");
 	Require(lexer, "identifier", TokenType::Text);
+	Require(lexer, "indent", TokenType::Indent);
 	Require(lexer, "regular expression", TokenType::Regex);
 }
 

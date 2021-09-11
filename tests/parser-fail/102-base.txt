@@ -1,1 +1,1 @@
-Syntax error on line 2: Expected regular expression found eof
+Syntax error on line 2: Expected indent found eof

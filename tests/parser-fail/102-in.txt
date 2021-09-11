@@ -1,2 +1,2 @@
-# regex with no expression
+# regex with no indent
 expression some-name

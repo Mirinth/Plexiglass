@@ -1,2 +1,2 @@
-# pattern with bad name
-pattern rule
+# pattern with no indent
+pattern some-name
