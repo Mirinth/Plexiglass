@@ -13,7 +13,7 @@ ParseException::ParseException(const char* msg)
 void Action(Lexer& lexer);
 void Expression(Lexer& lexer);
 void File(Lexer& lexer);
-void IdentifierSequence(Lexer& lexer);
+void IdentifierSequence(Lexer& lexer, bool initial);
 void Keyword(Lexer& lexer);
 void Pattern(Lexer& lexer);
 void Rule(Lexer& lexer);
@@ -104,9 +104,14 @@ void File(Lexer& lexer)
 /// Parse a sequence of identifiers.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void IdentifierSequence(Lexer& lexer)
+/// <param name="initial">Whether this is the initial sequence or a followup one.
+void IdentifierSequence(Lexer& lexer, bool initial)
 {
 	Require(lexer, "indent", TokenType::Indent);
+	if (!initial)
+	{
+		Require(lexer, "alternator", TokenType::Alternator);
+	}
 	Require(lexer, "identifier", TokenType::Text);
 
 	while (lexer.Peek().type == TokenType::Text)
@@ -149,7 +154,12 @@ void Pattern(Lexer& lexer)
 {
 	Require(lexer, "identifier", TokenType::Text);
 	
-	IdentifierSequence(lexer);
+	IdentifierSequence(lexer, true);
+
+	while (lexer.Peek().type == TokenType::Indent)
+	{
+		IdentifierSequence(lexer, false);
+	}
 }
 
 /// <summary>
