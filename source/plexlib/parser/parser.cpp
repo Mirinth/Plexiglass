@@ -14,7 +14,6 @@ void Action(Lexer& lexer);
 void Expression(Lexer& lexer);
 FileNode File(Lexer& lexer);
 void IdentifierSequence(Lexer& lexer, bool initial);
-void Keyword(Lexer& lexer);
 void Pattern(Lexer& lexer);
 void Rule(Lexer& lexer);
 
@@ -97,7 +96,24 @@ FileNode File(Lexer& lexer)
 
 	while (lexer.Peek().type != TokenType::Eof)
 	{
-		Keyword(lexer);
+		Token tok = Require(lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
+
+		if (tok.text == "expression")
+		{
+			Expression(lexer);
+		}
+		else if (tok.text == "rule")
+		{
+			Rule(lexer);
+		}
+		else if (tok.text == "pattern")
+		{
+			Pattern(lexer);
+		}
+		else
+		{
+			Error(tok.line, "Unrecognized keyword " + tok.text);
+		}
 	}
 
 	return _FileNode::New();
@@ -120,32 +136,6 @@ void IdentifierSequence(Lexer& lexer, bool initial)
 	while (lexer.Peek().type == TokenType::Text)
 	{
 		Require(lexer, "identifier", TokenType::Text);
-	}
-}
-
-/// <summary>
-/// Parse a keyword.
-/// </summary>
-/// <param name="lexer">Lexer to parse from.</param>
-void Keyword(Lexer& lexer)
-{
-	Token tok = Require(lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
-
-	if (tok.text == "expression")
-	{
-		Expression(lexer);
-	}
-	else if (tok.text == "rule")
-	{
-		Rule(lexer);
-	}
-	else if (tok.text == "pattern")
-	{
-		Pattern(lexer);
-	}
-	else
-	{
-		Error(tok.line, "Unrecognized keyword " + tok.text);
 	}
 }
 
