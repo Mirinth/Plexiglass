@@ -7,7 +7,8 @@ FileNode _FileNode::New()
 
 std::ostream& operator<<(std::ostream& out, FileNode node)
 {
-	out << "File:\n";
+	out << "File:\n"
+		<< "\tExpressions:\n";
 
 	for (auto& expression : node->m_expressions)
 	{
@@ -32,6 +33,6 @@ ExpressionNode _ExpressionNode::New(std::string name, std::string expression)
 
 std::ostream& operator<<(std::ostream& out, ExpressionNode node)
 {
-	out << "\t" << node->m_name << " : " << node->m_expression << "\n";
+	out << "\t\t" << node->m_name << " : " << node->m_expression << "\n";
 	return out;
 }
