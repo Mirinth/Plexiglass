@@ -132,6 +132,7 @@ bool RunTreeTest(std::string stem)
 
 		std::ofstream out(stem + "-out.txt");
 		out << file;
+		out.close();
 		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 	}
 	catch (ParseException exc)
