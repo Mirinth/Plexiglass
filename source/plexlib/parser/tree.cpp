@@ -68,7 +68,32 @@ PatternNode _PatternNode::New(std::string name)
 
 std::ostream& operator<<(std::ostream& out, PatternNode node)
 {
-	out << "\t\t" << node->m_name << " : \n";
+	out << "\t\t" << node->m_name << " : ";
+
+	for (size_t i = 0; i < node->m_sequences.size() - 1; i++)
+	{
+		out << node->m_sequences[i] << ", ";
+	}
+
+	out << node->m_sequences[node->m_sequences.size() - 1] << '\n';
+
+	return out;
+}
+
+void _PatternNode::Add(IdentifierSequenceNode node)
+{
+	m_sequences.push_back(node);
+}
+
+IdentifierSequenceNode _IdentifierSequenceNode::New()
+{
+	IdentifierSequenceNode node = std::make_shared<_IdentifierSequenceNode>();
+	return node;
+}
+
+std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node)
+{
+	out << "Dummy identifier sequence";
 	return out;
 }
 

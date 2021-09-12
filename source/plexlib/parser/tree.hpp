@@ -14,6 +14,9 @@ typedef std::shared_ptr<_ExpressionNode> ExpressionNode;
 class _PatternNode;
 typedef std::shared_ptr<_PatternNode> PatternNode;
 
+class _IdentifierSequenceNode;
+typedef std::shared_ptr<_IdentifierSequenceNode> IdentifierSequenceNode;
+
 class _RuleNode;
 typedef std::shared_ptr<_RuleNode> RuleNode;
 
@@ -53,8 +56,18 @@ public:
 	static PatternNode New(std::string name);
 	friend std::ostream& operator<<(std::ostream& out, PatternNode node);
 
+	void Add(IdentifierSequenceNode node);
+
 private:
 	std::string m_name;
+	std::vector<IdentifierSequenceNode> m_sequences;
+};
+
+class _IdentifierSequenceNode
+{
+public:
+	static IdentifierSequenceNode New();
+	friend std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node);
 };
 
 class _RuleNode

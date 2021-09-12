@@ -13,7 +13,7 @@ ParseException::ParseException(const char* msg)
 ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
 FileNode File(Lexer& lexer);
-void IdentifierSequence(Lexer& lexer, bool initial);
+IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial);
 PatternNode Pattern(Lexer& lexer);
 RuleNode Rule(Lexer& lexer);
 
@@ -135,7 +135,8 @@ FileNode File(Lexer& lexer)
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
 /// <param name="initial">Whether this is the initial sequence or a followup one.
-void IdentifierSequence(Lexer& lexer, bool initial)
+/// <returns>An IdentifierSequenceNode representing the parsed identifier sequence.</returns>
+IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 {
 	Require(lexer, "indent", TokenType::Indent);
 	if (!initial)
@@ -148,6 +149,8 @@ void IdentifierSequence(Lexer& lexer, bool initial)
 	{
 		Require(lexer, "identifier", TokenType::Text);
 	}
+
+	return _IdentifierSequenceNode::New();
 }
 
 /// <summary>
@@ -159,12 +162,14 @@ PatternNode Pattern(Lexer& lexer)
 {
 	Token name = Require(lexer, "identifier", TokenType::Text);
 	PatternNode node = _PatternNode::New(name.text);
-	
-	IdentifierSequence(lexer, true);
+
+	IdentifierSequenceNode sequence = IdentifierSequence(lexer, true);
+	node->Add(sequence);
 
 	while (lexer.Peek().type == TokenType::Indent)
 	{
-		IdentifierSequence(lexer, false);
+		sequence = IdentifierSequence(lexer, false);
+		node->Add(sequence);
 	}
 
 	return node;
