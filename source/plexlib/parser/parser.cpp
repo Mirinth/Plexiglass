@@ -70,20 +70,20 @@ void Action(Lexer& lexer)
 /// <returns>ExpressionNode representing the parsed expression.</returns>
 ExpressionNode Expression(Lexer& lexer)
 {
-	Require(lexer, "identifier", TokenType::Text);
+	Token name = Require(lexer, "identifier", TokenType::Text);
 	Require(lexer, "indent", TokenType::Indent);
-	Token tok = Require(lexer, "regular expression", TokenType::Regex);
+	Token expression = Require(lexer, "regular expression", TokenType::Regex);
 
 	try
 	{
-		std::regex dummy(tok.text);
+		std::regex dummy(expression.text);
 	}
 	catch(std::regex_error&)
 	{
-		Error(tok.line, "Malformed regex.");
+		Error(expression.line, "Malformed regex.");
 	}
 
-	return _ExpressionNode::New();
+	return _ExpressionNode::New(name.text, expression.text);
 }
 
 /// <summary>

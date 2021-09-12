@@ -25,6 +25,10 @@ private:
 class _ExpressionNode
 {
 public:
-	static ExpressionNode New();
+	static ExpressionNode New(std::string name, std::string expression);
 	friend std::ostream& operator<<(std::ostream& out, ExpressionNode node);
+
+private:
+	std::string m_name;
+	std::string m_expression;
 };

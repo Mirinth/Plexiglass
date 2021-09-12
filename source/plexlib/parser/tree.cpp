@@ -22,13 +22,16 @@ void _FileNode::Add(ExpressionNode node)
 	m_expressions.push_back(node);
 }
 
-ExpressionNode _ExpressionNode::New()
+ExpressionNode _ExpressionNode::New(std::string name, std::string expression)
 {
-	return std::make_shared<_ExpressionNode>();
+	ExpressionNode node = std::make_shared<_ExpressionNode>();
+	node->m_name = name;
+	node->m_expression = expression;
+	return node;
 }
 
 std::ostream& operator<<(std::ostream& out, ExpressionNode node)
 {
-	out << "\tExpression : \n";
+	out << "\t" << node->m_name << " : " << node->m_expression << "\n";
 	return out;
 }
