@@ -6,4 +6,5 @@ File:
 		fourth : jkl
 		fifth : mno
 		sixth : pqr
+	Patterns:
 	Rules:

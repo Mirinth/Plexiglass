@@ -7,13 +7,15 @@ FileNode _FileNode::New()
 
 std::ostream& operator<<(std::ostream& out, FileNode node)
 {
-	out << "File:\n"
-		<< "\tExpressions:\n";
+	out << "File:\n";
 
+	out << "\tExpressions:\n";
 	for (auto& expression : node->m_expressions)
 	{
 		out << expression;
 	}
+
+	out << "\tPatterns:\n";
 
 	out << "\tRules:\n";
 	for (auto& rule : node->m_rules)
