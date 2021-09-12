@@ -11,6 +11,9 @@ typedef std::shared_ptr<_FileNode> FileNode;
 class _ExpressionNode;
 typedef std::shared_ptr<_ExpressionNode> ExpressionNode;
 
+class _PatternNode;
+typedef std::shared_ptr<_PatternNode> PatternNode;
+
 class _RuleNode;
 typedef std::shared_ptr<_RuleNode> RuleNode;
 
@@ -40,6 +43,13 @@ public:
 private:
 	std::string m_name;
 	std::string m_expression;
+};
+
+class _PatternNode
+{
+public:
+	static PatternNode New();
+	friend std::ostream& operator<<(std::ostream& out, PatternNode node);
 };
 
 class _RuleNode
