@@ -27,10 +27,12 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, FileNode node);
 
 	void Add(ExpressionNode node);
+	void Add(PatternNode node);
 	void Add(RuleNode node);
 
 private:
 	std::vector<ExpressionNode> m_expressions;
+	std::vector<PatternNode> m_patterns;
 	std::vector<RuleNode> m_rules;
 };
 

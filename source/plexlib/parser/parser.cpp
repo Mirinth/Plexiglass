@@ -14,7 +14,7 @@ ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
 FileNode File(Lexer& lexer);
 void IdentifierSequence(Lexer& lexer, bool initial);
-void Pattern(Lexer& lexer);
+PatternNode Pattern(Lexer& lexer);
 RuleNode Rule(Lexer& lexer);
 
 void Error(size_t line, std::string message);
@@ -118,7 +118,8 @@ FileNode File(Lexer& lexer)
 		}
 		else if (tok.text == "pattern")
 		{
-			Pattern(lexer);
+			PatternNode node = Pattern(lexer);
+			file->Add(node);
 		}
 		else
 		{
@@ -153,7 +154,8 @@ void IdentifierSequence(Lexer& lexer, bool initial)
 /// Parse a pattern statement.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void Pattern(Lexer& lexer)
+/// <returns>A PatternNode representing the parsed pattern.</returns>
+PatternNode Pattern(Lexer& lexer)
 {
 	Require(lexer, "identifier", TokenType::Text);
 	
@@ -163,6 +165,8 @@ void Pattern(Lexer& lexer)
 	{
 		IdentifierSequence(lexer, false);
 	}
+
+	return _PatternNode::New();
 }
 
 /// <summary>

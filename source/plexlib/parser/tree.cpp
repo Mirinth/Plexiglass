@@ -31,6 +31,11 @@ void _FileNode::Add(ExpressionNode node)
 	m_expressions.push_back(node);
 }
 
+void _FileNode::Add(PatternNode node)
+{
+	m_patterns.push_back(node);
+}
+
 void _FileNode::Add(RuleNode node)
 {
 	m_rules.push_back(node);
