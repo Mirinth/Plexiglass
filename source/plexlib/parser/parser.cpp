@@ -15,7 +15,7 @@ ExpressionNode Expression(Lexer& lexer);
 FileNode File(Lexer& lexer);
 void IdentifierSequence(Lexer& lexer, bool initial);
 void Pattern(Lexer& lexer);
-void Rule(Lexer& lexer);
+RuleNode Rule(Lexer& lexer);
 
 void Error(size_t line, std::string message);
 void Error(std::string expected, const Token found);
@@ -111,7 +111,8 @@ FileNode File(Lexer& lexer)
 		}
 		else if (tok.text == "rule")
 		{
-			Rule(lexer);
+			RuleNode node = Rule(lexer);
+			file->Add(node);
 		}
 		else if (tok.text == "pattern")
 		{
@@ -166,7 +167,8 @@ void Pattern(Lexer& lexer)
 /// Parse a rule statement.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void Rule(Lexer& lexer)
+/// <returns>A RuleNode representing the parased rule.</returns>
+RuleNode Rule(Lexer& lexer)
 {
 	Require(lexer, "identifier", TokenType::Text);
 
@@ -179,7 +181,8 @@ void Rule(Lexer& lexer)
 	{
 		Action(lexer);
 	}
-	/*Require(lexer, "regular expression", TokenType::Regex);*/
+	
+	return _RuleNode::New();
 }
 
 /// <summary>

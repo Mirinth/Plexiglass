@@ -23,6 +23,11 @@ void _FileNode::Add(ExpressionNode node)
 	m_expressions.push_back(node);
 }
 
+void _FileNode::Add(RuleNode node)
+{
+	m_rules.push_back(node);
+}
+
 ExpressionNode _ExpressionNode::New(std::string name, std::string expression)
 {
 	ExpressionNode node = std::make_shared<_ExpressionNode>();
