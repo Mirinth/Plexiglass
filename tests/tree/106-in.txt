@@ -1,0 +1,12 @@
+# Several patterns with multiple alternatives
+pattern first
+	  abc def
+	| ghi jkl
+
+pattern second
+	  mno pqr
+	| stu vwx
+
+pattern third
+	  yz1 234
+	| 567 890

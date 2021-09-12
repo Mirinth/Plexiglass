@@ -1,0 +1,3 @@
+# A pattern with one alternative with one symbol
+pattern name
+	abc
