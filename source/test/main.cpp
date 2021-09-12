@@ -131,17 +131,18 @@ bool RunParserTest(std::string stem)
 	
 	try
 	{
-		Parse(data);
+		Parse(data); // This should always throw for parser tests.
+
 		std::ofstream out(stem + "-out.txt");
-		out << "No errors" << std::endl;
+		out << "Test failed: No errors" << std::endl;
+		return false;
 	}
 	catch (ParseException exc)
 	{
 		std::ofstream out(stem + "-out.txt");
 		out << exc.what() << std::endl;
+		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 	}
-
-	return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 }
 
 bool TestParser()
