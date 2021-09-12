@@ -15,6 +15,12 @@ std::ostream& operator<<(std::ostream& out, FileNode node)
 		out << expression;
 	}
 
+	out << "\tRules:\n";
+	for (auto& rule : node->m_rules)
+	{
+		out << rule;
+	}
+
 	return out;
 }
 
