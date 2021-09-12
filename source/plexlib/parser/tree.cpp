@@ -64,7 +64,7 @@ std::ostream& operator<<(std::ostream& out, RuleNode node)
 		out << node->m_actions[i] << ", ";
 	}
 
-	out << node->m_actions[node->m_actions.size() - 1];
+	out << node->m_actions[node->m_actions.size() - 1] << "\n";
 
 	return out;
 }
@@ -74,14 +74,15 @@ void _RuleNode::Add(ActionNode node)
 	m_actions.push_back(node);
 }
 
-ActionNode _ActionNode::New()
+ActionNode _ActionNode::New(std::string name)
 {
 	ActionNode node = std::make_shared<_ActionNode>();
+	node->m_name = name;
 	return node;
 }
 
 std::ostream& operator<<(std::ostream& out, ActionNode node)
 {
-	out << "action";
+	out << node->m_name;
 	return out;
 }
