@@ -157,7 +157,8 @@ void IdentifierSequence(Lexer& lexer, bool initial)
 /// <returns>A PatternNode representing the parsed pattern.</returns>
 PatternNode Pattern(Lexer& lexer)
 {
-	Require(lexer, "identifier", TokenType::Text);
+	Token name = Require(lexer, "identifier", TokenType::Text);
+	PatternNode node = _PatternNode::New(name.text);
 	
 	IdentifierSequence(lexer, true);
 
@@ -166,7 +167,7 @@ PatternNode Pattern(Lexer& lexer)
 		IdentifierSequence(lexer, false);
 	}
 
-	return _PatternNode::New();
+	return node;
 }
 
 /// <summary>

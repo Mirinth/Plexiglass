@@ -59,15 +59,16 @@ std::ostream& operator<<(std::ostream& out, ExpressionNode node)
 	return out;
 }
 
-PatternNode _PatternNode::New()
+PatternNode _PatternNode::New(std::string name)
 {
 	PatternNode node = std::make_shared<_PatternNode>();
+	node->m_name = name;
 	return node;
 }
 
 std::ostream& operator<<(std::ostream& out, PatternNode node)
 {
-	out << "\t\t" << "Dummy pattern node" << "\n";
+	out << "\t\t" << node->m_name << " : \n";
 	return out;
 }
 

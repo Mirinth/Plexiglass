@@ -50,8 +50,11 @@ private:
 class _PatternNode
 {
 public:
-	static PatternNode New();
+	static PatternNode New(std::string name);
 	friend std::ostream& operator<<(std::ostream& out, PatternNode node);
+
+private:
+	std::string m_name;
 };
 
 class _RuleNode
