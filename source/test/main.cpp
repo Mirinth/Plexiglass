@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -101,30 +102,6 @@ bool RunLexerTest(std::string stem)
 	return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 }
 
-bool TestLexer()
-{
-	auto stems = GetTestStems("lexer");
-
-	for (auto& stem : stems)
-	{
-		std::cout << stem + "-in.txt : ";
-
-		bool pass = RunLexerTest(stem);
-
-		if (pass)
-		{
-			std::cout << "PASS\n";
-		}
-		else
-		{
-			std::cout << "FAIL\n";
-			return false;
-		}
-	}
-	
-	return true;
-}
-
 bool RunParserTest(std::string stem)
 {
 	std::string data = ReadFile(stem + "-in.txt");
@@ -145,15 +122,15 @@ bool RunParserTest(std::string stem)
 	}
 }
 
-bool TestParser()
+bool TestGroup(std::string name, std::function<bool(std::string)> test)
 {
-	auto stems = GetTestStems("parser");
+	auto stems = GetTestStems(name);
 
 	for (auto& stem : stems)
 	{
 		std::cout << stem + "-in.txt : ";
 
-		bool pass = RunParserTest(stem);
+		bool pass = test(stem);
 
 		if (pass)
 		{
@@ -171,13 +148,13 @@ bool TestParser()
 
 int main()
 {
-	bool success = TestLexer();
+	bool success = TestGroup("lexer", RunLexerTest);
 	if (!success)
 	{
 		return 1;
 	}
 
-	success = TestParser();
+	success = TestGroup("parser", RunParserTest);
 	if (!success)
 	{
 		return 1;
