@@ -1,0 +1,5 @@
+File:
+	Expressions:
+	Patterns:
+	Rules:
+		name : produce-nothing, produce token, rewind, transition state, ++line, line++
