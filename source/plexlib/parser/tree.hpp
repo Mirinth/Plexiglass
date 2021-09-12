@@ -68,6 +68,11 @@ class _IdentifierSequenceNode
 public:
 	static IdentifierSequenceNode New();
 	friend std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node);
+
+	void Add(std::string identifier);
+
+private:
+	std::vector<std::string> m_identifiers;
 };
 
 class _RuleNode

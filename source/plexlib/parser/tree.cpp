@@ -75,7 +75,7 @@ std::ostream& operator<<(std::ostream& out, PatternNode node)
 		out << node->m_sequences[i] << ", ";
 	}
 
-	out << node->m_sequences[node->m_sequences.size() - 1] << '\n';
+	out << node->m_sequences.back() << '\n';
 
 	return out;
 }
@@ -93,8 +93,18 @@ IdentifierSequenceNode _IdentifierSequenceNode::New()
 
 std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node)
 {
-	out << "Dummy identifier sequence";
+	for (size_t i = 0; i < node->m_identifiers.size() - 1; i++)
+	{
+		out << node->m_identifiers[i] << ", ";
+	}
+
+	out << node->m_identifiers.back();
 	return out;
+}
+
+void _IdentifierSequenceNode::Add(std::string identifier)
+{
+	m_identifiers.push_back(identifier);
 }
 
 RuleNode _RuleNode::New(std::string name)
@@ -113,8 +123,7 @@ std::ostream& operator<<(std::ostream& out, RuleNode node)
 		out << node->m_actions[i] << ", ";
 	}
 
-	out << node->m_actions[node->m_actions.size() - 1] << "\n";
-
+	out << node->m_actions.back() << "\n";
 	return out;
 }
 

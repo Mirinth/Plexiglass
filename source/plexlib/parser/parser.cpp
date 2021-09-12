@@ -143,14 +143,18 @@ IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 	{
 		Require(lexer, "alternator", TokenType::Alternator);
 	}
-	Require(lexer, "identifier", TokenType::Text);
+
+	IdentifierSequenceNode sequence = _IdentifierSequenceNode::New();
+	Token identifier = Require(lexer, "identifier", TokenType::Text);
+	sequence->Add(identifier.text);
 
 	while (lexer.Peek().type == TokenType::Text)
 	{
-		Require(lexer, "identifier", TokenType::Text);
+		identifier = Require(lexer, "identifier", TokenType::Text);
+		sequence->Add(identifier.text);
 	}
 
-	return _IdentifierSequenceNode::New();
+	return sequence;
 }
 
 /// <summary>
