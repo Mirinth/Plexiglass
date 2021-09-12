@@ -122,6 +122,26 @@ bool RunParserTest(std::string stem)
 	}
 }
 
+bool RunTreeTest(std::string stem)
+{
+	std::string data = ReadFile(stem + "-in.txt");
+
+	try
+	{
+		FileNode file = Parse(data);
+
+		std::ofstream out(stem + "-out.txt");
+		out << file;
+		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
+	}
+	catch (ParseException exc)
+	{
+		std::ofstream out(stem + "-out.txt");
+		out << exc.what() << std::endl;
+		return false; // Tree tests should never throw.
+	}
+}
+
 bool TestGroup(std::string name, std::function<bool(std::string)> test)
 {
 	auto stems = GetTestStems(name);
@@ -155,6 +175,12 @@ int main()
 	}
 
 	success = TestGroup("parser", RunParserTest);
+	if (!success)
+	{
+		return 1;
+	}
+
+	success = TestGroup("tree", RunTreeTest);
 	if (!success)
 	{
 		return 1;
