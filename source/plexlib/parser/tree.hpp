@@ -14,6 +14,9 @@ typedef std::shared_ptr<_ExpressionNode> ExpressionNode;
 class _RuleNode;
 typedef std::shared_ptr<_RuleNode> RuleNode;
 
+class _ActionNode;
+typedef std::shared_ptr<_ActionNode> ActionNode;
+
 class _FileNode
 {
 public:
@@ -45,6 +48,16 @@ public:
 	static RuleNode New(std::string name);
 	friend std::ostream& operator<<(std::ostream& out, RuleNode node);
 
+	void Add(ActionNode node);
+
 private:
 	std::string m_name;
+	std::vector<ActionNode> m_actions;
+};
+
+class _ActionNode
+{
+public:
+	static ActionNode New();
+	friend std::ostream& operator<<(std::ostream& out, ActionNode node);
 };

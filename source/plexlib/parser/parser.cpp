@@ -10,7 +10,7 @@ ParseException::ParseException(const char* msg)
 	: std::exception(msg)
 {}
 
-void Action(Lexer& lexer);
+ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
 FileNode File(Lexer& lexer);
 void IdentifierSequence(Lexer& lexer, bool initial);
@@ -36,7 +36,8 @@ FileNode Parse(std::string_view data)
 /// Parse an action.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void Action(Lexer& lexer)
+/// <returns>An ActionNode representing the parsed action.</returns>
+ActionNode Action(Lexer& lexer)
 {
 	static std::set<std::string> unitActions = { "produce-nothing", "rewind", "++line", "line++", "--line", "line--" };
 	static std::set<std::string> compositeActions = {"produce", "transition" };
@@ -46,7 +47,7 @@ void Action(Lexer& lexer)
 
 	if (unitActions.count(action.text) > 0)
 	{
-		return;
+		return _ActionNode::New();
 	}
 	else if (compositeActions.count(action.text) > 0)
 	{
@@ -54,12 +55,13 @@ void Action(Lexer& lexer)
 		{
 			Error(action.line, "Expected identifier before end of line");
 		}
-		Require(lexer, "identifier", TokenType::Text);
-		return;
+		Token value = Require(lexer, "identifier", TokenType::Text);
+		return _ActionNode::New();
 	}
 	else
 	{
 		Error("action", action);
+		return nullptr; // Silence warning; Error never returns.
 	}
 }
 
@@ -180,7 +182,8 @@ RuleNode Rule(Lexer& lexer)
 
 	while (lexer.Peek().type == TokenType::Indent)
 	{
-		Action(lexer);
+		ActionNode node = Action(lexer);
+		rule->Add(node);
 	}
 	
 	return rule;

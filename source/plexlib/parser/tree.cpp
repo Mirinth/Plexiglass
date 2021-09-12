@@ -57,6 +57,31 @@ RuleNode _RuleNode::New(std::string name)
 
 std::ostream& operator<<(std::ostream& out, RuleNode node)
 {
-	out << "\t\t" << node->m_name << " : \n";
+	out << "\t\t" << node->m_name << " : ";
+
+	for (size_t i = 0; i < node->m_actions.size() - 1; i++)
+	{
+		out << node->m_actions[i] << ", ";
+	}
+
+	out << node->m_actions[node->m_actions.size() - 1];
+
+	return out;
+}
+
+void _RuleNode::Add(ActionNode node)
+{
+	m_actions.push_back(node);
+}
+
+ActionNode _ActionNode::New()
+{
+	ActionNode node = std::make_shared<_ActionNode>();
+	return node;
+}
+
+std::ostream& operator<<(std::ostream& out, ActionNode node)
+{
+	out << "action";
 	return out;
 }
