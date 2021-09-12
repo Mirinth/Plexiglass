@@ -58,9 +58,10 @@ private:
 class _ActionNode
 {
 public:
-	static ActionNode New(std::string name);
+	static ActionNode New(std::string name, std::string identifier = "");
 	friend std::ostream& operator<<(std::ostream& out, ActionNode node);
 
 private:
 	std::string m_name;
+	std::string m_identifier;
 };

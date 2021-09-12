@@ -74,15 +74,20 @@ void _RuleNode::Add(ActionNode node)
 	m_actions.push_back(node);
 }
 
-ActionNode _ActionNode::New(std::string name)
+ActionNode _ActionNode::New(std::string name, std::string identifier /*= ""*/)
 {
 	ActionNode node = std::make_shared<_ActionNode>();
 	node->m_name = name;
+	node->m_identifier = identifier;
 	return node;
 }
 
 std::ostream& operator<<(std::ostream& out, ActionNode node)
 {
 	out << node->m_name;
+	if (!node->m_identifier.empty())
+	{
+		out << ' ' << node->m_identifier;
+	}
 	return out;
 }

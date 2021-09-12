@@ -55,8 +55,8 @@ ActionNode Action(Lexer& lexer)
 		{
 			Error(action.line, "Expected identifier before end of line");
 		}
-		Token value = Require(lexer, "identifier", TokenType::Text);
-		return _ActionNode::New(action.text);
+		Token identifier = Require(lexer, "identifier", TokenType::Text);
+		return _ActionNode::New(action.text, identifier.text);
 	}
 	else
 	{
