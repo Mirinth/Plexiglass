@@ -12,7 +12,7 @@ ParseException::ParseException(const char* msg)
 
 void Action(Lexer& lexer);
 void Expression(Lexer& lexer);
-void File(Lexer& lexer);
+FileNode File(Lexer& lexer);
 void IdentifierSequence(Lexer& lexer, bool initial);
 void Keyword(Lexer& lexer);
 void Pattern(Lexer& lexer);
@@ -30,8 +30,7 @@ Token Require(Lexer& lexer, std::string name, TokenType type, std::string value 
 FileNode Parse(std::string_view data)
 {
 	Lexer lexer(data);
-	File(lexer);
-	return _FileNode::New();
+	return File(lexer);
 }
 
 /// <summary>
@@ -89,7 +88,7 @@ void Expression(Lexer& lexer)
 /// Parse a whole file.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void File(Lexer& lexer)
+FileNode File(Lexer& lexer)
 {
 	if (lexer.Peek().type == TokenType::Eof)
 	{
@@ -100,6 +99,8 @@ void File(Lexer& lexer)
 	{
 		Keyword(lexer);
 	}
+
+	return _FileNode::New();
 }
 
 /// <summary>
