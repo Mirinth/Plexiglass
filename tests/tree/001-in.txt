@@ -1,2 +1,3 @@
+# a single expression
 expression expression-name
 	abc
