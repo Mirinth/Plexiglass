@@ -170,7 +170,8 @@ void Pattern(Lexer& lexer)
 /// <returns>A RuleNode representing the parased rule.</returns>
 RuleNode Rule(Lexer& lexer)
 {
-	Require(lexer, "identifier", TokenType::Text);
+	Token name = Require(lexer, "identifier", TokenType::Text);
+	RuleNode rule = _RuleNode::New(name.text);
 
 	if (lexer.Peek().type != TokenType::Indent)
 	{
@@ -182,7 +183,7 @@ RuleNode Rule(Lexer& lexer)
 		Action(lexer);
 	}
 	
-	return _RuleNode::New();
+	return rule;
 }
 
 /// <summary>

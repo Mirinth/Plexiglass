@@ -48,14 +48,15 @@ std::ostream& operator<<(std::ostream& out, ExpressionNode node)
 	return out;
 }
 
-RuleNode _RuleNode::New()
+RuleNode _RuleNode::New(std::string name)
 {
 	RuleNode node = std::make_shared<_RuleNode>();
+	node->m_name = name;
 	return node;
 }
 
 std::ostream& operator<<(std::ostream& out, RuleNode node)
 {
-	out << "\t\tRule node\n";
+	out << "\t\t" << node->m_name << " : \n";
 	return out;
 }

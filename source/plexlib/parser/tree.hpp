@@ -2,6 +2,7 @@
 
 #include <ostream>
 #include <memory>
+#include <tuple>
 #include <vector>
 
 class _FileNode;
@@ -41,6 +42,9 @@ private:
 class _RuleNode
 {
 public:
-	static RuleNode New();
+	static RuleNode New(std::string name);
 	friend std::ostream& operator<<(std::ostream& out, RuleNode node);
+
+private:
+	std::string m_name;
 };
