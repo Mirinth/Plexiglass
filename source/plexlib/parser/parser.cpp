@@ -26,10 +26,12 @@ Token Require(Lexer& lexer, std::string name, TokenType type, std::string value 
 /// Parse a block of data.
 /// </summary>
 /// <param name="data">The data to parse.</param>
-void Parse(std::string_view data)
+/// <returns>A FileNode representing the file.</returns>
+FileNode Parse(std::string_view data)
 {
 	Lexer lexer(data);
 	File(lexer);
+	return _FileNode::New();
 }
 
 /// <summary>
