@@ -11,10 +11,9 @@ ParseException::ParseException(const char* msg)
 {}
 
 void Action(Lexer& lexer);
-void Expression(Lexer& lexer);
-void File(Lexer& lexer);
+ExpressionNode Expression(Lexer& lexer);
+FileNode File(Lexer& lexer);
 void IdentifierSequence(Lexer& lexer, bool initial);
-void Keyword(Lexer& lexer);
 void Pattern(Lexer& lexer);
 void Rule(Lexer& lexer);
 
@@ -30,8 +29,7 @@ Token Require(Lexer& lexer, std::string name, TokenType type, std::string value 
 FileNode Parse(std::string_view data)
 {
 	Lexer lexer(data);
-	File(lexer);
-	return _FileNode::New();
+	return File(lexer);
 }
 
 /// <summary>
@@ -69,37 +67,63 @@ void Action(Lexer& lexer)
 /// Parse an expression statement.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void Expression(Lexer& lexer)
+/// <returns>ExpressionNode representing the parsed expression.</returns>
+ExpressionNode Expression(Lexer& lexer)
 {
-	Require(lexer, "identifier", TokenType::Text);
+	Token name = Require(lexer, "identifier", TokenType::Text);
 	Require(lexer, "indent", TokenType::Indent);
-	Token tok = Require(lexer, "regular expression", TokenType::Regex);
+	Token expression = Require(lexer, "regular expression", TokenType::Regex);
 
 	try
 	{
-		std::regex dummy(tok.text);
+		std::regex dummy(expression.text);
 	}
 	catch(std::regex_error&)
 	{
-		Error(tok.line, "Malformed regex.");
+		Error(expression.line, "Malformed regex.");
 	}
+
+	return _ExpressionNode::New(name.text, expression.text);
 }
 
 /// <summary>
 /// Parse a whole file.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void File(Lexer& lexer)
+/// <returns>FileNode representing the parsed file.</returns>
+FileNode File(Lexer& lexer)
 {
 	if (lexer.Peek().type == TokenType::Eof)
 	{
 		Error("keyword", lexer.Peek());
 	}
 
+	FileNode file = _FileNode::New();
+
 	while (lexer.Peek().type != TokenType::Eof)
 	{
-		Keyword(lexer);
+		Token tok = Require(lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
+
+		if (tok.text == "expression")
+		{
+			ExpressionNode node = Expression(lexer);
+			file->Add(node);
+		}
+		else if (tok.text == "rule")
+		{
+			Rule(lexer);
+		}
+		else if (tok.text == "pattern")
+		{
+			Pattern(lexer);
+		}
+		else
+		{
+			Error(tok.line, "Unrecognized keyword " + tok.text);
+		}
 	}
+
+	return file;
 }
 
 /// <summary>
@@ -119,32 +143,6 @@ void IdentifierSequence(Lexer& lexer, bool initial)
 	while (lexer.Peek().type == TokenType::Text)
 	{
 		Require(lexer, "identifier", TokenType::Text);
-	}
-}
-
-/// <summary>
-/// Parse a keyword.
-/// </summary>
-/// <param name="lexer">Lexer to parse from.</param>
-void Keyword(Lexer& lexer)
-{
-	Token tok = Require(lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
-
-	if (tok.text == "expression")
-	{
-		Expression(lexer);
-	}
-	else if (tok.text == "rule")
-	{
-		Rule(lexer);
-	}
-	else if (tok.text == "pattern")
-	{
-		Pattern(lexer);
-	}
-	else
-	{
-		Error(tok.line, "Unrecognized keyword " + tok.text);
 	}
 }
 
