@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -101,58 +102,56 @@ bool RunLexerTest(std::string stem)
 	return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 }
 
-bool TestLexer()
-{
-	auto stems = GetTestStems("lexer");
-
-	for (auto& stem : stems)
-	{
-		std::cout << stem + "-in.txt : ";
-
-		bool pass = RunLexerTest(stem);
-
-		if (pass)
-		{
-			std::cout << "PASS\n";
-		}
-		else
-		{
-			std::cout << "FAIL\n";
-			return false;
-		}
-	}
-	
-	return true;
-}
-
-bool RunParserFailTest(std::string stem)
+bool RunParserTest(std::string stem)
 {
 	std::string data = ReadFile(stem + "-in.txt");
 	
 	try
 	{
-		Parse(data);
+		Parse(data); // This should always throw for parser tests.
+
 		std::ofstream out(stem + "-out.txt");
-		out << "No errors" << std::endl;
+		out << "Test failed: No errors" << std::endl;
+		return false;
 	}
 	catch (ParseException exc)
 	{
 		std::ofstream out(stem + "-out.txt");
 		out << exc.what() << std::endl;
+		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 	}
-
-	return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 }
 
-bool TestParser()
+bool RunTreeTest(std::string stem)
 {
-	auto stems = GetTestStems("parser-fail");
+	std::string data = ReadFile(stem + "-in.txt");
+
+	try
+	{
+		FileNode file = Parse(data);
+
+		std::ofstream out(stem + "-out.txt");
+		out << file;
+		out.close();
+		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
+	}
+	catch (ParseException exc)
+	{
+		std::ofstream out(stem + "-out.txt");
+		out << exc.what() << std::endl;
+		return false; // Tree tests should never throw.
+	}
+}
+
+bool TestGroup(std::string name, std::function<bool(std::string)> test)
+{
+	auto stems = GetTestStems(name);
 
 	for (auto& stem : stems)
 	{
 		std::cout << stem + "-in.txt : ";
 
-		bool pass = RunParserFailTest(stem);
+		bool pass = test(stem);
 
 		if (pass)
 		{
@@ -170,13 +169,19 @@ bool TestParser()
 
 int main()
 {
-	bool success = TestLexer();
+	bool success = TestGroup("lexer", RunLexerTest);
 	if (!success)
 	{
 		return 1;
 	}
 
-	success = TestParser();
+	success = TestGroup("parser", RunParserTest);
+	if (!success)
+	{
+		return 1;
+	}
+
+	success = TestGroup("tree", RunTreeTest);
 	if (!success)
 	{
 		return 1;

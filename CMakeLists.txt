@@ -27,6 +27,8 @@ add_library(plexlib STATIC
 
     source/plexlib/parser/parser.hpp
     source/plexlib/parser/parser.cpp
+    source/plexlib/parser/tree.hpp
+    source/plexlib/parser/tree.cpp
 )
 target_include_directories(plexlib PUBLIC source/plexlib)
 target_compile_features(plexlib PUBLIC cxx_std_17)
