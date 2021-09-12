@@ -7,6 +7,6 @@ FileNode _FileNode::New()
 
 std::ostream& operator<<(std::ostream& out, FileNode node)
 {
-	out << "Stub tree";
+	out << "File:\n";
 	return out;
 }
