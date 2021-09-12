@@ -16,6 +16,10 @@ std::ostream& operator<<(std::ostream& out, FileNode node)
 	}
 
 	out << "\tPatterns:\n";
+	for (auto& pattern : node->m_patterns)
+	{
+		out << pattern;
+	}
 
 	out << "\tRules:\n";
 	for (auto& rule : node->m_rules)
