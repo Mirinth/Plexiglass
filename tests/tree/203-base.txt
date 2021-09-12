@@ -5,5 +5,5 @@ File:
 		second : produce token
 		third : rewind
 		fourth : transition state
-		fifth : increment
-		sixth : increment
+		fifth : ++line
+		sixth : line++
