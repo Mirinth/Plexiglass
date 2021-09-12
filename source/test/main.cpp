@@ -125,7 +125,7 @@ bool TestLexer()
 	return true;
 }
 
-bool RunParserFailTest(std::string stem)
+bool RunParserTest(std::string stem)
 {
 	std::string data = ReadFile(stem + "-in.txt");
 	
@@ -146,13 +146,13 @@ bool RunParserFailTest(std::string stem)
 
 bool TestParser()
 {
-	auto stems = GetTestStems("parser-fail");
+	auto stems = GetTestStems("parser");
 
 	for (auto& stem : stems)
 	{
 		std::cout << stem + "-in.txt : ";
 
-		bool pass = RunParserFailTest(stem);
+		bool pass = RunParserTest(stem);
 
 		if (pass)
 		{
