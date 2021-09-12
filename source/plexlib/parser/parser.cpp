@@ -13,8 +13,8 @@ ParseException::ParseException(const char* msg)
 ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
 FileNode File(Lexer& lexer);
-void IdentifierSequence(Lexer& lexer, bool initial);
-void Pattern(Lexer& lexer);
+IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial);
+PatternNode Pattern(Lexer& lexer);
 RuleNode Rule(Lexer& lexer);
 
 void Error(size_t line, std::string message);
@@ -118,7 +118,8 @@ FileNode File(Lexer& lexer)
 		}
 		else if (tok.text == "pattern")
 		{
-			Pattern(lexer);
+			PatternNode node = Pattern(lexer);
+			file->Add(node);
 		}
 		else
 		{
@@ -134,35 +135,48 @@ FileNode File(Lexer& lexer)
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
 /// <param name="initial">Whether this is the initial sequence or a followup one.
-void IdentifierSequence(Lexer& lexer, bool initial)
+/// <returns>An IdentifierSequenceNode representing the parsed identifier sequence.</returns>
+IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 {
 	Require(lexer, "indent", TokenType::Indent);
 	if (!initial)
 	{
 		Require(lexer, "alternator", TokenType::Alternator);
 	}
-	Require(lexer, "identifier", TokenType::Text);
+
+	IdentifierSequenceNode sequence = _IdentifierSequenceNode::New();
+	Token identifier = Require(lexer, "identifier", TokenType::Text);
+	sequence->Add(identifier.text);
 
 	while (lexer.Peek().type == TokenType::Text)
 	{
-		Require(lexer, "identifier", TokenType::Text);
+		identifier = Require(lexer, "identifier", TokenType::Text);
+		sequence->Add(identifier.text);
 	}
+
+	return sequence;
 }
 
 /// <summary>
 /// Parse a pattern statement.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void Pattern(Lexer& lexer)
+/// <returns>A PatternNode representing the parsed pattern.</returns>
+PatternNode Pattern(Lexer& lexer)
 {
-	Require(lexer, "identifier", TokenType::Text);
-	
-	IdentifierSequence(lexer, true);
+	Token name = Require(lexer, "identifier", TokenType::Text);
+	PatternNode node = _PatternNode::New(name.text);
+
+	IdentifierSequenceNode sequence = IdentifierSequence(lexer, true);
+	node->Add(sequence);
 
 	while (lexer.Peek().type == TokenType::Indent)
 	{
-		IdentifierSequence(lexer, false);
+		sequence = IdentifierSequence(lexer, false);
+		node->Add(sequence);
 	}
+
+	return node;
 }
 
 /// <summary>

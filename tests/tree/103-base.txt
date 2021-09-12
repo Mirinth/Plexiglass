@@ -1,5 +1,5 @@
 File:
 	Expressions:
 	Patterns:
+		name : abc def ghi jkl mno pqr
 	Rules:
-		rule-name : rewind

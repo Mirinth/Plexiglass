@@ -1,0 +1,7 @@
+File:
+	Expressions:
+	Patterns:
+		first : abc def, ghi jkl
+		second : mno pqr, stu vwx
+		third : yz1 234, 567 890
+	Rules:

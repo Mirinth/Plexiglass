@@ -1,0 +1,3 @@
+# A pattern with one alternative with many symbols
+pattern name
+	abc def ghi jkl mno pqr

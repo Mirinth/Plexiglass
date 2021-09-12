@@ -1,0 +1,8 @@
+# A rule with several actions
+rule name
+	produce-nothing
+	produce token
+	rewind
+	transition state
+	++line
+	line++

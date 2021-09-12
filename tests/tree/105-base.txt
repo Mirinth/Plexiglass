@@ -1,0 +1,5 @@
+File:
+	Expressions:
+	Patterns:
+		name : abc def ghi jkl mno pqr, def ghi jkl mno pqr abc, ghi jkl mno pqr abc def, jkl mno pqr abc def ghi, mno pqr abc def ghi jkl, pqr abc def ghi jkl mno
+	Rules:

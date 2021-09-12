@@ -1,5 +1,6 @@
 File:
 	Expressions:
+	Patterns:
 	Rules:
 		first : rewind
 		second : produce-nothing

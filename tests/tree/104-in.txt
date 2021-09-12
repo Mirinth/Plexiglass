@@ -1,0 +1,4 @@
+# A pattern with two alternatives with one symbol each
+pattern name
+	  abc
+	| def

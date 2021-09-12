@@ -1,5 +1,5 @@
 File:
 	Expressions:
 	Patterns:
+		name : abc def
 	Rules:
-		rule-name : rewind
