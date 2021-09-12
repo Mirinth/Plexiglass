@@ -95,7 +95,7 @@ std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node)
 {
 	for (size_t i = 0; i < node->m_identifiers.size() - 1; i++)
 	{
-		out << node->m_identifiers[i] << ", ";
+		out << node->m_identifiers[i] << ' ';
 	}
 
 	out << node->m_identifiers.back();
