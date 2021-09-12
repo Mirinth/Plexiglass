@@ -1,0 +1,6 @@
+# two rules
+rule first
+	rewind
+
+rule second
+	produce-nothing

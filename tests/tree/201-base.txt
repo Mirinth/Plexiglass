@@ -1,4 +1,4 @@
 File:
 	Expressions:
-		expression-name : abc
 	Rules:
+		rule-name : rewind

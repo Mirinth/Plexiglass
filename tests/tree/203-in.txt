@@ -1,0 +1,18 @@
+# several rules
+rule first
+	produce-nothing
+
+rule second
+	produce token
+
+rule third
+	rewind
+
+rule fourth
+	transition state
+
+rule fifth
+	++line
+
+rule sixth
+	line++
