@@ -1,0 +1,4 @@
+File:
+	Rules:
+		first : rewind
+		second : produce-nothing

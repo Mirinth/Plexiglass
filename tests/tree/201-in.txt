@@ -1,0 +1,3 @@
+# a single rule
+rule rule-name
+	rewind

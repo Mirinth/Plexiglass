@@ -1,0 +1,8 @@
+File:
+	Rules:
+		first : produce-nothing
+		second : produce token
+		third : rewind
+		fourth : transition state
+		fifth : increment
+		sixth : increment
