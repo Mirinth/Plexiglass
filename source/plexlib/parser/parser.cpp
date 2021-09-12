@@ -11,7 +11,7 @@ ParseException::ParseException(const char* msg)
 {}
 
 void Action(Lexer& lexer);
-void Expression(Lexer& lexer);
+ExpressionNode Expression(Lexer& lexer);
 FileNode File(Lexer& lexer);
 void IdentifierSequence(Lexer& lexer, bool initial);
 void Pattern(Lexer& lexer);
@@ -67,7 +67,8 @@ void Action(Lexer& lexer)
 /// Parse an expression statement.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
-void Expression(Lexer& lexer)
+/// <returns>ExpressionNode representing the parsed expression.</returns>
+ExpressionNode Expression(Lexer& lexer)
 {
 	Require(lexer, "identifier", TokenType::Text);
 	Require(lexer, "indent", TokenType::Indent);
@@ -81,12 +82,15 @@ void Expression(Lexer& lexer)
 	{
 		Error(tok.line, "Malformed regex.");
 	}
+
+	return _ExpressionNode::New();
 }
 
 /// <summary>
 /// Parse a whole file.
 /// </summary>
 /// <param name="lexer">Lexer to parse from.</param>
+/// <returns>FileNode representing the parsed file.</returns>
 FileNode File(Lexer& lexer)
 {
 	if (lexer.Peek().type == TokenType::Eof)
@@ -94,13 +98,16 @@ FileNode File(Lexer& lexer)
 		Error("keyword", lexer.Peek());
 	}
 
+	FileNode file = _FileNode::New();
+
 	while (lexer.Peek().type != TokenType::Eof)
 	{
 		Token tok = Require(lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
 
 		if (tok.text == "expression")
 		{
-			Expression(lexer);
+			ExpressionNode node = Expression(lexer);
+			file->Add(node);
 		}
 		else if (tok.text == "rule")
 		{
@@ -116,7 +123,7 @@ FileNode File(Lexer& lexer)
 		}
 	}
 
-	return _FileNode::New();
+	return file;
 }
 
 /// <summary>
