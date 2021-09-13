@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #include <string_view>
 
 #include <parser/tree.hpp>
