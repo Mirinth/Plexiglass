@@ -20,7 +20,7 @@ PlexiException::PlexiException(const char* msg)
 void Error(size_t line, std::string message)
 {
 	std::stringstream out;
-	out << "Syntax error on line " << line
+	out << "Error on line " << line
 		<< ": " << message;
 	throw PlexiException(out.str().c_str());
 }
@@ -33,7 +33,7 @@ void Error(size_t line, std::string message)
 void Error(std::string expected, const Token tok)
 {
 	std::stringstream out;
-	out << "Syntax error on line " << tok.line
+	out << "Error on line " << tok.line
 		<< ": Expected " << expected
 		<< " found " << tok.ToString();
 	throw PlexiException(out.str().c_str());

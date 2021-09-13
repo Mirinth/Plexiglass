@@ -1,1 +1,1 @@
-Syntax error on line 2: Expected indent found text junk
+Error on line 2: Expected indent found text junk

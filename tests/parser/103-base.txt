@@ -1,1 +1,1 @@
-Syntax error on line 3: Malformed regex.
+Error on line 3: Malformed regex.
