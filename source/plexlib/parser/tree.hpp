@@ -33,6 +33,8 @@ public:
 	void Add(PatternNode node);
 	void Add(RuleNode node);
 
+	void CheckIllegalActions();
+
 private:
 	std::vector<ExpressionNode> m_expressions;
 	std::vector<PatternNode> m_patterns;
@@ -83,6 +85,8 @@ public:
 
 	void Add(ActionNode node);
 
+	void CheckIllegalActions();
+
 private:
 	std::string m_name;
 	std::vector<ActionNode> m_actions;
@@ -93,6 +97,8 @@ class _ActionNode
 public:
 	static ActionNode New(std::string name, std::string identifier = "");
 	friend std::ostream& operator<<(std::ostream& out, ActionNode node);
+
+	void CheckIllegalActions();
 
 private:
 	std::string m_name;
