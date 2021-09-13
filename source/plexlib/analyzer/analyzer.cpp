@@ -6,7 +6,27 @@
 
 void Analyze(FileNode file)
 {
+	file->CheckDuplicateNames();
 	file->CheckIllegalActions();
+}
+
+void _FileNode::CheckDuplicateNames()
+{
+	std::map<std::string, ExpressionNode> expressionMap;
+
+	for (auto& expression : m_expressions)
+	{
+		std::string name = expression->GetName();
+
+		if (expressionMap.count(name) > 0)
+		{
+			DuplicateNameError(expression->GetLine(), expressionMap[name]->GetLine(), expression->GetName());
+		}
+		else
+		{
+			expressionMap[name] = expression;
+		}
+	}
 }
 
 void _FileNode::CheckIllegalActions()

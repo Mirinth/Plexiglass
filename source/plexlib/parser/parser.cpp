@@ -79,7 +79,7 @@ ExpressionNode Expression(Lexer& lexer)
 		Error(expression.line, "Malformed regex.");
 	}
 
-	return _ExpressionNode::New(name.text, expression.text);
+	return _ExpressionNode::New(name.line, name.text, expression.text);
 }
 
 /// <summary>

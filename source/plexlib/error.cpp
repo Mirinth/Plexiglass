@@ -13,6 +13,20 @@ PlexiException::PlexiException(const char* msg)
 {}
 
 /// <summary>
+/// Generate a duplicate name error message and stop parsing.
+/// </summary>
+/// <param name="line">Line to report the error on.</param>
+/// <param name="original">Line where name was originally defined.</param>
+/// <param name="name">Name that was duplicated.</param>
+void DuplicateNameError(size_t line, size_t original, std::string name)
+{
+	std::stringstream out;
+	out << "Error on line " << line << ": "
+		<< "'" << name << "' already defined on line " << original;
+	throw PlexiException(out.str().c_str());
+}
+
+/// <summary>
 /// Generate an error message and stop parsing.
 /// </summary>
 /// <param name="line">The line the error occurred on.</param>
