@@ -7,6 +7,7 @@
 #include <tuple>
 #include <vector>
 
+#include <analyzer/analyzer.hpp>
 #include <lexer/lexer.hpp>
 #include <parser/parser.hpp>
 
@@ -114,7 +115,7 @@ bool RunParserTest(std::string stem)
 		Parse(data); // This should always throw for parser tests.
 
 		std::ofstream out(stem + "-out.txt");
-		out << "Test failed: No errors" << std::endl;
+		out << "Test failed: Expected error, none reported" << std::endl;
 		return false;
 	}
 	catch (ParseException exc)
@@ -143,6 +144,27 @@ bool RunTreeTest(std::string stem)
 		std::ofstream out(stem + "-out.txt");
 		out << exc.what() << std::endl;
 		return false; // Tree tests should never throw.
+	}
+}
+
+bool RunAnalyzerTest(std::string stem)
+{
+	std::string data = ReadFile(stem + "-in.txt");
+
+	try
+	{
+		FileNode file = Parse(data);
+		Analyze(file); // Should always throw for semantic tests
+
+		std::ofstream out(stem + "-out.txt");
+		out << "Test failed: Expected error, none reported" << std::endl;
+		return false;
+	}
+	catch (SemanticException exc)
+	{
+		std::ofstream out(stem + "-out.txt");
+		out << exc.what() << std::endl;
+		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 	}
 }
 
@@ -176,6 +198,7 @@ int main()
 		{ "lexer", RunLexerTest },
 		{ "parser", RunParserTest },
 		{ "tree", RunTreeTest },
+		{ "semantics", RunAnalyzerTest },
 	};
 
 	for (auto& [name, tester] : map)
