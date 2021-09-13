@@ -132,9 +132,10 @@ void _RuleNode::Add(ActionNode node)
 	m_actions.push_back(node);
 }
 
-ActionNode _ActionNode::New(std::string name, std::string identifier /*= ""*/)
+ActionNode _ActionNode::New(size_t line, std::string name, std::string identifier /*= ""*/)
 {
 	ActionNode node = std::make_shared<_ActionNode>();
+	node->m_line = line;
 	node->m_name = name;
 	node->m_identifier = identifier;
 	return node;

@@ -29,6 +29,6 @@ void _ActionNode::CheckIllegalActions()
 {
 	if (m_name == "rewind")
 	{
-		Error(0, "'rewind' action not yet supported");
+		Error(m_line, "'rewind' action not yet supported");
 	}
 }

@@ -41,7 +41,7 @@ ActionNode Action(Lexer& lexer)
 
 	if (unitActions.count(action.text) > 0)
 	{
-		return _ActionNode::New(action.text);
+		return _ActionNode::New(action.line, action.text);
 	}
 	else if (compositeActions.count(action.text) > 0)
 	{
@@ -50,7 +50,7 @@ ActionNode Action(Lexer& lexer)
 			Error(action.line, "Expected identifier before end of line");
 		}
 		Token identifier = Require(lexer, "identifier", TokenType::Text);
-		return _ActionNode::New(action.text, identifier.text);
+		return _ActionNode::New(action.line, action.text, identifier.text);
 	}
 	else
 	{
