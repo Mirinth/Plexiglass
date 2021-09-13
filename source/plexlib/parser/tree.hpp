@@ -33,6 +33,7 @@ public:
 	void Add(PatternNode node);
 	void Add(RuleNode node);
 
+	void CheckDuplicateNames();
 	void CheckIllegalActions();
 
 private:
@@ -46,6 +47,8 @@ class _ExpressionNode
 public:
 	static ExpressionNode New(std::string name, std::string expression);
 	friend std::ostream& operator<<(std::ostream& out, ExpressionNode node);
+
+	std::string GetName() const;
 
 private:
 	std::string m_name;

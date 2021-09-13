@@ -59,6 +59,11 @@ std::ostream& operator<<(std::ostream& out, ExpressionNode node)
 	return out;
 }
 
+std::string _ExpressionNode::GetName() const
+{
+	return m_name;
+}
+
 PatternNode _PatternNode::New(std::string name)
 {
 	PatternNode node = std::make_shared<_PatternNode>();
