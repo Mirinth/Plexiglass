@@ -7,6 +7,7 @@
 #include <tuple>
 #include <vector>
 
+#include <error.hpp>
 #include <analyzer/analyzer.hpp>
 #include <lexer/lexer.hpp>
 #include <parser/parser.hpp>

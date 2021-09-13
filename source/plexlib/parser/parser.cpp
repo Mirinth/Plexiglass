@@ -6,10 +6,6 @@
 #include <error.hpp>
 #include <lexer/lexer.hpp>
 
-ParseException::ParseException(const char* msg)
-	: std::exception(msg)
-{}
-
 ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
 FileNode File(Lexer& lexer);

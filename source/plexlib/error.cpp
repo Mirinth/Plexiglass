@@ -5,6 +5,14 @@
 #include <lexer/token.hpp>
 
 /// <summary>
+/// Initialize the exception.
+/// </summary>
+/// <param name="msg">The exception's message.</param>
+ParseException::ParseException(const char* msg)
+	: std::exception(msg)
+{}
+
+/// <summary>
 /// Generate an error message and stop parsing.
 /// </summary>
 /// <param name="line">The line the error occurred on.</param>
