@@ -13,6 +13,9 @@ else()
 endif()
 
 add_library(plexlib STATIC
+    source/plexlib/error.hpp
+    source/plexlib/error.cpp
+
     source/plexlib/FiniteStateMachine.hpp
     source/plexlib/FiniteStateMachine.cpp
     source/plexlib/plexlib.hpp
