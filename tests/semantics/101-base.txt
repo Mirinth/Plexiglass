@@ -1,1 +1,1 @@
-Error on line 5: Name 'name' already defined on line 2
+Error on line 5: 'name' already defined on line 2

@@ -20,9 +20,7 @@ void _FileNode::CheckDuplicateNames()
 
 		if (expressionMap.count(name) > 0)
 		{
-			size_t originalLine = expressionMap[name]->GetLine();
-			Error(expression->GetLine(),
-				  "Name '" + expression->GetName() + "' already defined on line " + std::to_string(originalLine));
+			DuplicateNameError(expression->GetLine(), expressionMap[name]->GetLine(), expression->GetName());
 		}
 		else
 		{
