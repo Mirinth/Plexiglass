@@ -161,7 +161,7 @@ bool RunAnalyzerTest(std::string stem)
 		out << "Test failed: Expected error, none reported" << std::endl;
 		return false;
 	}
-	catch (SemanticException exc)
+	catch (PlexiException exc)
 	{
 		std::ofstream out(stem + "-out.txt");
 		out << exc.what() << std::endl;
