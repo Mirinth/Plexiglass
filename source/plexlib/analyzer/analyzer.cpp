@@ -31,4 +31,8 @@ void _ActionNode::CheckIllegalActions()
 	{
 		Error(m_line, "'rewind' action not yet supported");
 	}
+	if (m_name == "transition")
+	{
+		Error(m_line, "'transition' action not yet supported");
+	}
 }
