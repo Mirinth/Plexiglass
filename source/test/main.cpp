@@ -4,10 +4,15 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <tuple>
 #include <vector>
 
+#include <error.hpp>
+#include <analyzer/analyzer.hpp>
 #include <lexer/lexer.hpp>
 #include <parser/parser.hpp>
+
+typedef std::function<bool(std::string)> Tester;
 
 bool IsInputFile(std::filesystem::path file)
 {
@@ -111,10 +116,10 @@ bool RunParserTest(std::string stem)
 		Parse(data); // This should always throw for parser tests.
 
 		std::ofstream out(stem + "-out.txt");
-		out << "Test failed: No errors" << std::endl;
+		out << "Test failed: Expected error, none reported" << std::endl;
 		return false;
 	}
-	catch (ParseException exc)
+	catch (PlexiException exc)
 	{
 		std::ofstream out(stem + "-out.txt");
 		out << exc.what() << std::endl;
@@ -135,7 +140,7 @@ bool RunTreeTest(std::string stem)
 		out.close();
 		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 	}
-	catch (ParseException exc)
+	catch (PlexiException exc)
 	{
 		std::ofstream out(stem + "-out.txt");
 		out << exc.what() << std::endl;
@@ -143,7 +148,28 @@ bool RunTreeTest(std::string stem)
 	}
 }
 
-bool TestGroup(std::string name, std::function<bool(std::string)> test)
+bool RunAnalyzerTest(std::string stem)
+{
+	std::string data = ReadFile(stem + "-in.txt");
+
+	try
+	{
+		FileNode file = Parse(data);
+		Analyze(file); // Should always throw for semantic tests
+
+		std::ofstream out(stem + "-out.txt");
+		out << "Test failed: Expected error, none reported" << std::endl;
+		return false;
+	}
+	catch (PlexiException exc)
+	{
+		std::ofstream out(stem + "-out.txt");
+		out << exc.what() << std::endl;
+		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
+	}
+}
+
+bool TestGroup(std::string name, Tester test)
 {
 	auto stems = GetTestStems(name);
 
@@ -169,23 +195,23 @@ bool TestGroup(std::string name, std::function<bool(std::string)> test)
 
 int main()
 {
-	bool success = TestGroup("lexer", RunLexerTest);
-	if (!success)
+	std::vector<std::tuple<std::string, Tester>> map = {
+		{ "lexer", RunLexerTest },
+		{ "parser", RunParserTest },
+		{ "tree", RunTreeTest },
+		{ "semantics", RunAnalyzerTest },
+	};
+
+	for (auto& [name, tester] : map)
 	{
-		return 1;
+		bool success = TestGroup(name, tester);
+		if (!success)
+		{
+			return 1;
+		}
 	}
 
-	success = TestGroup("parser", RunParserTest);
-	if (!success)
-	{
-		return 1;
-	}
-
-	success = TestGroup("tree", RunTreeTest);
-	if (!success)
-	{
-		return 1;
-	}
+	std::cout << "\n\nNo errors\n\n";
 
 	return 0;
 }

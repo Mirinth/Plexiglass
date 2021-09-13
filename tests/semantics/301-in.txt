@@ -1,0 +1,6 @@
+# Rule that uses rewind
+expression name
+	abc
+
+rule name
+	rewind

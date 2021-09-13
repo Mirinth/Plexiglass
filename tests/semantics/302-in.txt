@@ -1,0 +1,6 @@
+# Rule that uses a transition
+expression name
+	abc
+
+rule name
+	transition state

@@ -13,6 +13,9 @@ else()
 endif()
 
 add_library(plexlib STATIC
+    source/plexlib/error.hpp
+    source/plexlib/error.cpp
+
     source/plexlib/FiniteStateMachine.hpp
     source/plexlib/FiniteStateMachine.cpp
     source/plexlib/plexlib.hpp
@@ -29,6 +32,9 @@ add_library(plexlib STATIC
     source/plexlib/parser/parser.cpp
     source/plexlib/parser/tree.hpp
     source/plexlib/parser/tree.cpp
+
+    source/plexlib/analyzer/analyzer.hpp
+    source/plexlib/analyzer/analyzer.cpp
 )
 target_include_directories(plexlib PUBLIC source/plexlib)
 target_compile_features(plexlib PUBLIC cxx_std_17)

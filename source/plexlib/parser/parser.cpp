@@ -2,13 +2,9 @@
 
 #include <regex>
 #include <set>
-#include <sstream>
 
+#include <error.hpp>
 #include <lexer/lexer.hpp>
-
-ParseException::ParseException(const char* msg)
-	: std::exception(msg)
-{}
 
 ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
@@ -17,8 +13,6 @@ IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial);
 PatternNode Pattern(Lexer& lexer);
 RuleNode Rule(Lexer& lexer);
 
-void Error(size_t line, std::string message);
-void Error(std::string expected, const Token found);
 Token Require(Lexer& lexer, std::string name, TokenType type, std::string value = "");
 
 /// <summary>
@@ -47,7 +41,7 @@ ActionNode Action(Lexer& lexer)
 
 	if (unitActions.count(action.text) > 0)
 	{
-		return _ActionNode::New(action.text);
+		return _ActionNode::New(action.line, action.text);
 	}
 	else if (compositeActions.count(action.text) > 0)
 	{
@@ -56,7 +50,7 @@ ActionNode Action(Lexer& lexer)
 			Error(action.line, "Expected identifier before end of line");
 		}
 		Token identifier = Require(lexer, "identifier", TokenType::Text);
-		return _ActionNode::New(action.text, identifier.text);
+		return _ActionNode::New(action.line, action.text, identifier.text);
 	}
 	else
 	{
@@ -201,33 +195,6 @@ RuleNode Rule(Lexer& lexer)
 	}
 	
 	return rule;
-}
-
-/// <summary>
-/// Generate an error message and stop parsing.
-/// </summary>
-/// <param name="line">The line the error occurred on.</param>
-/// <param name="message">The message to display.</param>
-void Error(size_t line, std::string message)
-{
-	std::stringstream out;
-	out << "Syntax error on line " << line
-		<< ": " << message;
-	throw ParseException(out.str().c_str());
-}
-
-/// <summary>
-/// Generate an error message and stop parsing.
-/// </summary>
-/// <param name="expected">What was expected.</param>
-/// <param name="tok">What was found.</param>
-void Error(std::string expected, const Token tok)
-{
-	std::stringstream out;
-	out << "Syntax error on line " << tok.line
-		<< ": Expected " << expected
-		<< " found " << tok.ToString();
-	throw ParseException(out.str().c_str());
 }
 
 /// <summary>
