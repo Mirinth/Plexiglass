@@ -1,0 +1,6 @@
+# two expressions with the same name
+expression name
+	abc
+
+expression name
+	def
