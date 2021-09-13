@@ -8,7 +8,7 @@
 /// Initialize the exception.
 /// </summary>
 /// <param name="msg">The exception's message.</param>
-ParseException::ParseException(const char* msg)
+PlexiException::PlexiException(const char* msg)
 	: std::exception(msg)
 {}
 
@@ -22,7 +22,7 @@ void Error(size_t line, std::string message)
 	std::stringstream out;
 	out << "Syntax error on line " << line
 		<< ": " << message;
-	throw ParseException(out.str().c_str());
+	throw PlexiException(out.str().c_str());
 }
 
 /// <summary>
@@ -36,5 +36,5 @@ void Error(std::string expected, const Token tok)
 	out << "Syntax error on line " << tok.line
 		<< ": Expected " << expected
 		<< " found " << tok.ToString();
-	throw ParseException(out.str().c_str());
+	throw PlexiException(out.str().c_str());
 }

@@ -119,7 +119,7 @@ bool RunParserTest(std::string stem)
 		out << "Test failed: Expected error, none reported" << std::endl;
 		return false;
 	}
-	catch (ParseException exc)
+	catch (PlexiException exc)
 	{
 		std::ofstream out(stem + "-out.txt");
 		out << exc.what() << std::endl;
@@ -140,7 +140,7 @@ bool RunTreeTest(std::string stem)
 		out.close();
 		return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 	}
-	catch (ParseException exc)
+	catch (PlexiException exc)
 	{
 		std::ofstream out(stem + "-out.txt");
 		out << exc.what() << std::endl;

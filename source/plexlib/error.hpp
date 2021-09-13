@@ -5,10 +5,10 @@
 
 class Token;
 
-class ParseException : public std::exception
+class PlexiException : public std::exception
 {
 public:
-	ParseException(const char* msg);
+	PlexiException(const char* msg);
 };
 
 void Error(size_t line, std::string message);
