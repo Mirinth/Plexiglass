@@ -45,9 +45,10 @@ void _FileNode::Add(RuleNode node)
 	m_rules.push_back(node);
 }
 
-ExpressionNode _ExpressionNode::New(std::string name, std::string expression)
+ExpressionNode _ExpressionNode::New(size_t line, std::string name, std::string expression)
 {
 	ExpressionNode node = std::make_shared<_ExpressionNode>();
+	node->m_line = line;
 	node->m_name = name;
 	node->m_expression = expression;
 	return node;
@@ -57,6 +58,11 @@ std::ostream& operator<<(std::ostream& out, ExpressionNode node)
 {
 	out << "\t\t" << node->m_name << " : " << node->m_expression << "\n";
 	return out;
+}
+
+size_t _ExpressionNode::GetLine() const
+{
+	return m_line;
 }
 
 std::string _ExpressionNode::GetName() const

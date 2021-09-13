@@ -45,12 +45,14 @@ private:
 class _ExpressionNode
 {
 public:
-	static ExpressionNode New(std::string name, std::string expression);
+	static ExpressionNode New(size_t line, std::string name, std::string expression);
 	friend std::ostream& operator<<(std::ostream& out, ExpressionNode node);
 
+	size_t GetLine() const;
 	std::string GetName() const;
 
 private:
+	size_t m_line;
 	std::string m_name;
 	std::string m_expression;
 };
