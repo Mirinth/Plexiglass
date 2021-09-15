@@ -33,7 +33,11 @@ void _FileNode::CheckDuplicateNames()
 	{
 		std::string name = pattern->GetName();
 
-		if (patternMap.count(name) > 0)
+		if (expressionMap.count(name) > 0)
+		{
+			DuplicateNameError(pattern->GetLine(), expressionMap[name]->GetLine(), name);
+		}
+		else if (patternMap.count(name) > 0)
 		{
 			DuplicateNameError(pattern->GetLine(), patternMap[name]->GetLine(), name);
 		}
