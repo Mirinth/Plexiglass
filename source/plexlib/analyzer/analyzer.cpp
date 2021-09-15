@@ -35,7 +35,7 @@ void _FileNode::CheckDuplicateNames()
 
 		if (patternMap.count(name) > 0)
 		{
-			DuplicateNameError(0, 0, name);
+			DuplicateNameError(pattern->GetLine(), patternMap[name]->GetLine(), name);
 		}
 		else
 		{

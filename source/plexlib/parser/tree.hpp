@@ -60,14 +60,16 @@ private:
 class _PatternNode
 {
 public:
-	static PatternNode New(std::string name);
+	static PatternNode New(size_t line, std::string name);
 	friend std::ostream& operator<<(std::ostream& out, PatternNode node);
 
 	void Add(IdentifierSequenceNode node);
 
+	size_t GetLine() const;
 	std::string GetName() const;
 
 private:
+	size_t m_line;
 	std::string m_name;
 	std::vector<IdentifierSequenceNode> m_sequences;
 };
