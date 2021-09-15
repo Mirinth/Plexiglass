@@ -20,7 +20,9 @@ void _FileNode::CheckDuplicateNames()
 
 		if (nameMap.count(name) > 0)
 		{
-			DuplicateNameError(expression->GetLine(), nameMap[name], name);
+			size_t original = std::min(expression->GetLine(), nameMap[name]);
+			size_t duplicate = std::max(expression->GetLine(), nameMap[name]);
+			DuplicateNameError(duplicate, original, name);
 		}
 		else
 		{
@@ -34,11 +36,15 @@ void _FileNode::CheckDuplicateNames()
 
 		if (nameMap.count(name) > 0)
 		{
-			DuplicateNameError(pattern->GetLine(), nameMap[name], name);
+			size_t original = std::min(pattern->GetLine(), nameMap[name]);
+			size_t duplicate = std::max(pattern->GetLine(), nameMap[name]);
+			DuplicateNameError(duplicate, original, name);
 		}
 		else if (nameMap.count(name) > 0)
 		{
-			DuplicateNameError(pattern->GetLine(), nameMap[name], name);
+			size_t original = std::min(pattern->GetLine(), nameMap[name]);
+			size_t duplicate = std::max(pattern->GetLine(), nameMap[name]);
+			DuplicateNameError(duplicate, original, name);
 		}
 		else
 		{
