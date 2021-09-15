@@ -10,38 +10,32 @@ void Analyze(FileNode file)
 	file->CheckIllegalActions();
 }
 
+template <typename NodeType, typename MapType>
+void CheckDuplicateNames(NodeType& nodes, MapType& map)
+{
+	for (auto& node : nodes)
+	{
+		std::string name = node->GetName();
+
+		if (map.count(name) > 0)
+		{
+			size_t original = std::min(node->GetLine(), map[name]);
+			size_t duplicate = std::max(node->GetLine(), map[name]);
+			DuplicateNameError(duplicate, original, name);
+		}
+		else
+		{
+			map[name] = node->GetLine();
+		}
+	}
+}
+
 void _FileNode::CheckDuplicateNames()
 {
-	std::map<std::string, ExpressionNode> expressionMap;
-	std::map<std::string, PatternNode> patternMap;
+	std::map<std::string, size_t> nameMap;
 
-	for (auto& expression : m_expressions)
-	{
-		std::string name = expression->GetName();
-
-		if (expressionMap.count(name) > 0)
-		{
-			DuplicateNameError(expression->GetLine(), expressionMap[name]->GetLine(), name);
-		}
-		else
-		{
-			expressionMap[name] = expression;
-		}
-	}
-
-	for (auto& pattern : m_patterns)
-	{
-		std::string name = pattern->GetName();
-
-		if (patternMap.count(name) > 0)
-		{
-			DuplicateNameError(pattern->GetLine(), patternMap[name]->GetLine(), name);
-		}
-		else
-		{
-			patternMap[name] = pattern;
-		}
-	}
+	::CheckDuplicateNames(m_expressions, nameMap);
+	::CheckDuplicateNames(m_patterns, nameMap);
 }
 
 void _FileNode::CheckIllegalActions()
