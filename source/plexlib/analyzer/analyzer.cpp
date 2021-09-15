@@ -40,12 +40,6 @@ void _FileNode::CheckDuplicateNames()
 			size_t duplicate = std::max(pattern->GetLine(), nameMap[name]);
 			DuplicateNameError(duplicate, original, name);
 		}
-		else if (nameMap.count(name) > 0)
-		{
-			size_t original = std::min(pattern->GetLine(), nameMap[name]);
-			size_t duplicate = std::max(pattern->GetLine(), nameMap[name]);
-			DuplicateNameError(duplicate, original, name);
-		}
 		else
 		{
 			nameMap[name] = pattern->GetLine();
