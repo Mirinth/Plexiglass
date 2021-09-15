@@ -12,20 +12,19 @@ void Analyze(FileNode file)
 
 void _FileNode::CheckDuplicateNames()
 {
-	std::map<std::string, ExpressionNode> expressionMap;
-	std::map<std::string, PatternNode> patternMap;
+	std::map<std::string, size_t> nameMap;
 
 	for (auto& expression : m_expressions)
 	{
 		std::string name = expression->GetName();
 
-		if (expressionMap.count(name) > 0)
+		if (nameMap.count(name) > 0)
 		{
-			DuplicateNameError(expression->GetLine(), expressionMap[name]->GetLine(), name);
+			DuplicateNameError(expression->GetLine(), nameMap[name], name);
 		}
 		else
 		{
-			expressionMap[name] = expression;
+			nameMap[name] = expression->GetLine();
 		}
 	}
 
@@ -33,17 +32,17 @@ void _FileNode::CheckDuplicateNames()
 	{
 		std::string name = pattern->GetName();
 
-		if (expressionMap.count(name) > 0)
+		if (nameMap.count(name) > 0)
 		{
-			DuplicateNameError(pattern->GetLine(), expressionMap[name]->GetLine(), name);
+			DuplicateNameError(pattern->GetLine(), nameMap[name], name);
 		}
-		else if (patternMap.count(name) > 0)
+		else if (nameMap.count(name) > 0)
 		{
-			DuplicateNameError(pattern->GetLine(), patternMap[name]->GetLine(), name);
+			DuplicateNameError(pattern->GetLine(), nameMap[name], name);
 		}
 		else
 		{
-			patternMap[name] = pattern;
+			nameMap[name] = pattern->GetLine();
 		}
 	}
 }
