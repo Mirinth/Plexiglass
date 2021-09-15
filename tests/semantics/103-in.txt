@@ -1,0 +1,6 @@
+# Pattern with name that duplicates an expression
+expression name
+	abc
+
+pattern name
+	def
