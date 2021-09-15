@@ -70,9 +70,10 @@ std::string _ExpressionNode::GetName() const
 	return m_name;
 }
 
-PatternNode _PatternNode::New(std::string name)
+PatternNode _PatternNode::New(size_t line, std::string name)
 {
 	PatternNode node = std::make_shared<_PatternNode>();
+	node->m_line = line;
 	node->m_name = name;
 	return node;
 }
@@ -94,6 +95,16 @@ std::ostream& operator<<(std::ostream& out, PatternNode node)
 void _PatternNode::Add(IdentifierSequenceNode node)
 {
 	m_sequences.push_back(node);
+}
+
+size_t _PatternNode::GetLine() const
+{
+	return m_line;
+}
+
+std::string _PatternNode::GetName() const
+{
+	return m_name;
 }
 
 IdentifierSequenceNode _IdentifierSequenceNode::New()

@@ -1,0 +1,6 @@
+# Two patterns with the same name
+pattern name
+	abc
+
+pattern name
+	def

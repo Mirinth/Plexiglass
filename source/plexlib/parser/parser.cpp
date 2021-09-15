@@ -159,7 +159,7 @@ IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 PatternNode Pattern(Lexer& lexer)
 {
 	Token name = Require(lexer, "identifier", TokenType::Text);
-	PatternNode node = _PatternNode::New(name.text);
+	PatternNode node = _PatternNode::New(name.line, name.text);
 
 	IdentifierSequenceNode sequence = IdentifierSequence(lexer, true);
 	node->Add(sequence);
