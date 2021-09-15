@@ -96,6 +96,11 @@ void _PatternNode::Add(IdentifierSequenceNode node)
 	m_sequences.push_back(node);
 }
 
+std::string _PatternNode::GetName() const
+{
+	return m_name;
+}
+
 IdentifierSequenceNode _IdentifierSequenceNode::New()
 {
 	IdentifierSequenceNode node = std::make_shared<_IdentifierSequenceNode>();

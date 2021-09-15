@@ -65,6 +65,8 @@ public:
 
 	void Add(IdentifierSequenceNode node);
 
+	std::string GetName() const;
+
 private:
 	std::string m_name;
 	std::vector<IdentifierSequenceNode> m_sequences;
