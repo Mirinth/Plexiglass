@@ -34,37 +34,8 @@ void _FileNode::CheckDuplicateNames()
 {
 	std::map<std::string, size_t> nameMap;
 
-	for (auto& expression : m_expressions)
-	{
-		std::string name = expression->GetName();
-
-		if (nameMap.count(name) > 0)
-		{
-			size_t original = std::min(expression->GetLine(), nameMap[name]);
-			size_t duplicate = std::max(expression->GetLine(), nameMap[name]);
-			DuplicateNameError(duplicate, original, name);
-		}
-		else
-		{
-			nameMap[name] = expression->GetLine();
-		}
-	}
-
-	for (auto& pattern : m_patterns)
-	{
-		std::string name = pattern->GetName();
-
-		if (nameMap.count(name) > 0)
-		{
-			size_t original = std::min(pattern->GetLine(), nameMap[name]);
-			size_t duplicate = std::max(pattern->GetLine(), nameMap[name]);
-			DuplicateNameError(duplicate, original, name);
-		}
-		else
-		{
-			nameMap[name] = pattern->GetLine();
-		}
-	}
+	::CheckDuplicateNames(m_expressions, nameMap);
+	::CheckDuplicateNames(m_patterns, nameMap);
 }
 
 void _FileNode::CheckIllegalActions()
