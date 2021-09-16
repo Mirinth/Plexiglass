@@ -3,7 +3,7 @@ expression name
 	abc
 
 pattern pat
-	  abc
-	| abc abc
-	| abc abc abc
-	| abc def abc
+	  name
+	| name name
+	| name name name
+	| name missing name
