@@ -15,8 +15,8 @@ bool IsBlank(std::string_view line);
 /// <param name="data">The data to lex.</param>
 Lexer::Lexer(std::string_view data)
 	: m_data(data)
-	, m_expectExpression(false)
 	, m_lineNumber(0)
+	, m_expectExpression(false)
 {
 	FillBuffer();
 }
