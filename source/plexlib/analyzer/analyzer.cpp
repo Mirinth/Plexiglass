@@ -62,7 +62,7 @@ void _RuleNode::CheckMissingNames(std::set<std::string>& names)
 {
 	if (names.count(m_name) == 0)
 	{
-		MissingNameError(0, m_name);
+		MissingNameError(m_line, m_name);
 	}
 }
 

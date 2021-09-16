@@ -129,9 +129,10 @@ void _IdentifierSequenceNode::Add(std::string identifier)
 	m_identifiers.push_back(identifier);
 }
 
-RuleNode _RuleNode::New(std::string name)
+RuleNode _RuleNode::New(size_t line, std::string name)
 {
 	RuleNode node = std::make_shared<_RuleNode>();
+	node->m_line = line;
 	node->m_name = name;
 	return node;
 }
