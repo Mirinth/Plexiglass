@@ -27,6 +27,19 @@ void DuplicateNameError(size_t line, size_t original, std::string name)
 }
 
 /// <summary>
+/// Generate a missing name error message and stop parsing.
+/// </summary>
+/// <param name="line">Line the name was referenced on.</param>
+/// <param name="name">Name that was missing.</param>
+void MissingNameError(size_t line, std::string name)
+{
+	std::stringstream out;
+	out << "Error on line " << line << ": "
+		<< "Undefined name '" << name << "'";
+	throw PlexiException(out.str().c_str());
+}
+
+/// <summary>
 /// Generate an error message and stop parsing.
 /// </summary>
 /// <param name="line">The line the error occurred on.</param>
