@@ -1,0 +1,9 @@
+# Pattern with undefined name far in
+expression name
+	abc
+
+pattern pat
+	  abc
+	| abc abc
+	| abc abc abc
+	| abc def abc
