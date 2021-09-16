@@ -5,7 +5,7 @@ FileNode _FileNode::New()
 	return std::make_shared<_FileNode>();
 }
 
-std::ostream& operator<<(std::ostream& out, FileNode node)
+std::ostream& operator<<(std::ostream& out, const FileNode& node)
 {
 	out << "File:\n";
 
@@ -54,7 +54,7 @@ ExpressionNode _ExpressionNode::New(size_t line, std::string name, std::string e
 	return node;
 }
 
-std::ostream& operator<<(std::ostream& out, ExpressionNode node)
+std::ostream& operator<<(std::ostream& out, const ExpressionNode& node)
 {
 	out << "\t\t" << node->m_name << " : " << node->m_expression << "\n";
 	return out;
@@ -78,7 +78,7 @@ PatternNode _PatternNode::New(size_t line, std::string name)
 	return node;
 }
 
-std::ostream& operator<<(std::ostream& out, PatternNode node)
+std::ostream& operator<<(std::ostream& out, const PatternNode& node)
 {
 	out << "\t\t" << node->m_name << " : ";
 
@@ -114,7 +114,7 @@ IdentifierSequenceNode _IdentifierSequenceNode::New(size_t line)
 	return node;
 }
 
-std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node)
+std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node)
 {
 	for (size_t i = 0; i < node->m_identifiers.size() - 1; i++)
 	{
@@ -138,7 +138,7 @@ RuleNode _RuleNode::New(size_t line, std::string name)
 	return node;
 }
 
-std::ostream& operator<<(std::ostream& out, RuleNode node)
+std::ostream& operator<<(std::ostream& out, const RuleNode& node)
 {
 	out << "\t\t" << node->m_name << " : ";
 
@@ -165,7 +165,7 @@ ActionNode _ActionNode::New(size_t line, std::string name, std::string identifie
 	return node;
 }
 
-std::ostream& operator<<(std::ostream& out, ActionNode node)
+std::ostream& operator<<(std::ostream& out, const ActionNode& node)
 {
 	out << node->m_name;
 	if (!node->m_identifier.empty())

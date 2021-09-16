@@ -27,7 +27,7 @@ class _FileNode
 {
 public:
 	static FileNode New();
-	friend std::ostream& operator<<(std::ostream& out, FileNode node);
+	friend std::ostream& operator<<(std::ostream& out, const FileNode& node);
 
 	void Add(ExpressionNode node);
 	void Add(PatternNode node);
@@ -47,7 +47,7 @@ class _ExpressionNode
 {
 public:
 	static ExpressionNode New(size_t line, std::string name, std::string expression);
-	friend std::ostream& operator<<(std::ostream& out, ExpressionNode node);
+	friend std::ostream& operator<<(std::ostream& out, const ExpressionNode& node);
 
 	size_t GetLine() const;
 	std::string GetName() const;
@@ -62,7 +62,7 @@ class _PatternNode
 {
 public:
 	static PatternNode New(size_t line, std::string name);
-	friend std::ostream& operator<<(std::ostream& out, PatternNode node);
+	friend std::ostream& operator<<(std::ostream& out, const PatternNode& node);
 
 	void Add(IdentifierSequenceNode node);
 
@@ -81,7 +81,7 @@ class _IdentifierSequenceNode
 {
 public:
 	static IdentifierSequenceNode New(size_t line);
-	friend std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node);
+	friend std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node);
 
 	void Add(std::string identifier);
 
@@ -96,7 +96,7 @@ class _RuleNode
 {
 public:
 	static RuleNode New(size_t line, std::string name);
-	friend std::ostream& operator<<(std::ostream& out, RuleNode node);
+	friend std::ostream& operator<<(std::ostream& out, const RuleNode& node);
 
 	void Add(ActionNode node);
 
@@ -113,7 +113,7 @@ class _ActionNode
 {
 public:
 	static ActionNode New(size_t line, std::string name, std::string identifier = "");
-	friend std::ostream& operator<<(std::ostream& out, ActionNode node);
+	friend std::ostream& operator<<(std::ostream& out, const ActionNode& node);
 
 	void CheckIllegalActions();
 
