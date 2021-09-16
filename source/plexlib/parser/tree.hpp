@@ -69,6 +69,8 @@ public:
 	size_t GetLine() const;
 	std::string GetName() const;
 
+	void CheckMissingNames(std::set<std::string>& names);
+
 private:
 	size_t m_line;
 	std::string m_name;
@@ -82,6 +84,8 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node);
 
 	void Add(std::string identifier);
+
+	void CheckMissingNames(std::set<std::string>& names);
 
 private:
 	std::vector<std::string> m_identifiers;

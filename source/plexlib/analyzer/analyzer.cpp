@@ -52,9 +52,32 @@ void _FileNode::CheckMissingNames()
 	{
 		names.insert(pattern->GetName());
 	}
+	for (auto& pattern : m_patterns)
+	{
+		pattern->CheckMissingNames(names);
+	}
 	for (auto& rule : m_rules)
 	{
 		rule->CheckMissingNames(names);
+	}
+}
+
+void _PatternNode::CheckMissingNames(std::set<std::string>& names)
+{
+	for (auto& sequence : m_sequences)
+	{
+		sequence->CheckMissingNames(names);
+	}
+}
+
+void _IdentifierSequenceNode::CheckMissingNames(std::set<std::string>& names)
+{
+	for (auto& identifier : m_identifiers)
+	{
+		if (names.count(identifier) == 0)
+		{
+			MissingNameError(0, identifier);
+		}
 	}
 }
 
