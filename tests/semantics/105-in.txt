@@ -1,0 +1,3 @@
+# Rule that uses an undefined name
+rule name
+	line++

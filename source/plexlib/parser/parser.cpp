@@ -181,7 +181,7 @@ PatternNode Pattern(Lexer& lexer)
 RuleNode Rule(Lexer& lexer)
 {
 	Token name = Require(lexer, "identifier", TokenType::Text);
-	RuleNode rule = _RuleNode::New(name.text);
+	RuleNode rule = _RuleNode::New(name.line, name.text);
 
 	if (lexer.Peek().type != TokenType::Indent)
 	{
