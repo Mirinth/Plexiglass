@@ -2,7 +2,7 @@
 
 #include <ostream>
 #include <memory>
-#include <tuple>
+#include <set>
 #include <vector>
 
 class _FileNode;
@@ -34,6 +34,7 @@ public:
 	void Add(RuleNode node);
 
 	void CheckDuplicateNames();
+	void CheckMissingNames();
 	void CheckIllegalActions();
 
 private:
@@ -95,6 +96,7 @@ public:
 	void Add(ActionNode node);
 
 	void CheckIllegalActions();
+	void CheckMissingNames(std::set<std::string>& names);
 
 private:
 	std::string m_name;

@@ -1,12 +1,14 @@
 #include <analyzer/analyzer.hpp>
 
 #include <map>
+#include <set>
 
 #include <error.hpp>
 
 void Analyze(FileNode file)
 {
 	file->CheckDuplicateNames();
+	file->CheckMissingNames();
 	file->CheckIllegalActions();
 }
 
@@ -36,6 +38,32 @@ void _FileNode::CheckDuplicateNames()
 
 	::CheckDuplicateNames(m_expressions, nameMap);
 	::CheckDuplicateNames(m_patterns, nameMap);
+}
+
+void _FileNode::CheckMissingNames()
+{
+	std::set<std::string> names;
+
+	for (auto& expression : m_expressions)
+	{
+		names.insert(expression->GetName());
+	}
+	for (auto& pattern : m_patterns)
+	{
+		names.insert(pattern->GetName());
+	}
+	for (auto& rule : m_rules)
+	{
+		rule->CheckMissingNames(names);
+	}
+}
+
+void _RuleNode::CheckMissingNames(std::set<std::string>& names)
+{
+	if (names.count(m_name) == 0)
+	{
+		Error(0, "Missing name");
+	}
 }
 
 void _FileNode::CheckIllegalActions()
