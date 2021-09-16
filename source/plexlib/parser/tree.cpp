@@ -107,9 +107,10 @@ std::string _PatternNode::GetName() const
 	return m_name;
 }
 
-IdentifierSequenceNode _IdentifierSequenceNode::New()
+IdentifierSequenceNode _IdentifierSequenceNode::New(size_t line)
 {
 	IdentifierSequenceNode node = std::make_shared<_IdentifierSequenceNode>();
+	node->m_line = line;
 	return node;
 }
 

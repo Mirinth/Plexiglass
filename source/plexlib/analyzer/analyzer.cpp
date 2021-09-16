@@ -76,7 +76,7 @@ void _IdentifierSequenceNode::CheckMissingNames(std::set<std::string>& names)
 	{
 		if (names.count(identifier) == 0)
 		{
-			MissingNameError(0, identifier);
+			MissingNameError(m_line, identifier);
 		}
 	}
 }

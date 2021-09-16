@@ -132,13 +132,13 @@ FileNode File(Lexer& lexer)
 /// <returns>An IdentifierSequenceNode representing the parsed identifier sequence.</returns>
 IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 {
-	Require(lexer, "indent", TokenType::Indent);
+	Token indent = Require(lexer, "indent", TokenType::Indent);
 	if (!initial)
 	{
 		Require(lexer, "alternator", TokenType::Alternator);
 	}
 
-	IdentifierSequenceNode sequence = _IdentifierSequenceNode::New();
+	IdentifierSequenceNode sequence = _IdentifierSequenceNode::New(indent.line);
 	Token identifier = Require(lexer, "identifier", TokenType::Text);
 	sequence->Add(identifier.text);
 
