@@ -69,6 +69,8 @@ public:
 	size_t GetLine() const;
 	std::string GetName() const;
 
+	void CheckMissingNames(std::set<std::string>& names);
+
 private:
 	size_t m_line;
 	std::string m_name;
@@ -78,12 +80,15 @@ private:
 class _IdentifierSequenceNode
 {
 public:
-	static IdentifierSequenceNode New();
+	static IdentifierSequenceNode New(size_t line);
 	friend std::ostream& operator<<(std::ostream& out, IdentifierSequenceNode node);
 
 	void Add(std::string identifier);
 
+	void CheckMissingNames(std::set<std::string>& names);
+
 private:
+	size_t m_line;
 	std::vector<std::string> m_identifiers;
 };
 
