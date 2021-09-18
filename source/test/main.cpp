@@ -1,10 +1,8 @@
-#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <string>
-#include <tuple>
 #include <vector>
 
 #include <error.hpp>
@@ -81,11 +79,9 @@ std::string ReadFile(std::string path)
 	std::ifstream in(path);
 	std::string data;
 
-	// https://stackoverflow.com/a/2602060
-	in.seekg(0, std::ios::end);
-	data.reserve(in.tellg());
-	in.seekg(0, std::ios::beg);
-	data.assign((std::istreambuf_iterator<char>(in)),
+	auto fileSize = std::filesystem::file_size(path);
+	data.reserve(fileSize);
+	data.assign(std::istreambuf_iterator<char>(in),
 		std::istreambuf_iterator<char>());
 
 	return data;
