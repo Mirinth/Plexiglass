@@ -34,12 +34,12 @@ target_compile_features(plexlib PUBLIC cxx_std_17)
 
 
 
-add_executable(plexi
-    source/plexi/main.cpp
-    source/plexlib/RegularExpressionParser.hpp
-    source/plexlib/RegularExpressionParser.cpp
-)
-target_link_libraries(plexi PUBLIC plexlib)
+# add_executable(plexi
+#     source/plexi/main.cpp
+#     source/plexlib/RegularExpressionParser.hpp
+#     source/plexlib/RegularExpressionParser.cpp
+# )
+# target_link_libraries(plexi PUBLIC plexlib)
 
 
 add_executable(plextest
