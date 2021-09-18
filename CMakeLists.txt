@@ -15,13 +15,6 @@ endif()
 add_library(plexlib STATIC
     source/plexlib/error.hpp
     source/plexlib/error.cpp
-
-    source/plexlib/FiniteStateMachine.hpp
-    source/plexlib/FiniteStateMachine.cpp
-    source/plexlib/plexlib.hpp
-    source/plexlib/plexlib.cpp
-    source/plexlib/RegularExpressionParser.hpp
-    source/plexlib/RegularExpressionParser.cpp
     
     source/plexlib/lexer/lexer.hpp
     source/plexlib/lexer/lexer.cpp
