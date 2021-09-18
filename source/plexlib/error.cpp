@@ -1,6 +1,6 @@
 #include <error.hpp>
 
-#include <sstream>
+#include <std/sstream>
 
 #include <lexer/token.hpp>
 
