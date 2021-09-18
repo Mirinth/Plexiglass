@@ -5,8 +5,11 @@ project(Plexiglass
         LANGUAGES CXX)
 
 if (MSVC)
-    # warning level 4 and all warnings as errors
-    add_compile_options(/W4 /WX)
+    add_compile_options(
+        /Wall /WX # All warnings and treat as errors, except...
+        /wd4820 # can't seem to fix without adding my own padding at the end
+        /wd5045 # not even sure how to fix, doesn't seem important since code is trusted
+    )
 else()
     # lots of warnings and all warnings as errors
     add_compile_options(-Wall -Wextra -pedantic -Werror)
