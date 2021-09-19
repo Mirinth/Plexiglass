@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include <error.hpp>
 #include <analyzer/analyzer.hpp>
+#include <error.hpp>
 #include <lexer/lexer.hpp>
 #include <parser/parser.hpp>
 
@@ -32,8 +32,9 @@ bool IsInputFile(std::filesystem::path file)
 
 std::vector<std::string> GetTestStems(std::string directory)
 {
+    std::string testDir = "../../../tests/" + directory;
     std::vector<std::string> stems;
-    std::filesystem::path base = std::filesystem::absolute("../../../tests/" + directory).lexically_normal();
+    std::filesystem::path base = std::filesystem::absolute(testDir);
 
     for (auto& file : std::filesystem::directory_iterator(base))
     {
@@ -82,7 +83,7 @@ std::string ReadFile(std::string path)
     auto fileSize = std::filesystem::file_size(path);
     data.reserve(fileSize);
     data.assign(std::istreambuf_iterator<char>(in),
-        std::istreambuf_iterator<char>());
+                std::istreambuf_iterator<char>());
 
     return data;
 }
@@ -106,7 +107,7 @@ bool RunLexerTest(std::string stem)
 bool RunParserTest(std::string stem)
 {
     std::string data = ReadFile(stem + "-in.txt");
-    
+
     try
     {
         Parse(data); // This should always throw for parser tests.
