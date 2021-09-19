@@ -102,7 +102,8 @@ void _FileNode::CheckIllegalStatements()
 {
     if (m_patterns.size() > 0)
     {
-        Error(m_patterns[0]->GetLine(), "'pattern' statement not yet supported");
+        Error(m_patterns[0]->GetLine(),
+              "'pattern' statement not yet supported");
     }
 }
 
