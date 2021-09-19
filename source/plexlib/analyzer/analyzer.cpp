@@ -10,6 +10,7 @@ void Analyze(FileNode file)
 	file->CheckDuplicateNames();
 	file->CheckMissingNames();
 	file->CheckIllegalActions();
+	file->CheckIllegalStatements();
 }
 
 template <typename NodeType, typename MapType>
@@ -94,6 +95,14 @@ void _FileNode::CheckIllegalActions()
 	for (auto& rule : m_rules)
 	{
 		rule->CheckIllegalActions();
+	}
+}
+
+void _FileNode::CheckIllegalStatements()
+{
+	if (m_patterns.size() > 0)
+	{
+		Error(m_patterns[0]->GetLine(), "'pattern' statement not yet supported");
 	}
 }
 
