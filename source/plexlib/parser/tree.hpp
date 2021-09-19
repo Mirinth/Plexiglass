@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ostream>
 #include <memory>
+#include <ostream>
 #include <set>
 #include <vector>
 
@@ -47,8 +47,11 @@ private:
 class _ExpressionNode
 {
 public:
-    static ExpressionNode New(size_t line, std::string name, std::string expression);
-    friend std::ostream& operator<<(std::ostream& out, const ExpressionNode& node);
+    static ExpressionNode New(size_t line,
+                              std::string name,
+                              std::string expression);
+    friend std::ostream& operator<<(std::ostream& out,
+                                    const ExpressionNode& node);
 
     size_t GetLine() const;
     std::string GetName() const;
@@ -82,7 +85,8 @@ class _IdentifierSequenceNode
 {
 public:
     static IdentifierSequenceNode New(size_t line);
-    friend std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node);
+    friend std::ostream& operator<<(std::ostream& out,
+                                    const IdentifierSequenceNode& node);
 
     void Add(std::string identifier);
 
@@ -113,7 +117,9 @@ private:
 class _ActionNode
 {
 public:
-    static ActionNode New(size_t line, std::string name, std::string identifier = "");
+    static ActionNode New(size_t line,
+                          std::string name,
+                          std::string identifier = "");
     friend std::ostream& operator<<(std::ostream& out, const ActionNode& node);
 
     void CheckIllegalActions();

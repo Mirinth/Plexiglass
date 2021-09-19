@@ -45,7 +45,9 @@ void _FileNode::Add(RuleNode node)
     m_rules.push_back(node);
 }
 
-ExpressionNode _ExpressionNode::New(size_t line, std::string name, std::string expression)
+ExpressionNode _ExpressionNode::New(size_t line,
+                                    std::string name,
+                                    std::string expression)
 {
     ExpressionNode node = std::make_shared<_ExpressionNode>();
     node->m_line = line;
@@ -156,7 +158,9 @@ void _RuleNode::Add(ActionNode node)
     m_actions.push_back(node);
 }
 
-ActionNode _ActionNode::New(size_t line, std::string name, std::string identifier /*= ""*/)
+ActionNode _ActionNode::New(size_t line,
+                            std::string name,
+                            std::string identifier /*= ""*/)
 {
     ActionNode node = std::make_shared<_ActionNode>();
     node->m_line = line;
