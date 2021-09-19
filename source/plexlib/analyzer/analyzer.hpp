@@ -1,6 +1,6 @@
 #pragma once
 
-#include <std/exception>
+#include <exception>
 
 #include <parser/tree.hpp>
 

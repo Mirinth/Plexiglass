@@ -1,9 +1,9 @@
-#include <std/filesystem>
-#include <std/fstream>
-#include <std/functional>
-#include <std/iostream>
-#include <std/string>
-#include <std/vector>
+#include <filesystem>
+#include <fstream>
+#include <functional>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include <error.hpp>
 #include <analyzer/analyzer.hpp>

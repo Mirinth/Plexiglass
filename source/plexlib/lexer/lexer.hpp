@@ -1,7 +1,7 @@
 #pragma once
 
-#include <std/queue>
-#include <std/string>
+#include <queue>
+#include <string>
 #include <string_view>
 
 #include <lexer/token.hpp>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <std/exception>
-#include <std/string>
+#include <exception>
+#include <string>
 
 class Token;
 

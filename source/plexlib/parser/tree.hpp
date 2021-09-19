@@ -1,6 +1,6 @@
 #pragma once
 
-#include <std/ostream>
+#include <ostream>
 #include <memory>
 #include <set>
 #include <vector>
