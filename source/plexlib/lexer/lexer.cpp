@@ -14,11 +14,11 @@ bool IsBlank(std::string_view line);
 /// </summary>
 /// <param name="data">The data to lex.</param>
 Lexer::Lexer(std::string_view data)
-	: m_data(data)
-	, m_lineNumber(0)
-	, m_expectExpression(false)
+    : m_data(data)
+    , m_lineNumber(0)
+    , m_expectExpression(false)
 {
-	FillBuffer();
+    FillBuffer();
 }
 
 /// <summary>
@@ -26,8 +26,8 @@ Lexer::Lexer(std::string_view data)
 /// </summary>
 void Lexer::Shift()
 {
-	m_buffer.pop();
-	FillBuffer();
+    m_buffer.pop();
+    FillBuffer();
 }
 
 /// <summary>
@@ -36,7 +36,7 @@ void Lexer::Shift()
 /// <returns>The current token.</returns>
 const Token& Lexer::Peek() const
 {
-	return m_buffer.front();
+    return m_buffer.front();
 }
 
 /// <summary>
@@ -46,20 +46,20 @@ const Token& Lexer::Peek() const
 /// <returns>The lexed token's text.</returns>
 std::string Lexer::LexToken(std::string_view& line)
 {
-	size_t space = line.find_first_of(whitespace);
-	std::string text;
-	if (space == std::string_view::npos)
-	{
-		text = std::string(line);
-		line = std::string_view();
-	}
-	else
-	{
-		text = std::string(line.substr(0, space));
-		line.remove_prefix(space + 1); // Remove the space too
-	}
+    size_t space = line.find_first_of(whitespace);
+    std::string text;
+    if (space == std::string_view::npos)
+    {
+        text = std::string(line);
+        line = std::string_view();
+    }
+    else
+    {
+        text = std::string(line.substr(0, space));
+        line.remove_prefix(space + 1); // Remove the space too
+    }
 
-	return text;
+    return text;
 }
 
 /// <summary>
@@ -72,27 +72,27 @@ std::string Lexer::LexToken(std::string_view& line)
 /// </returns>
 std::string_view Lexer::GetLine()
 {
-	if (m_data.empty())
-	{
-		return std::string_view();
-	}
+    if (m_data.empty())
+    {
+        return std::string_view();
+    }
 
-	m_lineNumber++;
+    m_lineNumber++;
 
-	std::string_view line;
-	size_t size = m_data.find('\n');
-	if (size == std::string_view::npos)
-	{
-		line = m_data;
-		m_data.remove_prefix(m_data.size());
-	}
-	else
-	{
-		line = m_data.substr(0, size + 1); // include the newline
-		m_data.remove_prefix(size + 1);
-	}
+    std::string_view line;
+    size_t size = m_data.find('\n');
+    if (size == std::string_view::npos)
+    {
+        line = m_data;
+        m_data.remove_prefix(m_data.size());
+    }
+    else
+    {
+        line = m_data.substr(0, size + 1); // include the newline
+        m_data.remove_prefix(size + 1);
+    }
 
-	return line;
+    return line;
 }
 
 /// <summary>
@@ -102,61 +102,61 @@ std::string_view Lexer::GetLine()
 /// </summary>
 void Lexer::LexLine(std::string_view line)
 {
-	line = StripComment(line);
-	if (IsBlank(line))
-	{
-		return;
-	}
+    line = StripComment(line);
+    if (IsBlank(line))
+    {
+        return;
+    }
 
-	if (StartsWith(line, "    ") || StartsWith(line, "\t"))
-	{
-		m_buffer.push(Token(m_lineNumber, TokenType::Indent));
-		line = StripWhitespace(line);
+    if (StartsWith(line, "    ") || StartsWith(line, "\t"))
+    {
+        m_buffer.push(Token(m_lineNumber, TokenType::Indent));
+        line = StripWhitespace(line);
 
-		if (m_expectExpression)
-		{
-			m_expectExpression = false;
-			if (line.back() == '\n')
-			{
-				line.remove_suffix(1);
-			}
-			m_buffer.push(Token(m_lineNumber, TokenType::Regex, std::string(line)));
-			return;
-		}
+        if (m_expectExpression)
+        {
+            m_expectExpression = false;
+            if (line.back() == '\n')
+            {
+                line.remove_suffix(1);
+            }
+            m_buffer.push(Token(m_lineNumber, TokenType::Regex, std::string(line)));
+            return;
+        }
 
-		while (!IsBlank(line))
-		{
-			line = StripWhitespace(line);
-			if (line[0] == '|')
-			{
-				m_buffer.push(Token(m_lineNumber, TokenType::Alternator, "|"));
-				line.remove_prefix(1);
-			}
-			else
-			{
-				std::string text = LexToken(line);
-				m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
-			}
-		}
-	}
-	else
-	{
-		line = StripWhitespace(line);
-		std::string text = LexToken(line);
-		m_buffer.push(Token(m_lineNumber, TokenType::Keyword, text));
+        while (!IsBlank(line))
+        {
+            line = StripWhitespace(line);
+            if (line[0] == '|')
+            {
+                m_buffer.push(Token(m_lineNumber, TokenType::Alternator, "|"));
+                line.remove_prefix(1);
+            }
+            else
+            {
+                std::string text = LexToken(line);
+                m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+            }
+        }
+    }
+    else
+    {
+        line = StripWhitespace(line);
+        std::string text = LexToken(line);
+        m_buffer.push(Token(m_lineNumber, TokenType::Keyword, text));
 
-		if (text == "expression")
-		{
-			m_expectExpression = true;
-		}
+        if (text == "expression")
+        {
+            m_expectExpression = true;
+        }
 
-		while (!IsBlank(line))
-		{
-			line = StripWhitespace(line);
-			text = LexToken(line);
-			m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
-		}
-	}
+        while (!IsBlank(line))
+        {
+            line = StripWhitespace(line);
+            text = LexToken(line);
+            m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+        }
+    }
 }
 
 /// <summary>
@@ -164,16 +164,16 @@ void Lexer::LexLine(std::string_view line)
 /// </summary>
 void Lexer::FillBuffer()
 {
-	while (m_buffer.empty() && !m_data.empty())
-	{
-		std::string_view line = GetLine();
-		LexLine(line);
-	}
+    while (m_buffer.empty() && !m_data.empty())
+    {
+        std::string_view line = GetLine();
+        LexLine(line);
+    }
 
-	if (m_buffer.empty())
-	{
-		m_buffer.push(Token(m_lineNumber, TokenType::Eof));
-	}
+    if (m_buffer.empty())
+    {
+        m_buffer.push(Token(m_lineNumber, TokenType::Eof));
+    }
 }
 
 /// <summary>
@@ -184,14 +184,14 @@ void Lexer::FillBuffer()
 /// <returns>Whether toSearch starts with find.</returns>
 bool StartsWith(const std::string_view& toSearch, const std::string find)
 {
-	for (size_t i = 0; i < toSearch.size() && i < find.size(); i++)
-	{
-		if (toSearch[i] != find[i])
-		{
-			return false;
-		}
-	}
-	return true;
+    for (size_t i = 0; i < toSearch.size() && i < find.size(); i++)
+    {
+        if (toSearch[i] != find[i])
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 /// <summary>
@@ -201,13 +201,13 @@ bool StartsWith(const std::string_view& toSearch, const std::string find)
 /// <returns>The line, with any comments removed.</returns>
 std::string_view StripComment(std::string_view line)
 {
-	size_t marker = line.find_first_of("#");
-	if (marker == std::string_view::npos)
-	{
-		return line;
-	}
+    size_t marker = line.find_first_of("#");
+    if (marker == std::string_view::npos)
+    {
+        return line;
+    }
 
-	return line.substr(0, marker);
+    return line.substr(0, marker);
 }
 
 /// <summary>
@@ -217,13 +217,13 @@ std::string_view StripComment(std::string_view line)
 /// <returns>The stripped line.</returns>
 std::string_view StripWhitespace(std::string_view line)
 {
-	size_t start = line.find_first_not_of(whitespace);
-	if (start != std::string_view::npos)
-	{
-		return line.substr(start);
-	}
+    size_t start = line.find_first_not_of(whitespace);
+    if (start != std::string_view::npos)
+    {
+        return line.substr(start);
+    }
 
-	return line;
+    return line;
 }
 
 /// <summary>
@@ -233,9 +233,9 @@ std::string_view StripWhitespace(std::string_view line)
 /// <returns>Whether the line is blank.</returns>
 bool IsBlank(std::string_view line)
 {
-	return (
-		line.empty()
-		|| line[0] == '\n'
-		|| line.find_first_not_of(whitespace) == std::string_view::npos
-		);
+    return (
+        line.empty()
+        || line[0] == '\n'
+        || line.find_first_not_of(whitespace) == std::string_view::npos
+        );
 }

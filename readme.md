@@ -8,7 +8,7 @@ An expression looks like:
 
 ```
 expression some-name
-	[a-bA-Y09]lyoun(kkol)?
+    [a-bA-Y09]lyoun(kkol)?
 ```
 
 `expression` is a keyword that indicates this is an expression. It must start in
@@ -37,9 +37,9 @@ A pattern looks like:
 
 ```
 pattern some-name
-	  abcde
-	| fghij klmno pqrs
-	| wxyz
+      abcde
+    | fghij klmno pqrs
+    | wxyz
 ```
 
 `pattern` is a keyword that indicates this is a pattern. It must start in the
@@ -60,10 +60,10 @@ A rule looks like:
 
 ```
 rule what-to-match
-	action1
-	action2 parameter
-	action3
-	&c.
+    action1
+    action2 parameter
+    action3
+    &c.
 ```
 
 `rule` is a keyword that indicates this is a rule. It must start in the first
@@ -80,9 +80,9 @@ Allowed actions include:
 - `produce token-name` : The lexer will produce a token named `token-name`.
 - `rewind` : The lexer will leave the text for this token behind to be matched
              by the next iteration. This will cause an infinite loop unless you
-			 also include a `transition` action.
+             also include a `transition` action.
 -`transition another-state` : The lexer will transition to `another-state`.
                               States are currently unsupported since the syntax
-							  is undecided.
+                              is undecided.
 `++line`, `line++` : Increment the current line number.
 `--line`, `line--` : Decrement the current line number.

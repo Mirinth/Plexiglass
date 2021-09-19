@@ -8,7 +8,7 @@ class Token;
 class PlexiException : public std::exception
 {
 public:
-	PlexiException(const char* msg);
+    PlexiException(const char* msg);
 };
 
 void DuplicateNameError(size_t line, size_t original, std::string name);
