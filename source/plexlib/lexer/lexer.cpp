@@ -14,9 +14,7 @@ bool IsBlank(std::string_view line);
 /// </summary>
 /// <param name="data">The data to lex.</param>
 Lexer::Lexer(std::string_view data)
-    : m_data(data)
-    , m_lineNumber(0)
-    , m_expectExpression(false)
+    : m_data(data), m_lineNumber(0), m_expectExpression(false)
 {
     FillBuffer();
 }
@@ -42,7 +40,7 @@ const Token& Lexer::Peek() const
 /// <summary>
 /// Lex a single token's text out of a line. Assumes line has something to lex.
 /// </summary>
-/// <param name="line">The line to lex from. Token is stripped from line.</param>
+/// <param name="line">Line to lex from. Token is stripped from line.</param>
 /// <returns>The lexed token's text.</returns>
 std::string Lexer::LexToken(std::string_view& line)
 {
@@ -120,7 +118,8 @@ void Lexer::LexLine(std::string_view line)
             {
                 line.remove_suffix(1);
             }
-            m_buffer.push(Token(m_lineNumber, TokenType::Regex, std::string(line)));
+            Token tok(m_lineNumber, TokenType::Regex, std::string(line));
+            m_buffer.push(tok);
             return;
         }
 
@@ -233,9 +232,12 @@ std::string_view StripWhitespace(std::string_view line)
 /// <returns>Whether the line is blank.</returns>
 bool IsBlank(std::string_view line)
 {
+    // clang-format off
+    // Issue #86
     return (
-        line.empty()
+           line.empty()
         || line[0] == '\n'
         || line.find_first_not_of(whitespace) == std::string_view::npos
         );
+    // clang-format on
 }
