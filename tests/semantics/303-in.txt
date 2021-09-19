@@ -1,0 +1,6 @@
+# Check that pattern statements are rejected
+expression exp
+	abc
+
+pattern name
+	exp
