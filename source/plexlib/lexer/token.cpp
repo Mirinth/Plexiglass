@@ -3,10 +3,12 @@
 /// <summary>
 /// Construct an invalid token.
 /// </summary>
+// clang-format off
+// Issue #86
 Token::Token()
     : line(0), type(TokenType::Unknown), text("")
-{
-}
+{}
+// clang-format on
 
 /// <summary>
 /// Construct a token.
