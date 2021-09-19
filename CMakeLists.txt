@@ -7,6 +7,9 @@ project(Plexiglass
 if (MSVC)
     add_compile_options(
         /Wall /WX # All warnings and treat as errors, except...
+        /wd4710 # in most standard library headers, so can't fix
+        /wd4514 # in most standard library headers, so can't fix
+        /wd4668 # in most standard library headers, so can't fix
         /wd4820 # can't seem to fix without adding my own padding at the end
         /wd5045 # not even sure how to fix, doesn't seem important since code is trusted
     )

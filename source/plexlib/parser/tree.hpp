@@ -1,7 +1,7 @@
 #pragma once
 
-#include <std/ostream>
 #include <memory>
+#include <ostream>
 #include <set>
 #include <vector>
 
@@ -26,100 +26,106 @@ typedef std::shared_ptr<_ActionNode> ActionNode;
 class _FileNode
 {
 public:
-	static FileNode New();
-	friend std::ostream& operator<<(std::ostream& out, const FileNode& node);
+    static FileNode New();
+    friend std::ostream& operator<<(std::ostream& out, const FileNode& node);
 
-	void Add(ExpressionNode node);
-	void Add(PatternNode node);
-	void Add(RuleNode node);
+    void Add(ExpressionNode node);
+    void Add(PatternNode node);
+    void Add(RuleNode node);
 
-	void CheckDuplicateNames();
-	void CheckMissingNames();
-	void CheckIllegalActions();
-	void CheckIllegalStatements();
+    void CheckDuplicateNames();
+    void CheckMissingNames();
+    void CheckIllegalActions();
+    void CheckIllegalStatements();
 
 private:
-	std::vector<ExpressionNode> m_expressions;
-	std::vector<PatternNode> m_patterns;
-	std::vector<RuleNode> m_rules;
+    std::vector<ExpressionNode> m_expressions;
+    std::vector<PatternNode> m_patterns;
+    std::vector<RuleNode> m_rules;
 };
 
 class _ExpressionNode
 {
 public:
-	static ExpressionNode New(size_t line, std::string name, std::string expression);
-	friend std::ostream& operator<<(std::ostream& out, const ExpressionNode& node);
+    static ExpressionNode New(size_t line,
+                              std::string name,
+                              std::string expression);
+    friend std::ostream& operator<<(std::ostream& out,
+                                    const ExpressionNode& node);
 
-	size_t GetLine() const;
-	std::string GetName() const;
+    size_t GetLine() const;
+    std::string GetName() const;
 
 private:
-	size_t m_line;
-	std::string m_name;
-	std::string m_expression;
+    size_t m_line;
+    std::string m_name;
+    std::string m_expression;
 };
 
 class _PatternNode
 {
 public:
-	static PatternNode New(size_t line, std::string name);
-	friend std::ostream& operator<<(std::ostream& out, const PatternNode& node);
+    static PatternNode New(size_t line, std::string name);
+    friend std::ostream& operator<<(std::ostream& out, const PatternNode& node);
 
-	void Add(IdentifierSequenceNode node);
+    void Add(IdentifierSequenceNode node);
 
-	size_t GetLine() const;
-	std::string GetName() const;
+    size_t GetLine() const;
+    std::string GetName() const;
 
-	void CheckMissingNames(std::set<std::string>& names);
+    void CheckMissingNames(std::set<std::string>& names);
 
 private:
-	size_t m_line;
-	std::string m_name;
-	std::vector<IdentifierSequenceNode> m_sequences;
+    size_t m_line;
+    std::string m_name;
+    std::vector<IdentifierSequenceNode> m_sequences;
 };
 
 class _IdentifierSequenceNode
 {
 public:
-	static IdentifierSequenceNode New(size_t line);
-	friend std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node);
+    static IdentifierSequenceNode New(size_t line);
+    friend std::ostream& operator<<(std::ostream& out,
+                                    const IdentifierSequenceNode& node);
 
-	void Add(std::string identifier);
+    void Add(std::string identifier);
 
-	void CheckMissingNames(std::set<std::string>& names);
+    void CheckMissingNames(std::set<std::string>& names);
 
 private:
-	size_t m_line;
-	std::vector<std::string> m_identifiers;
+    size_t m_line;
+    std::vector<std::string> m_identifiers;
 };
 
 class _RuleNode
 {
 public:
-	static RuleNode New(size_t line, std::string name);
-	friend std::ostream& operator<<(std::ostream& out, const RuleNode& node);
+    static RuleNode New(size_t line, std::string name);
+    friend std::ostream& operator<<(std::ostream& out, const RuleNode& node);
 
-	void Add(ActionNode node);
+    void Add(ActionNode node);
 
-	void CheckIllegalActions();
-	void CheckMissingNames(std::set<std::string>& names);
+    void CheckIllegalActions();
+    void CheckMissingNames(std::set<std::string>& names);
 
 private:
-	size_t m_line;
-	std::string m_name;
-	std::vector<ActionNode> m_actions;
+    size_t m_line;
+    std::string m_name;
+    std::vector<ActionNode> m_actions;
 };
 
 class _ActionNode
 {
 public:
-	static ActionNode New(size_t line, std::string name, std::string identifier = "");
-	friend std::ostream& operator<<(std::ostream& out, const ActionNode& node);
+    static ActionNode New(size_t line,
+                          std::string name,
+                          std::string identifier = "");
+    friend std::ostream& operator<<(std::ostream& out, const ActionNode& node);
 
-	void CheckIllegalActions();
+    void CheckIllegalActions();
 
 private:
-	size_t m_line;
-	std::string m_name;
-	std::string m_identifier;
+    size_t m_line;
+    std::string m_name;
+    std::string m_identifier;
 };

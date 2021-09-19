@@ -1,25 +1,25 @@
 #pragma once
 
-#include <std/string>
+#include <string>
 
 enum class TokenType
 {
-	Alternator,
-	Eof,
-	Indent,
-	Keyword,
-	Regex,
-	Text,
-	Unknown,
+    Alternator,
+    Eof,
+    Indent,
+    Keyword,
+    Regex,
+    Text,
+    Unknown,
 };
 
 class Token
 {
 public:
-	Token();
-	Token(size_t line, TokenType type, std::string text = "");
-	std::string ToString() const;
-	size_t line;
-	TokenType type;
-	std::string text;
+    Token();
+    Token(size_t line, TokenType type, std::string text = "");
+    std::string ToString() const;
+    size_t line;
+    TokenType type;
+    std::string text;
 };

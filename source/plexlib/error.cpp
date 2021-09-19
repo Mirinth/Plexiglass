@@ -1,6 +1,6 @@
 #include <error.hpp>
 
-#include <std/sstream>
+#include <sstream>
 
 #include <lexer/token.hpp>
 
@@ -8,9 +8,12 @@
 /// Initialize the exception.
 /// </summary>
 /// <param name="msg">The exception's message.</param>
+// clang-format off
+// Issue #86
 PlexiException::PlexiException(const char* msg)
-	: std::exception(msg)
+    : std::exception(msg)
 {}
+// clang-format on
 
 /// <summary>
 /// Generate a duplicate name error message and stop parsing.
@@ -20,10 +23,10 @@ PlexiException::PlexiException(const char* msg)
 /// <param name="name">Name that was duplicated.</param>
 void DuplicateNameError(size_t line, size_t original, std::string name)
 {
-	std::stringstream out;
-	out << "Error on line " << line << ": "
-		<< "'" << name << "' already defined on line " << original;
-	throw PlexiException(out.str().c_str());
+    std::stringstream out;
+    out << "Error on line " << line << ": "
+        << "'" << name << "' already defined on line " << original;
+    throw PlexiException(out.str().c_str());
 }
 
 /// <summary>
@@ -33,10 +36,10 @@ void DuplicateNameError(size_t line, size_t original, std::string name)
 /// <param name="name">Name that was missing.</param>
 void MissingNameError(size_t line, std::string name)
 {
-	std::stringstream out;
-	out << "Error on line " << line << ": "
-		<< "Undefined name '" << name << "'";
-	throw PlexiException(out.str().c_str());
+    std::stringstream out;
+    out << "Error on line " << line << ": "
+        << "Undefined name '" << name << "'";
+    throw PlexiException(out.str().c_str());
 }
 
 /// <summary>
@@ -46,10 +49,9 @@ void MissingNameError(size_t line, std::string name)
 /// <param name="message">The message to display.</param>
 void Error(size_t line, std::string message)
 {
-	std::stringstream out;
-	out << "Error on line " << line
-		<< ": " << message;
-	throw PlexiException(out.str().c_str());
+    std::stringstream out;
+    out << "Error on line " << line << ": " << message;
+    throw PlexiException(out.str().c_str());
 }
 
 /// <summary>
@@ -59,9 +61,8 @@ void Error(size_t line, std::string message)
 /// <param name="tok">What was found.</param>
 void Error(std::string expected, const Token tok)
 {
-	std::stringstream out;
-	out << "Error on line " << tok.line
-		<< ": Expected " << expected
-		<< " found " << tok.ToString();
-	throw PlexiException(out.str().c_str());
+    std::stringstream out;
+    out << "Error on line " << tok.line << ": "
+        << "Expected " << expected << " found " << tok.ToString();
+    throw PlexiException(out.str().c_str());
 }

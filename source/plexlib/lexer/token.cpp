@@ -3,10 +3,12 @@
 /// <summary>
 /// Construct an invalid token.
 /// </summary>
+// clang-format off
+// Issue #86
 Token::Token()
-	: line(0), type(TokenType::Unknown), text("")
-{
-}
+    : line(0), type(TokenType::Unknown), text("")
+{}
+// clang-format on
 
 /// <summary>
 /// Construct a token.
@@ -15,7 +17,7 @@ Token::Token()
 /// <param name="type">The token's type.</param>
 /// <param name="text">The token's text.</param>
 Token::Token(size_t line, TokenType type, std::string text /* = "" */)
-	: line(line), type(type), text(text)
+    : line(line), type(type), text(text)
 {
 }
 
@@ -25,38 +27,38 @@ Token::Token(size_t line, TokenType type, std::string text /* = "" */)
 /// <returns>String representation of the token.</returns>
 std::string Token::ToString() const
 {
-	std::string str;
-	switch (type)
-	{
-	case TokenType::Alternator:
-		str = "alternator";
-		break;
-	case TokenType::Eof:
-		str = "eof";
-		break;
-	case TokenType::Regex:
-		str = "expression";
-		break;
-	case TokenType::Indent:
-		str = "indent";
-		break;
-	case TokenType::Keyword:
-		str = "keyword";
-		break;
-	case TokenType::Text:
-		str = "text";
-		break;
-	case TokenType::Unknown:
-		str = "unknown";
-		break;
-	default:
-		throw std::exception("Unrecognized token type in Token::ToString()");
-	}
+    std::string str;
+    switch (type)
+    {
+    case TokenType::Alternator:
+        str = "alternator";
+        break;
+    case TokenType::Eof:
+        str = "eof";
+        break;
+    case TokenType::Regex:
+        str = "expression";
+        break;
+    case TokenType::Indent:
+        str = "indent";
+        break;
+    case TokenType::Keyword:
+        str = "keyword";
+        break;
+    case TokenType::Text:
+        str = "text";
+        break;
+    case TokenType::Unknown:
+        str = "unknown";
+        break;
+    default:
+        throw std::exception("Unrecognized token type in Token::ToString()");
+    }
 
-	if (!text.empty())
-	{
-		str += " " + text;
-	}
+    if (!text.empty())
+    {
+        str += " " + text;
+    }
 
-	return str;
+    return str;
 }
