@@ -34,6 +34,9 @@ add_library(plexlib STATIC
 
     source/plexlib/analyzer/analyzer.hpp
     source/plexlib/analyzer/analyzer.cpp
+
+    source/plexlib/template/template.hpp
+    source/plexlib/template/template.cpp
 )
 target_include_directories(plexlib PUBLIC source/plexlib)
 target_compile_features(plexlib PUBLIC cxx_std_17)
