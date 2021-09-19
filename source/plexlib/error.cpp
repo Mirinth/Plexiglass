@@ -8,9 +8,12 @@
 /// Initialize the exception.
 /// </summary>
 /// <param name="msg">The exception's message.</param>
+// clang-format off
+// Issue #86
 PlexiException::PlexiException(const char* msg)
     : std::exception(msg)
 {}
+// clang-format on
 
 /// <summary>
 /// Generate a duplicate name error message and stop parsing.
@@ -47,8 +50,7 @@ void MissingNameError(size_t line, std::string name)
 void Error(size_t line, std::string message)
 {
     std::stringstream out;
-    out << "Error on line " << line
-        << ": " << message;
+    out << "Error on line " << line << ": " << message;
     throw PlexiException(out.str().c_str());
 }
 
@@ -60,8 +62,7 @@ void Error(size_t line, std::string message)
 void Error(std::string expected, const Token tok)
 {
     std::stringstream out;
-    out << "Error on line " << tok.line
-        << ": Expected " << expected
-        << " found " << tok.ToString();
+    out << "Error on line " << tok.line << ": "
+        << "Expected " << expected << " found " << tok.ToString();
     throw PlexiException(out.str().c_str());
 }
