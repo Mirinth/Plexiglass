@@ -36,6 +36,7 @@ public:
 	void CheckDuplicateNames();
 	void CheckMissingNames();
 	void CheckIllegalActions();
+	void CheckIllegalStatements();
 
 private:
 	std::vector<ExpressionNode> m_expressions;
