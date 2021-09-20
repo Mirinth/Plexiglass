@@ -4,8 +4,7 @@
 #include <string_view>
 
 enum TokenType
-{
-    $TOKEN_NAMES
+{$TOKEN_NAMES
 };
 
 class $LEXER_NAME
