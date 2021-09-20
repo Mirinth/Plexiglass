@@ -45,6 +45,12 @@ void ReplaceTokens(std::string& content, FileNode file)
     Replace(content, "$TOKEN_NAMES", names.str());
 }
 
+void ReplaceRules(std::string& content, FileNode file)
+{
+    std::string ruleString = file->GetRuleString();
+    Replace(content, "$LEXER_RULES", ruleString);
+}
+
 void SaveFile(const std::string& content,
               const std::string& dir,
               const std::string& name,
@@ -71,7 +77,7 @@ void TemplateBody(FileNode file, std::string dir, std::string name)
     std::string content = ReadFile("template.cpp");
 
     ReplaceName(content, name);
-
+    ReplaceRules(content, file);
     SaveFile(content, dir, name, ".cpp");
 }
 

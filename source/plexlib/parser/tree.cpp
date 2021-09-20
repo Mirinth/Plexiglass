@@ -53,6 +53,12 @@ void _FileNode::GetTokenNames(std::set<std::string>& names) const
     }
 }
 
+std::string _FileNode::GetRuleString() const
+{
+    return "\n\t\t{.Nothing=true, .Produce=false, .Line=0, "
+           ".Pattern={\"Regex\"}},";
+}
+
 ExpressionNode _ExpressionNode::New(size_t line,
                                     std::string name,
                                     std::string expression)
