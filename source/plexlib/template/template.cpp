@@ -28,21 +28,42 @@ void Replace(std::string& subject,
     }
 }
 
+void ReplaceErrorName(std::string& content, const std::string& name)
+{
+    Replace(content, "$INVALID_TOKEN", name);
+}
+
 void ReplaceName(std::string& content, const std::string& name)
 {
     Replace(content, "$LEXER_NAME", name);
 }
 
-void ReplaceTokens(std::string& content, FileNode file)
+std::string ReplaceTokens(std::string& content, FileNode file)
 {
     std::set<std::string> tokenNames;
     file->GetTokenNames(tokenNames);
+    
+    std::string errorName;
+    for (size_t unique = 0; unique < std::numeric_limits<size_t>::max();
+         unique++)
+    {
+        errorName = "PLEXIGLASS_NO_MATCH_TOKEN_" + std::to_string(unique);
+        if (tokenNames.count(errorName) == 0)
+        {
+            tokenNames.insert(errorName);
+            break;
+        }
+    }
+
     std::stringstream names;
     for (auto& tokenName : tokenNames)
     {
         names << "\n\t" << tokenName << ",";
     }
+
     Replace(content, "$TOKEN_NAMES", names.str());
+    
+    return errorName;
 }
 
 void ReplaceRules(std::string& content, FileNode file)
@@ -62,20 +83,23 @@ void SaveFile(const std::string& content,
     out << content;
 }
 
-void TemplateHeader(FileNode file, std::string dir, std::string name)
+std::string TemplateHeader(FileNode file, std::string dir, std::string name)
 {
     std::string content = ReadFile("template.hpp");
     
     ReplaceName(content, name);
-    ReplaceTokens(content, file);
+    std::string errorName = ReplaceTokens(content, file);
 
     SaveFile(content, dir, name, ".hpp");
+
+    return errorName;
 }
 
-void TemplateBody(FileNode file, std::string dir, std::string name)
+void TemplateBody(FileNode file, std::string errorName, std::string dir, std::string name)
 {
     std::string content = ReadFile("template.cpp");
 
+    ReplaceErrorName(content, errorName);
     ReplaceName(content, name);
     ReplaceRules(content, file);
     SaveFile(content, dir, name, ".cpp");
@@ -84,6 +108,6 @@ void TemplateBody(FileNode file, std::string dir, std::string name)
 void Template(FileNode file, std::string dir, std::string name)
 {
     std::filesystem::create_directories(dir);
-    TemplateHeader(file, dir, name);
-    TemplateBody(file, dir, name);
+    std::string errorName = TemplateHeader(file, dir, name);
+    TemplateBody(file, errorName, dir, name);
 }
