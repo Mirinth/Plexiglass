@@ -28,11 +28,16 @@ void Replace(std::string& subject,
     }
 }
 
+void ReplaceName(std::string& content, const std::string& name)
+{
+    Replace(content, "$LEXER_NAME", name);
+}
+
 void TemplateHeader(FileNode file, std::string dir, std::string name)
 {
     std::string headerContent = ReadFile("template.hpp");
     
-    Replace(headerContent, "$LEXER_NAME", name);
+    ReplaceName(headerContent, name);
 
     std::set<std::string> tokenNames;
     file->GetTokenNames(tokenNames);
@@ -53,7 +58,7 @@ void TemplateBody(FileNode file, std::string dir, std::string name)
 {
     std::string bodyContent = ReadFile("template.cpp");
 
-    Replace(bodyContent, "$LEXER_NAME", name);
+    ReplaceName(bodyContent, name);
 
     std::filesystem::path bodyPath = std::filesystem::path(dir) / name;
     bodyPath.replace_extension(".cpp");
