@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <set>
 #include <sstream>
 
 std::string ReadFile(std::string path);
@@ -33,7 +34,8 @@ void TemplateHeader(FileNode file, std::string dir, std::string name)
     
     Replace(headerContent, "$LEXER_NAME", name);
 
-    std::vector<std::string> tokenNames = { "first", "second", "third" };
+    std::set<std::string> tokenNames;
+    file->GetTokenNames(tokenNames);
     std::stringstream names;
     for (auto& tokenName : tokenNames)
     {

@@ -33,6 +33,8 @@ public:
     void Add(PatternNode node);
     void Add(RuleNode node);
 
+    void GetTokenNames(std::set<std::string>& names) const;
+
     void CheckDuplicateNames();
     void CheckMissingNames();
     void CheckIllegalActions();
@@ -105,6 +107,8 @@ public:
 
     void Add(ActionNode node);
 
+    void GetTokenNames(std::set<std::string>& names) const;
+
     void CheckIllegalActions();
     void CheckMissingNames(std::set<std::string>& names);
 
@@ -121,6 +125,8 @@ public:
                           std::string name,
                           std::string identifier = "");
     friend std::ostream& operator<<(std::ostream& out, const ActionNode& node);
+
+    void GetTokenNames(std::set<std::string>& names) const;
 
     void CheckIllegalActions();
 
