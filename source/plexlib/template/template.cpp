@@ -49,8 +49,21 @@ void TemplateHeader(FileNode file, std::string dir, std::string name)
     out << headerContent;
 }
 
+void TemplateBody(FileNode file, std::string dir, std::string name)
+{
+    std::string bodyContent = ReadFile("template.cpp");
+
+    Replace(bodyContent, "$LEXER_NAME", name);
+
+    std::filesystem::path bodyPath = std::filesystem::path(dir) / name;
+    bodyPath.replace_extension(".cpp");
+    std::ofstream out(bodyPath);
+    out << bodyContent;
+}
+
 void Template(FileNode file, std::string dir, std::string name)
 {
     std::filesystem::create_directories(dir);
     TemplateHeader(file, dir, name);
+    TemplateBody(file, dir, name);
 }
