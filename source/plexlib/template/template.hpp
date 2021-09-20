@@ -4,4 +4,4 @@
 
 #include <parser/tree.hpp>
 
-void Template(FileNode file, std::string dir, std::string base);
+void Template(FileNode file, std::string dir, std::string name);

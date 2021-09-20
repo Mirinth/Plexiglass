@@ -2,13 +2,23 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 
-void Template(FileNode /*file*/, std::string dir, std::string base)
+std::string ReadFile(std::string path);
+
+void TemplateHeader(FileNode /*file*/, std::string dir, std::string name)
 {
-    std::filesystem::remove_all(dir);
+    std::filesystem::path headerPath = std::filesystem::path(dir) / name;
+    headerPath.replace_extension(".hpp");
+
+    std::string headerContent = ReadFile("template.hpp");
+
+    std::ofstream out(headerPath);
+    out << headerContent;
+}
+
+void Template(FileNode file, std::string dir, std::string name)
+{
     std::filesystem::create_directories(dir);
-
-    std::ofstream out(base + ".hpp");
-
-    out << "Template";
+    TemplateHeader(file, dir, name);
 }

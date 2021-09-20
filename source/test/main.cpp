@@ -171,7 +171,6 @@ bool RunTemplateTest(std::string stem)
 {
     std::string testName = std::filesystem::path(stem).filename().string();
     std::string outDir = stem + "-out";
-    std::string outBase = (std::filesystem::path(outDir) / testName).string();
 
     std::string data = ReadFile(stem + "-in.txt");
 
@@ -179,7 +178,8 @@ bool RunTemplateTest(std::string stem)
     {
         FileNode file = Parse(data);
         Analyze(file);
-        Template(file, outDir, outBase);
+        std::filesystem::remove_all(outDir);
+        Template(file, outDir, testName);
 
         return CompareOutput(stem + "-base.txt", stem + "-out.txt");
     }
