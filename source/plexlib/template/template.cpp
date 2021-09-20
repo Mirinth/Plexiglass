@@ -27,14 +27,10 @@ void Replace(std::string& subject,
     }
 }
 
-
 void TemplateHeader(FileNode file, std::string dir, std::string name)
 {
-    std::filesystem::path headerPath = std::filesystem::path(dir) / name;
-    headerPath.replace_extension(".hpp");
-
     std::string headerContent = ReadFile("template.hpp");
-
+    
     Replace(headerContent, "$LEXER_NAME", name);
 
     std::vector<std::string> tokenNames = { "first", "second", "third" };
@@ -45,6 +41,8 @@ void TemplateHeader(FileNode file, std::string dir, std::string name)
     }
     Replace(headerContent, "$TOKEN_NAMES", names.str());
 
+    std::filesystem::path headerPath = std::filesystem::path(dir) / name;
+    headerPath.replace_extension(".hpp");
     std::ofstream out(headerPath);
     out << headerContent;
 }
