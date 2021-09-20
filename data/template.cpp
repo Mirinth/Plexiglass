@@ -25,8 +25,7 @@ std::string $LEXER_NAME::PeekText() const
 
 void $LEXER_NAME::Shift()
 {
-    static std::vector<std::tuple<TokenType, std::regex>> rules = {
-        $LEXER_RULES
+    static std::vector<std::tuple<TokenType, std::regex>> rules = {$LEXER_RULES
     };
 
     unsigned int max_index = 0;
