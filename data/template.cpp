@@ -18,12 +18,12 @@ TokenType $LEXER_NAME::PeekToken() const
     return m_type;
 }
 
-std::string &LEXER_NAME::PeekText() const
+std::string $LEXER_NAME::PeekText() const
 {
     return m_text;
 }
 
-void &LEXER_NAME::Shift()
+void $LEXER_NAME::Shift()
 {
     static std::vector<std::tuple<TokenType, std::regex>> rules = {
         $LEXER_RULES
