@@ -58,21 +58,21 @@ void SaveFile(const std::string& content,
 
 void TemplateHeader(FileNode file, std::string dir, std::string name)
 {
-    std::string headerContent = ReadFile("template.hpp");
+    std::string content = ReadFile("template.hpp");
     
-    ReplaceName(headerContent, name);
-    ReplaceTokens(headerContent, file);
+    ReplaceName(content, name);
+    ReplaceTokens(content, file);
 
-    SaveFile(headerContent, dir, name, ".hpp");
+    SaveFile(content, dir, name, ".hpp");
 }
 
 void TemplateBody(FileNode file, std::string dir, std::string name)
 {
-    std::string bodyContent = ReadFile("template.cpp");
+    std::string content = ReadFile("template.cpp");
 
-    ReplaceName(bodyContent, name);
+    ReplaceName(content, name);
 
-    SaveFile(bodyContent, dir, name, ".cpp");
+    SaveFile(content, dir, name, ".cpp");
 }
 
 void Template(FileNode file, std::string dir, std::string name)
