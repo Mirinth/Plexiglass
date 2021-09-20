@@ -55,3 +55,15 @@ add_executable(plextest
     source/test/main.cpp
 )
 target_link_libraries(plextest PUBLIC plexlib)
+
+configure_file(
+    data/skeleton.hpp
+    skeleton.hpp
+    COPYONLY
+)
+
+configure_file(
+    data/skeleton.cpp
+    skeleton.cpp
+    COPYONLY
+)
