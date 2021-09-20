@@ -169,13 +169,17 @@ bool RunAnalyzerTest(std::string stem)
 
 bool RunTemplateTest(std::string stem)
 {
+    std::string testName = std::filesystem::path(stem).filename().string();
+    std::string outDir = stem + "-out";
+    std::string outBase = (std::filesystem::path(outDir) / testName).string();
+
     std::string data = ReadFile(stem + "-in.txt");
 
     try
     {
         FileNode file = Parse(data);
         Analyze(file);
-        Template(file, stem + "-out.txt");
+        Template(file, outDir, outBase);
 
         return CompareOutput(stem + "-base.txt", stem + "-out.txt");
     }
