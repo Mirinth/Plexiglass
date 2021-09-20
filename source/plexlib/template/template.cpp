@@ -45,6 +45,17 @@ void ReplaceTokens(std::string& content, FileNode file)
     Replace(content, "$TOKEN_NAMES", names.str());
 }
 
+void SaveFile(const std::string& content,
+              const std::string& dir,
+              const std::string& name,
+              const std::string& ext)
+{
+    std::filesystem::path path = std::filesystem::path(dir) / name;
+    path.replace_extension(ext);
+    std::ofstream out(path);
+    out << content;
+}
+
 void TemplateHeader(FileNode file, std::string dir, std::string name)
 {
     std::string headerContent = ReadFile("template.hpp");
@@ -52,10 +63,7 @@ void TemplateHeader(FileNode file, std::string dir, std::string name)
     ReplaceName(headerContent, name);
     ReplaceTokens(headerContent, file);
 
-    std::filesystem::path headerPath = std::filesystem::path(dir) / name;
-    headerPath.replace_extension(".hpp");
-    std::ofstream out(headerPath);
-    out << headerContent;
+    SaveFile(headerContent, dir, name, ".hpp");
 }
 
 void TemplateBody(FileNode file, std::string dir, std::string name)
@@ -64,10 +72,7 @@ void TemplateBody(FileNode file, std::string dir, std::string name)
 
     ReplaceName(bodyContent, name);
 
-    std::filesystem::path bodyPath = std::filesystem::path(dir) / name;
-    bodyPath.replace_extension(".cpp");
-    std::ofstream out(bodyPath);
-    out << bodyContent;
+    SaveFile(bodyContent, dir, name, ".cpp");
 }
 
 void Template(FileNode file, std::string dir, std::string name)
