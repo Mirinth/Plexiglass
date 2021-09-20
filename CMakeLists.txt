@@ -57,13 +57,13 @@ add_executable(plextest
 target_link_libraries(plextest PUBLIC plexlib)
 
 configure_file(
-    data/skeleton.hpp
-    skeleton.hpp
+    data/template.hpp
+    template.hpp
     COPYONLY
 )
 
 configure_file(
-    data/skeleton.cpp
-    skeleton.cpp
+    data/template.cpp
+    template.cpp
     COPYONLY
 )
