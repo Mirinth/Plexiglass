@@ -1,5 +1,8 @@
 #include <parser/tree.hpp>
 
+#include <sstream>
+#include <vector>
+
 FileNode _FileNode::New()
 {
     return std::make_shared<_FileNode>();
@@ -55,8 +58,23 @@ void _FileNode::GetTokenNames(std::set<std::string>& names) const
 
 std::string _FileNode::GetRuleString() const
 {
-    return "\n\t\t{.Nothing=true, .Produce=false, .Line=0, "
-           ".Pattern={\"Regex\"}},";
+    std::vector<Rule> rules;
+
+    for (auto& rule : m_rules)
+    {
+        rules.push_back(rule->GetRule());
+    }
+
+    std::stringstream out;
+
+    for (auto& rule : rules)
+    {
+        out << "\n\t\t{ " << (rule.Produces ? "true" : "false") << ", "
+            << rule.Token << ", " << rule.Increment << ", " << rule.Pattern
+            << "};";
+    }
+
+    return out.str();
 }
 
 ExpressionNode _ExpressionNode::New(size_t line,
@@ -178,6 +196,12 @@ void _RuleNode::GetTokenNames(std::set<std::string>& names) const
     {
         action->GetTokenNames(names);
     }
+}
+
+Rule _RuleNode::GetRule() const
+{
+    Rule rule = { true, "Token", 0, m_name };
+    return rule;
 }
 
 ActionNode _ActionNode::New(size_t line,

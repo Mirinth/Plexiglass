@@ -23,6 +23,14 @@ typedef std::shared_ptr<_RuleNode> RuleNode;
 class _ActionNode;
 typedef std::shared_ptr<_ActionNode> ActionNode;
 
+struct Rule
+{
+    bool Produces;       // whether anything is produced
+    std::string Token;   // what gets produced (if anything)
+    int Increment;       // how much to increment the line number by
+    std::string Pattern; // regex to match
+};
+
 class _FileNode
 {
 public:
@@ -109,6 +117,8 @@ public:
     void Add(ActionNode node);
 
     void GetTokenNames(std::set<std::string>& names) const;
+
+    Rule GetRule() const;
 
     void CheckIllegalActions();
     void CheckMissingNames(std::set<std::string>& names);
