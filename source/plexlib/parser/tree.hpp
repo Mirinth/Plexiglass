@@ -138,6 +138,7 @@ public:
     friend std::ostream& operator<<(std::ostream& out, const ActionNode& node);
 
     void GetTokenNames(std::set<std::string>& names) const;
+    void GetRule(Rule& rule);
 
     void CheckIllegalActions();
 

@@ -66,7 +66,6 @@ std::string _FileNode::GetRuleString() const
     }
 
     std::stringstream out;
-
     for (auto& rule : rules)
     {
         out << "\n\t\t{ " << (rule.Produces ? "true" : "false") << ", "
@@ -200,7 +199,13 @@ void _RuleNode::GetTokenNames(std::set<std::string>& names) const
 
 Rule _RuleNode::GetRule() const
 {
-    Rule rule = { true, "Token", 0, m_name };
+    Rule rule = { false, "", 0, m_name };
+    
+    for (const auto& action : m_actions)
+    {
+        action->GetRule(rule);
+    }
+
     return rule;
 }
 
@@ -230,5 +235,30 @@ void _ActionNode::GetTokenNames(std::set<std::string>& names) const
     if (m_name == "produce")
     {
         names.insert(m_identifier);
+    }
+}
+
+void _ActionNode::GetRule(Rule& rule)
+{
+    if (m_name == "produce-nothing")
+    {
+        rule.Produces = false;
+    }
+    else if (m_name == "produce")
+    {
+        rule.Produces = true;
+        rule.Token = m_identifier;
+    }
+    else if (m_name == "++line" || m_name == "line++")
+    {
+        rule.Increment = 1;
+    }
+    else if (m_name == "--line" || m_name == "line--")
+    {
+        rule.Increment = -1;
+    }
+    else
+    {
+        throw std::exception("Illegal action name");
     }
 }
