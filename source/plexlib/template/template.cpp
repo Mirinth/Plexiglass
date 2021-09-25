@@ -43,17 +43,12 @@ std::string ReplaceTokens(std::string& content, FileNode file)
     std::set<std::string> tokenNames;
     file->GetTokenNames(tokenNames);
     
-    std::string errorName;
-    for (size_t unique = 0; unique < std::numeric_limits<size_t>::max();
-         unique++)
+    std::string errorName = "PLEXIGLASS_NO_MATCH_TOKEN";
+    for (size_t unique = 0; unique < std::numeric_limits<size_t>::max() && tokenNames.count(errorName) != 0; unique++)
     {
         errorName = "PLEXIGLASS_NO_MATCH_TOKEN_" + std::to_string(unique);
-        if (tokenNames.count(errorName) == 0)
-        {
-            tokenNames.insert(errorName);
-            break;
-        }
     }
+    tokenNames.insert(errorName);
 
     std::stringstream names;
     for (auto& tokenName : tokenNames)
@@ -66,9 +61,9 @@ std::string ReplaceTokens(std::string& content, FileNode file)
     return errorName;
 }
 
-void ReplaceRules(std::string& content, FileNode file)
+void ReplaceRules(std::string& content, FileNode file, std::string errorName)
 {
-    std::string ruleString = file->GetRuleString();
+    std::string ruleString = file->GetRuleString(errorName);
     Replace(content, "$LEXER_RULES", ruleString);
 }
 
@@ -95,13 +90,16 @@ std::string TemplateHeader(FileNode file, std::string dir, std::string name)
     return errorName;
 }
 
-void TemplateBody(FileNode file, std::string errorName, std::string dir, std::string name)
+void TemplateBody(FileNode file,
+                  std::string errorName,
+                  std::string dir,
+                  std::string name)
 {
     std::string content = ReadFile("template.cpp");
 
     ReplaceErrorName(content, errorName);
     ReplaceName(content, name);
-    ReplaceRules(content, file);
+    ReplaceRules(content, file, errorName);
     SaveFile(content, dir, name, ".cpp");
 }
 

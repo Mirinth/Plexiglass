@@ -56,7 +56,7 @@ void _FileNode::GetTokenNames(std::set<std::string>& names) const
     }
 }
 
-std::string _FileNode::GetRuleString() const
+std::string _FileNode::GetRuleString(std::string illegalTokenName) const
 {
     std::vector<Rule> rules;
 
@@ -68,6 +68,10 @@ std::string _FileNode::GetRuleString() const
     std::stringstream out;
     for (auto& rule : rules)
     {
+        if (rule.Token == "")
+        {
+            rule.Token = illegalTokenName;
+        }
         out << "\n\t\t{ " << (rule.Produces ? "true" : "false") << ", "
             << rule.Token << ", " << rule.Increment << ", " << rule.Pattern
             << "};";

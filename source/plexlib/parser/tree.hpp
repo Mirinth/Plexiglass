@@ -42,7 +42,7 @@ public:
     void Add(RuleNode node);
 
     void GetTokenNames(std::set<std::string>& names) const;
-    std::string GetRuleString() const;
+    std::string GetRuleString(std::string illegalTokenName) const;
 
     void CheckDuplicateNames();
     void CheckMissingNames();
