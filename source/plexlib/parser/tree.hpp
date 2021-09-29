@@ -66,6 +66,7 @@ public:
 
     size_t GetLine() const;
     std::string GetName() const;
+    std::string GetExpression() const;
 
 private:
     size_t m_line;

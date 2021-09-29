@@ -3,6 +3,10 @@
 #include <sstream>
 #include <vector>
 
+void Replace(std::string& subject,
+             const std::string& find,
+             const std::string& replace);
+
 FileNode _FileNode::New()
 {
     return std::make_shared<_FileNode>();
@@ -60,9 +64,25 @@ std::string _FileNode::GetRuleString(std::string illegalTokenName) const
 {
     std::vector<Rule> rules;
 
-    for (auto& rule : m_rules)
+    for (auto& m_rule : m_rules)
     {
-        rules.push_back(rule->GetRule());
+        Rule rule = m_rule->GetRule();
+
+        for (auto& expression : m_expressions)
+        {
+            if (expression->GetName() == rule.Pattern)
+            {
+                rule.Pattern = expression->GetExpression();
+
+                // Needs to come first so \ inserted by next one aren't escaped
+                Replace(rule.Pattern, "\\", "\\\\"); // Escape backslaches
+                Replace(rule.Pattern, "\"", "\\\""); // Escape double quotes
+
+                rule.Pattern = "\"" + rule.Pattern + "\"";
+            }
+        }
+
+        rules.push_back(rule);
     }
 
     std::stringstream out;
@@ -105,6 +125,11 @@ size_t _ExpressionNode::GetLine() const
 std::string _ExpressionNode::GetName() const
 {
     return m_name;
+}
+
+std::string _ExpressionNode::GetExpression() const
+{
+    return m_expression;
 }
 
 PatternNode _PatternNode::New(size_t line, std::string name)
