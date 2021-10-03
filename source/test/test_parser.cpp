@@ -7,8 +7,18 @@
 
 #include "read_test_file.hpp"
 
-TEST_CASE("Test the parser")
+TEST_CASE("Parser: Empty file")
 {
     std::string data = ReadTestFile("parser/empty-file-in.txt");
-    CHECK_THROWS_WITH_AS(Parse(data), "Error on line 1: Expected keyword found eof", PlexiException);
+    CHECK_THROWS_WITH_AS(Parse(data),
+                         "Error on line 1: Expected keyword found eof",
+                         PlexiException);
+}
+
+TEST_CASE("Parser: No keyword at start")
+{
+    std::string data = ReadTestFile("parser/no-keyword-at-start.txt");
+    CHECK_THROWS_WITH_AS(Parse(data),
+                         "Error on line 2: Unrecognized keyword junk",
+                         PlexiException);
 }
