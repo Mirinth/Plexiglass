@@ -9,6 +9,7 @@
 #include <error.hpp>
 #include <lexer/lexer.hpp>
 #include <parser/parser.hpp>
+#include <template/template.hpp>
 
 typedef std::function<bool(std::string)> Tester;
 
@@ -166,6 +167,31 @@ bool RunAnalyzerTest(std::string stem)
     }
 }
 
+bool RunTemplateTest(std::string stem)
+{
+    std::string testName = std::filesystem::path(stem).filename().string();
+    std::string header = stem + "-out.hpp";
+    std::string code = stem + "-out.cpp";
+
+    std::string data = ReadFile(stem + "-in.txt");
+
+    try
+    {
+        FileNode file = Parse(data);
+        Analyze(file);
+        Template(file, testName, header, code);
+
+        return CompareOutput(stem + "-base.hpp", header)
+               && CompareOutput(stem + "-base.cpp", code);
+    }
+    catch (PlexiException exc)
+    {
+        std::ofstream out(stem + "-out.txt");
+        out << exc.what() << std::endl;
+        return false;
+    }
+}
+
 bool TestGroup(std::string name, Tester test)
 {
     auto stems = GetTestStems(name);
@@ -193,10 +219,9 @@ bool TestGroup(std::string name, Tester test)
 int main()
 {
     std::vector<std::tuple<std::string, Tester>> map = {
-        { "lexer", RunLexerTest },
-        { "parser", RunParserTest },
-        { "tree", RunTreeTest },
-        { "semantics", RunAnalyzerTest },
+        { "lexer", RunLexerTest },       { "parser", RunParserTest },
+        { "tree", RunTreeTest },         { "semantics", RunAnalyzerTest },
+        { "template", RunTemplateTest },
     };
 
     for (auto& [name, tester] : map)

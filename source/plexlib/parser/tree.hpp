@@ -23,6 +23,14 @@ typedef std::shared_ptr<_RuleNode> RuleNode;
 class _ActionNode;
 typedef std::shared_ptr<_ActionNode> ActionNode;
 
+struct Rule
+{
+    bool Produces;       // whether anything is produced
+    std::string Token;   // what gets produced (if anything)
+    int Increment;       // how much to increment the line number by
+    std::string Pattern; // regex to match
+};
+
 class _FileNode
 {
 public:
@@ -32,6 +40,9 @@ public:
     void Add(ExpressionNode node);
     void Add(PatternNode node);
     void Add(RuleNode node);
+
+    void GetTokenNames(std::set<std::string>& names) const;
+    std::string GetRuleString(std::string illegalTokenName) const;
 
     void CheckDuplicateNames();
     void CheckMissingNames();
@@ -55,6 +66,7 @@ public:
 
     size_t GetLine() const;
     std::string GetName() const;
+    std::string GetExpression() const;
 
 private:
     size_t m_line;
@@ -105,6 +117,10 @@ public:
 
     void Add(ActionNode node);
 
+    void GetTokenNames(std::set<std::string>& names) const;
+
+    Rule GetRule() const;
+
     void CheckIllegalActions();
     void CheckMissingNames(std::set<std::string>& names);
 
@@ -121,6 +137,9 @@ public:
                           std::string name,
                           std::string identifier = "");
     friend std::ostream& operator<<(std::ostream& out, const ActionNode& node);
+
+    void GetTokenNames(std::set<std::string>& names) const;
+    void GetRule(Rule& rule);
 
     void CheckIllegalActions();
 

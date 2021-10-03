@@ -1,5 +1,12 @@
 #include <parser/tree.hpp>
 
+#include <sstream>
+#include <vector>
+
+void Replace(std::string& subject,
+             const std::string& find,
+             const std::string& replace);
+
 FileNode _FileNode::New()
 {
     return std::make_shared<_FileNode>();
@@ -45,6 +52,54 @@ void _FileNode::Add(RuleNode node)
     m_rules.push_back(node);
 }
 
+void _FileNode::GetTokenNames(std::set<std::string>& names) const
+{
+    for (const auto& rule : m_rules)
+    {
+        rule->GetTokenNames(names);
+    }
+}
+
+std::string _FileNode::GetRuleString(std::string illegalTokenName) const
+{
+    std::vector<Rule> rules;
+
+    for (auto& m_rule : m_rules)
+    {
+        Rule rule = m_rule->GetRule();
+
+        for (auto& expression : m_expressions)
+        {
+            if (expression->GetName() == rule.Pattern)
+            {
+                rule.Pattern = expression->GetExpression();
+
+                // Needs to come first so \ inserted by next one aren't escaped
+                Replace(rule.Pattern, "\\", "\\\\"); // Escape backslaches
+                Replace(rule.Pattern, "\"", "\\\""); // Escape double quotes
+
+                rule.Pattern = "\"" + rule.Pattern + "\"";
+            }
+        }
+
+        rules.push_back(rule);
+    }
+
+    std::stringstream out;
+    for (auto& rule : rules)
+    {
+        if (rule.Token == "")
+        {
+            rule.Token = illegalTokenName;
+        }
+        out << "\n\t\t{ " << (rule.Produces ? "true" : "false") << ", "
+            << rule.Token << ", " << rule.Increment << ", " << rule.Pattern
+            << "};";
+    }
+
+    return out.str();
+}
+
 ExpressionNode _ExpressionNode::New(size_t line,
                                     std::string name,
                                     std::string expression)
@@ -70,6 +125,11 @@ size_t _ExpressionNode::GetLine() const
 std::string _ExpressionNode::GetName() const
 {
     return m_name;
+}
+
+std::string _ExpressionNode::GetExpression() const
+{
+    return m_expression;
 }
 
 PatternNode _PatternNode::New(size_t line, std::string name)
@@ -158,6 +218,26 @@ void _RuleNode::Add(ActionNode node)
     m_actions.push_back(node);
 }
 
+void _RuleNode::GetTokenNames(std::set<std::string>& names) const
+{
+    for (const auto& action : m_actions)
+    {
+        action->GetTokenNames(names);
+    }
+}
+
+Rule _RuleNode::GetRule() const
+{
+    Rule rule = { false, "", 0, m_name };
+    
+    for (const auto& action : m_actions)
+    {
+        action->GetRule(rule);
+    }
+
+    return rule;
+}
+
 ActionNode _ActionNode::New(size_t line,
                             std::string name,
                             std::string identifier /*= ""*/)
@@ -177,4 +257,37 @@ std::ostream& operator<<(std::ostream& out, const ActionNode& node)
         out << ' ' << node->m_identifier;
     }
     return out;
+}
+
+void _ActionNode::GetTokenNames(std::set<std::string>& names) const
+{
+    if (m_name == "produce")
+    {
+        names.insert(m_identifier);
+    }
+}
+
+void _ActionNode::GetRule(Rule& rule)
+{
+    if (m_name == "produce-nothing")
+    {
+        rule.Produces = false;
+    }
+    else if (m_name == "produce")
+    {
+        rule.Produces = true;
+        rule.Token = m_identifier;
+    }
+    else if (m_name == "++line" || m_name == "line++")
+    {
+        rule.Increment = 1;
+    }
+    else if (m_name == "--line" || m_name == "line--")
+    {
+        rule.Increment = -1;
+    }
+    else
+    {
+        throw std::exception("Illegal action name");
+    }
 }
