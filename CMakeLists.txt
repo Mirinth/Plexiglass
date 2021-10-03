@@ -58,12 +58,17 @@ add_executable(plextest
 )
 target_link_libraries(plextest PUBLIC plexlib)
 
+add_executable(plexiglass
+    source/plexi/main.cpp
+)
+target_compile_features(plexiglass PUBLIC cxx_std_17)
+target_link_libraries(plexiglass PUBLIC plexlib)
+
 configure_file(
     data/template.hpp
     template.hpp
     COPYONLY
 )
-
 configure_file(
     data/template.cpp
     template.cpp
