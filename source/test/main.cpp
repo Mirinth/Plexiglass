@@ -89,26 +89,6 @@ bool CompareOutput(std::string basePath, std::string outPath)
     return false;
 }
 
-bool RunParserTest(std::string stem)
-{
-    std::string data = ReadFile(stem + "-in.txt");
-
-    try
-    {
-        Parse(data); // This should always throw for parser tests.
-
-        std::ofstream out(stem + "-out.txt");
-        out << "Test failed: Expected error, none reported" << std::endl;
-        return false;
-    }
-    catch (PlexiException exc)
-    {
-        std::ofstream out(stem + "-out.txt");
-        out << exc.what() << std::endl;
-        return CompareOutput(stem + "-base.txt", stem + "-out.txt");
-    }
-}
-
 bool RunTreeTest(std::string stem)
 {
     std::string data = ReadFile(stem + "-in.txt");
