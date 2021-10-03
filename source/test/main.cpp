@@ -18,6 +18,12 @@
 #include "doctest.h"
 #pragma warning(pop)
 
+std::string ReadTestFile(std::string name)
+{
+    std::string path = "../../../tests/" + name;
+    return ReadFile(path);
+}
+
 typedef std::function<bool(std::string)> Tester;
 
 bool IsInputFile(std::filesystem::path file)
@@ -81,22 +87,6 @@ bool CompareOutput(std::string basePath, std::string outPath)
     }
 
     return false;
-}
-
-bool RunLexerTest(std::string stem)
-{
-    std::ofstream out(stem + "-out.txt");
-    std::string data = ReadFile(stem + "-in.txt");
-    Lexer lexer(data);
-
-    while (lexer.Peek().type != TokenType::Eof)
-    {
-        out << lexer.Peek().ToString() << "\n";
-        lexer.Shift();
-    }
-
-    out.close();
-    return CompareOutput(stem + "-base.txt", stem + "-out.txt");
 }
 
 bool RunParserTest(std::string stem)
@@ -210,12 +200,28 @@ bool TestGroup(std::string name, Tester test)
     return true;
 }
 
+TEST_CASE("Test the lexer")
+{
+    std::stringstream out;
+    std::string input = ReadTestFile("lexer/lexer-test-in.txt");
+    std::string base = ReadTestFile("lexer/lexer-test-base.txt");
+    
+    Lexer lexer(input);
+
+    while (lexer.Peek().type != TokenType::Eof)
+    {
+        out << lexer.Peek().ToString() << "\n";
+        lexer.Shift();
+    }
+
+    CHECK(base == out.str());
+}
+
 //int main()
 //{
 //    std::vector<std::tuple<std::string, Tester>> map = {
-//        { "lexer", RunLexerTest },       { "parser", RunParserTest },
-//        { "tree", RunTreeTest },         { "semantics", RunAnalyzerTest },
-//        { "template", RunTemplateTest },
+//        { "parser", RunParserTest },      { "tree", RunTreeTest },
+//        { "semantics", RunAnalyzerTest }, { "template", RunTemplateTest },
 //    };
 //
 //    for (auto& [name, tester] : map)
