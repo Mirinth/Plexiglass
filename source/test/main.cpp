@@ -12,6 +12,12 @@
 #include <template/template.hpp>
 #include <utils.hpp>
 
+#pragma warning(push)
+#pragma warning(disable : 5245)
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+#pragma warning(pop)
+
 typedef std::function<bool(std::string)> Tester;
 
 bool IsInputFile(std::filesystem::path file)
@@ -204,24 +210,24 @@ bool TestGroup(std::string name, Tester test)
     return true;
 }
 
-int main()
-{
-    std::vector<std::tuple<std::string, Tester>> map = {
-        { "lexer", RunLexerTest },       { "parser", RunParserTest },
-        { "tree", RunTreeTest },         { "semantics", RunAnalyzerTest },
-        { "template", RunTemplateTest },
-    };
-
-    for (auto& [name, tester] : map)
-    {
-        bool success = TestGroup(name, tester);
-        if (!success)
-        {
-            return 1;
-        }
-    }
-
-    std::cout << "\n\nNo errors\n\n";
-
-    return 0;
-}
+//int main()
+//{
+//    std::vector<std::tuple<std::string, Tester>> map = {
+//        { "lexer", RunLexerTest },       { "parser", RunParserTest },
+//        { "tree", RunTreeTest },         { "semantics", RunAnalyzerTest },
+//        { "template", RunTemplateTest },
+//    };
+//
+//    for (auto& [name, tester] : map)
+//    {
+//        bool success = TestGroup(name, tester);
+//        if (!success)
+//        {
+//            return 1;
+//        }
+//    }
+//
+//    std::cout << "\n\nNo errors\n\n";
+//
+//    return 0;
+//}

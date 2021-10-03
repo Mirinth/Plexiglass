@@ -55,6 +55,7 @@ target_compile_features(plexlib PUBLIC cxx_std_17)
 
 add_executable(plextest
     source/test/main.cpp
+    source/test/doctest.h
 )
 target_link_libraries(plextest PUBLIC plexlib)
 
