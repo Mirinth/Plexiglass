@@ -170,7 +170,8 @@ bool RunAnalyzerTest(std::string stem)
 bool RunTemplateTest(std::string stem)
 {
     std::string testName = std::filesystem::path(stem).filename().string();
-    std::string outDir = stem + "-out";
+    std::string header = stem + "-out.hpp";
+    std::string code = stem + "-out.cpp";
 
     std::string data = ReadFile(stem + "-in.txt");
 
@@ -178,8 +179,7 @@ bool RunTemplateTest(std::string stem)
     {
         FileNode file = Parse(data);
         Analyze(file);
-        std::filesystem::remove_all(outDir);
-        Template(file, outDir, testName);
+        Template(file, testName, header, code);
 
         return CompareOutput(stem + "-base.txt", stem + "-out.txt");
     }
@@ -218,10 +218,8 @@ bool TestGroup(std::string name, Tester test)
 int main()
 {
     std::vector<std::tuple<std::string, Tester>> map = {
-        { "lexer", RunLexerTest },
-        { "parser", RunParserTest },
-        { "tree", RunTreeTest },
-        { "semantics", RunAnalyzerTest },
+        { "lexer", RunLexerTest },       { "parser", RunParserTest },
+        { "tree", RunTreeTest },         { "semantics", RunAnalyzerTest },
         { "template", RunTemplateTest },
     };
 

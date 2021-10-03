@@ -42,9 +42,11 @@ std::string ReplaceTokens(std::string& content, FileNode file)
 {
     std::set<std::string> tokenNames;
     file->GetTokenNames(tokenNames);
-    
+
     std::string errorName = "PLEXIGLASS_NO_MATCH_TOKEN";
-    for (size_t unique = 0; unique < std::numeric_limits<size_t>::max() && tokenNames.count(errorName) != 0; unique++)
+    for (size_t unique = 0; unique < std::numeric_limits<size_t>::max()
+                            && tokenNames.count(errorName) != 0;
+         unique++)
     {
         errorName = "PLEXIGLASS_NO_MATCH_TOKEN_" + std::to_string(unique);
     }
@@ -57,7 +59,7 @@ std::string ReplaceTokens(std::string& content, FileNode file)
     }
 
     Replace(content, "$TOKEN_NAMES", names.str());
-    
+
     return errorName;
 }
 
@@ -67,32 +69,27 @@ void ReplaceRules(std::string& content, FileNode file, std::string errorName)
     Replace(content, "$LEXER_RULES", ruleString);
 }
 
-void SaveFile(const std::string& content,
-              const std::string& dir,
-              const std::string& name,
-              const std::string& ext)
+void SaveFile(const std::string& content, const std::string& path)
 {
-    std::filesystem::path path = std::filesystem::path(dir) / name;
-    path.replace_extension(ext);
     std::ofstream out(path);
     out << content;
 }
 
-std::string TemplateHeader(FileNode file, std::string dir, std::string name)
+std::string TemplateHeader(FileNode file, std::string header, std::string name)
 {
     std::string content = ReadFile("template.hpp");
-    
+
     ReplaceName(content, name);
     std::string errorName = ReplaceTokens(content, file);
 
-    SaveFile(content, dir, name, ".hpp");
+    SaveFile(content, header);
 
     return errorName;
 }
 
 void TemplateBody(FileNode file,
                   std::string errorName,
-                  std::string dir,
+                  std::string code,
                   std::string name)
 {
     std::string content = ReadFile("template.cpp");
@@ -100,12 +97,16 @@ void TemplateBody(FileNode file,
     ReplaceErrorName(content, errorName);
     ReplaceName(content, name);
     ReplaceRules(content, file, errorName);
-    SaveFile(content, dir, name, ".cpp");
+    SaveFile(content, code);
 }
 
-void Template(FileNode file, std::string dir, std::string name)
+void Template(FileNode file,
+              std::string name,
+              std::string header,
+              std::string code)
 {
-    std::filesystem::create_directories(dir);
-    std::string errorName = TemplateHeader(file, dir, name);
-    TemplateBody(file, errorName, dir, name);
+    std::filesystem::remove(header);
+    std::filesystem::remove(code);
+    std::string errorName = TemplateHeader(file, header, name);
+    TemplateBody(file, errorName, code, name);
 }
