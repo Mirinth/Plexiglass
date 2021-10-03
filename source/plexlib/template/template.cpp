@@ -7,26 +7,7 @@
 #include <set>
 #include <sstream>
 
-std::string ReadFile(std::string path);
-
-// https://stackoverflow.com/a/3418285
-void Replace(std::string& subject,
-             const std::string& find,
-             const std::string& replace)
-{
-    if (find.empty())
-    {
-        return;
-    }
-
-    size_t start_pos = 0;
-    while ((start_pos = subject.find(find, start_pos)) != std::string::npos)
-    {
-        subject.replace(start_pos, find.length(), replace);
-        start_pos += replace.length(); // In case 'replace' contains 'find',
-                                       // like replacing 'x' with 'yx'
-    }
-}
+#include <utils.hpp>
 
 void ReplaceErrorName(std::string& content, const std::string& name)
 {

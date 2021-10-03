@@ -21,6 +21,8 @@ endif()
 add_library(plexlib STATIC
     source/plexlib/error.hpp
     source/plexlib/error.cpp
+    source/plexlib/utils.hpp
+    source/plexlib/utils.cpp
     
     source/plexlib/lexer/lexer.hpp
     source/plexlib/lexer/lexer.cpp

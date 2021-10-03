@@ -10,6 +10,7 @@
 #include <lexer/lexer.hpp>
 #include <parser/parser.hpp>
 #include <template/template.hpp>
+#include <utils.hpp>
 
 typedef std::function<bool(std::string)> Tester;
 
@@ -74,19 +75,6 @@ bool CompareOutput(std::string basePath, std::string outPath)
     }
 
     return false;
-}
-
-std::string ReadFile(std::string path)
-{
-    std::ifstream in(path);
-    std::string data;
-
-    auto fileSize = std::filesystem::file_size(path);
-    data.reserve(fileSize);
-    data.assign(std::istreambuf_iterator<char>(in),
-                std::istreambuf_iterator<char>());
-
-    return data;
 }
 
 bool RunLexerTest(std::string stem)
