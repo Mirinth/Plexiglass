@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <iostream>
 #include <string>
 
@@ -23,15 +24,23 @@ int main(int argc, const char** argv)
     argc--; // discard executable name
     argv++;
 
-    std::string filename = argv[0];
+    std::string param = argv[0];
 
-    if (filename == "-h")
+    if (param == "-h")
     {
         PrintUsage();
         return 1;
     }
 
-    std::cout << "Plexiglass is running\n";
+    std::filesystem::path source = param;
+    std::filesystem::path header = source.replace_extension(".hpp");
+    std::filesystem::path code = source.replace_extension(".cpp");
+    std::string lexerName = source.filename().stem().string();
+    
+    std::cout << "Filename: " << source << "\n";
+    std::cout << "Lexer name: " << lexerName << "\n";
+    std::cout << "Header name: " << header << "\n";
+    std::cout << "Code name: " << code << "\n";
 
-	return 0;
+    return 0;
 }
