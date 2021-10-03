@@ -181,7 +181,8 @@ bool RunTemplateTest(std::string stem)
         Analyze(file);
         Template(file, testName, header, code);
 
-        return CompareOutput(stem + "-base.txt", stem + "-out.txt");
+        return CompareOutput(stem + "-base.hpp", header)
+               && CompareOutput(stem + "-base.cpp", code);
     }
     catch (PlexiException exc)
     {
