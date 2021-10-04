@@ -89,27 +89,6 @@ bool CompareOutput(std::string basePath, std::string outPath)
     return false;
 }
 
-bool RunTreeTest(std::string stem)
-{
-    std::string data = ReadFile(stem + "-in.txt");
-
-    try
-    {
-        FileNode file = Parse(data);
-
-        std::ofstream out(stem + "-out.txt");
-        out << file;
-        out.close();
-        return CompareOutput(stem + "-base.txt", stem + "-out.txt");
-    }
-    catch (PlexiException exc)
-    {
-        std::ofstream out(stem + "-out.txt");
-        out << exc.what() << std::endl;
-        return false; // Tree tests should never throw.
-    }
-}
-
 bool RunAnalyzerTest(std::string stem)
 {
     std::string data = ReadFile(stem + "-in.txt");
@@ -183,7 +162,6 @@ bool TestGroup(std::string name, Tester test)
 //int main()
 //{
 //    std::vector<std::tuple<std::string, Tester>> map = {
-//        { "parser", RunParserTest },      { "tree", RunTreeTest },
 //        { "semantics", RunAnalyzerTest }, { "template", RunTemplateTest },
 //    };
 //
