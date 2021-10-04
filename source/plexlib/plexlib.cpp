@@ -10,12 +10,6 @@
 #include <template/template.hpp>
 #include <utils.hpp>
 
-constexpr int success = 0;
-constexpr int help_invoked = 1;
-constexpr int invalid_input = 2;
-constexpr int unreadable_file = 3;
-constexpr int unknown_fault = 99;
-
 void PrintUsage(std::ostream& out)
 {
     out << "Usage:\n"
@@ -33,7 +27,7 @@ int PlexMain(std::vector<std::string>& args,
     if (args.size() != 1)
     {
         PrintUsage(out);
-        return help_invoked;
+        return bad_usage;
     }
 
     std::string param = args[0];
@@ -60,7 +54,7 @@ int PlexMain(std::vector<std::string>& args,
     catch (const PlexiException& exc)
     {
         err << "Generation failed: " << exc.what() << std::endl;
-        return invalid_input;
+        return bad_lexer;
     }
     catch (const std::filesystem::filesystem_error&)
     {
