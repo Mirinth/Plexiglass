@@ -22,3 +22,17 @@ TEST_CASE("Tree: Test a single expression")
     std::string out = BuildTree("tree/expression-single.txt");
     CHECK(base == out);
 }
+
+TEST_CASE("Tree: Test two expressions")
+{
+    std::string base = ReadTestFile("tree/expression-two-base.txt");
+    std::string out = BuildTree("tree/expression-two.txt");
+    CHECK(base == out);
+}
+
+TEST_CASE("Tree: Test many expressions")
+{
+    std::string base = ReadTestFile("tree/expression-many-base.txt");
+    std::string out = BuildTree("tree/expression-many.txt");
+    CHECK(base == out);
+}
