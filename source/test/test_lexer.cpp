@@ -8,7 +8,7 @@
 
 #include "read_test_file.hpp"
 
-TEST_CASE("Test the lexer")
+TEST_CASE("Lexer: Test the lexer")
 {
     std::stringstream out;
     std::string input = ReadTestFile("lexer/lexer-test-in.txt");
