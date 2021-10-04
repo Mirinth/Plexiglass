@@ -13,21 +13,21 @@ TEST_CASE("Template: Test template")
 {
     std::string testDir = "../../../tests/template/";
 
-    std::string testName = "L101";
-    std::string header = testDir + "L101-out.hpp";
-    std::string code = testDir + "L101-out.cpp";
-    std::string source = "template/L101-in.txt";
+    std::string testName = "template_test";
+    std::string header = testDir + "template_test-out.hpp";
+    std::string code = testDir + "template_test-out.cpp";
+    std::string source = "template/template_test-in.txt";
 
     std::string data = ReadTestFile(source);
     FileNode file = Parse(data);
     Analyze(file);
     Template(file, testName, header, code);
 
-    std::string base = ReadTestFile("template/L101-base.hpp");
-    std::string out = ReadTestFile("template/L101-out.hpp");
+    std::string base = ReadTestFile("template/template_test-base.hpp");
+    std::string out = ReadTestFile("template/template_test-out.hpp");
     CHECK(base == out);
 
-    base = ReadTestFile("template/L101-base.cpp");
-    out = ReadTestFile("template/L101-out.cpp");
+    base = ReadTestFile("template/template_test-base.cpp");
+    out = ReadTestFile("template/template_test-out.cpp");
     CHECK(base == out);
 }

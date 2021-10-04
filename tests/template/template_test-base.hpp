@@ -10,10 +10,10 @@ enum TokenType
 	PLEXIGLASS_NO_MATCH_TOKEN,
 };
 
-class L101
+class template_test
 {
 public:
-    L101(std::string path);
+    template_test(std::string path);
     TokenType PeekToken() const;
     std::string PeekText() const;
     void Shift();
