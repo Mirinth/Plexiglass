@@ -38,9 +38,9 @@ int PlexMain(std::vector<std::string>& args,
         return help_invoked;
     }
 
-    std::filesystem::path source = param;
-    std::filesystem::path header = source.replace_extension(".hpp");
-    std::filesystem::path code = source.replace_extension(".cpp");
+    std::filesystem::path source = param, header = param, code = param;
+    header.replace_extension(".hpp");
+    code.replace_extension(".cpp");
     std::string lexerName = source.filename().stem().string();
 
     try
