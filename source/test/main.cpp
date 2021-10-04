@@ -89,31 +89,6 @@ bool CompareOutput(std::string basePath, std::string outPath)
     return false;
 }
 
-bool RunTemplateTest(std::string stem)
-{
-    std::string testName = std::filesystem::path(stem).filename().string();
-    std::string header = stem + "-out.hpp";
-    std::string code = stem + "-out.cpp";
-
-    std::string data = ReadFile(stem + "-in.txt");
-
-    try
-    {
-        FileNode file = Parse(data);
-        Analyze(file);
-        Template(file, testName, header, code);
-
-        return CompareOutput(stem + "-base.hpp", header)
-               && CompareOutput(stem + "-base.cpp", code);
-    }
-    catch (PlexiException exc)
-    {
-        std::ofstream out(stem + "-out.txt");
-        out << exc.what() << std::endl;
-        return false;
-    }
-}
-
 bool TestGroup(std::string name, Tester test)
 {
     auto stems = GetTestStems(name);

@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "doctest.h"
 
 #include <analyzer/analyzer.hpp>
