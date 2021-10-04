@@ -89,27 +89,6 @@ bool CompareOutput(std::string basePath, std::string outPath)
     return false;
 }
 
-bool RunAnalyzerTest(std::string stem)
-{
-    std::string data = ReadFile(stem + "-in.txt");
-
-    try
-    {
-        FileNode file = Parse(data);
-        Analyze(file); // Should always throw for semantic tests
-
-        std::ofstream out(stem + "-out.txt");
-        out << "Test failed: Expected error, none reported" << std::endl;
-        return false;
-    }
-    catch (PlexiException exc)
-    {
-        std::ofstream out(stem + "-out.txt");
-        out << exc.what() << std::endl;
-        return CompareOutput(stem + "-base.txt", stem + "-out.txt");
-    }
-}
-
 bool RunTemplateTest(std::string stem)
 {
     std::string testName = std::filesystem::path(stem).filename().string();
