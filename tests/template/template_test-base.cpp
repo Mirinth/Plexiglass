@@ -1,4 +1,4 @@
-#include "L101.hpp"
+#include "template_test.hpp"
 
 #include <regex>
 #include <vector>
@@ -13,24 +13,24 @@ struct Rule
     std::regex Pattern;
 };
 
-L101::L101(istream& input)
+template_test::template_test(istream& input)
 {
     m_input = ReadFile(path);
     m_data = m_input;
     Shift();
 }
 
-TokenType L101::PeekToken() const
+TokenType template_test::PeekToken() const
 {
     return m_type;
 }
 
-std::string L101::PeekText() const
+std::string template_test::PeekText() const
 {
     return m_text;
 }
 
-void L101::Shift()
+void template_test::Shift()
 {
     static std::vector<Rule> rules = {
 		{ true, CatToken, 0, "cat"};

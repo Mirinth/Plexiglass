@@ -1,1 +1,0 @@
-Error on line 6: 'transition' action not yet supported

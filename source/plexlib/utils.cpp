@@ -17,6 +17,7 @@ std::string ReadFile(std::string path)
 }
 
 // https://stackoverflow.com/a/3418285
+// https://creativecommons.org/licenses/by-sa/3.0/
 void Replace(std::string& subject,
              const std::string& find,
              const std::string& replace)
