@@ -21,6 +21,8 @@ endif()
 add_library(plexlib STATIC
     source/plexlib/error.hpp
     source/plexlib/error.cpp
+    source/plexlib/plexlib.hpp
+    source/plexlib/plexlib.cpp
     source/plexlib/utils.hpp
     source/plexlib/utils.cpp
     
@@ -59,6 +61,7 @@ add_executable(plextest
     source/test/read_test_file.hpp
     
     source/test/test_lexer.cpp
+    source/test/test_parameters.cpp
     source/test/test_parser.cpp
     source/test/test_semantics.cpp
     source/test/test_template.cpp
