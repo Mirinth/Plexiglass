@@ -63,6 +63,62 @@ TEST_CASE("Parser: Expression with extra stuff on first line")
 }
 
 // ============================================================================
+// Pattern test cases
+// ============================================================================
+
+TEST_CASE("Parser: Pattern with no name")
+{
+    std::string data = ReadTestFile("parser/pattern-with-no-name.txt");
+    CHECK_THROWS_WITH_AS(Parse(data),
+                         "Error on line 2: Expected identifier found eof",
+                         PlexiException);
+}
+
+TEST_CASE("Parser: Empty pattern")
+{
+    std::string data = ReadTestFile("parser/pattern-empty.txt");
+    CHECK_THROWS_WITH_AS(Parse(data),
+                         "Error on line 2: Expected indent found eof",
+                         PlexiException);
+}
+
+TEST_CASE("Parser: Pattern with extra stuff on first line")
+{
+    std::string data = ReadTestFile("parser/pattern-long-line.txt");
+    CHECK_THROWS_WITH_AS(Parse(data),
+                         "Error on line 2: Expected indent found text junk",
+                         PlexiException);
+}
+
+TEST_CASE("Parser: Pattern with alternator at start")
+{
+    std::string data =
+        ReadTestFile("parser/pattern-with-alternator-at-start.txt");
+    CHECK_THROWS_WITH_AS(
+        Parse(data), "Error on line 3: Expected identifier found alternator |",
+        PlexiException);
+}
+
+TEST_CASE("Parser: Pattern with alternator at end")
+{
+    std::string data =
+        ReadTestFile("parser/pattern-with-alternator-at-end.txt");
+    CHECK_THROWS_WITH_AS(Parse(data),
+                         "Error on line 4: Expected identifier found eof",
+                         PlexiException);
+}
+
+TEST_CASE("Parser: Pattern with duplicate alternator")
+{
+    std::string data =
+        ReadTestFile("parser/pattern-with-duplicate-alternator.txt");
+    CHECK_THROWS_WITH_AS(Parse(data),
+                         "Error on line 3: Expected 'expression', 'pattern', "
+                         "or 'rule' found alternator |",
+                         PlexiException);
+}
+
+// ============================================================================
 // Rule test cases
 // ============================================================================
 
