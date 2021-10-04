@@ -18,8 +18,7 @@ constexpr int unknown_fault = 99;
 
 void PrintUsage(std::ostream& out)
 {
-    out
-        << "Usage:\n"
+    out << "Usage:\n"
         << "    plexiglass filename\n"
         << "\n"
         << "  filename: Name of the input file.\n"
@@ -31,7 +30,8 @@ int PlexMain(std::vector<std::string>& args,
              std::ostream& out,
              std::ostream& err)
 {
-    if (args.size() != 1){
+    if (args.size() != 1)
+    {
         PrintUsage(out);
         return help_invoked;
     }
@@ -72,8 +72,7 @@ int PlexMain(std::vector<std::string>& args,
     }
     catch (const std::exception& exc)
     {
-        err << "An unhandled exception occurred: " << exc.what()
-                  << std::endl;
+        err << "An unhandled exception occurred: " << exc.what() << std::endl;
         return unknown_fault;
     }
     catch (...)
