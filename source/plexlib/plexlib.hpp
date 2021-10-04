@@ -7,3 +7,5 @@
 int PlexMain(std::vector<std::string>& args,
              std::ostream& out,
              std::ostream& err);
+
+void PrintUsage(std::ostream& out);
