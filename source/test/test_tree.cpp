@@ -86,3 +86,35 @@ TEST_CASE("Tree: Pattern with multiple alternatives each with multiple alternati
     std::string out = BuildTree("tree/multiple-patterns-multiple-alternatives.txt");
     CHECK(base == out);
 }
+
+// ============================================================================
+// Rules
+// ============================================================================
+
+TEST_CASE("Tree: Single rule")
+{
+    std::string base = ReadTestFile("tree/rule-single-base.txt");
+    std::string out = BuildTree("tree/rule-single.txt");
+    CHECK(base == out);
+}
+
+TEST_CASE("Tree: Two rules")
+{
+    std::string base = ReadTestFile("tree/rule-two-base.txt");
+    std::string out = BuildTree("tree/rule-two.txt");
+    CHECK(base == out);
+}
+
+TEST_CASE("Tree: Many rules")
+{
+    std::string base = ReadTestFile("tree/rule-many-base.txt");
+    std::string out = BuildTree("tree/rule-many.txt");
+    CHECK(base == out);
+}
+
+TEST_CASE("Tree: Rule with many actions")
+{
+    std::string base = ReadTestFile("tree/rule-many-actions-base.txt");
+    std::string out = BuildTree("tree/rule-many-actions.txt");
+    CHECK(base == out);
+}
