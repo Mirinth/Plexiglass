@@ -11,7 +11,7 @@
 
 TEST_CASE("Template: Test template")
 {
-    std::string testDir = "../../../tests/template/";
+    std::string testDir = "../../../../tests/template/";
 
     std::string testName = "template_test";
     std::string header = testDir + "template_test-out.hpp";

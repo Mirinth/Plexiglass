@@ -11,6 +11,6 @@
 
 std::string ReadTestFile(std::string name)
 {
-    std::string path = "../../../tests/" + name;
+    std::string path = "../../../../tests/" + name;
     return ReadFile(path);
 }
