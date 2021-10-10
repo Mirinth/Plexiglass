@@ -18,28 +18,28 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-add_library(plexlib STATIC
+add_library(plexlib STATIC)
+target_sources(plexlib
+    PUBLIC
     plexlib/source/error.hpp
-    plexlib/source/error.cpp
     plexlib/source/plexlib.hpp
-    plexlib/source/plexlib.cpp
     plexlib/source/utils.hpp
-    plexlib/source/utils.cpp
-    
     plexlib/source/lexer/lexer.hpp
-    plexlib/source/lexer/lexer.cpp
     plexlib/source/lexer/token.hpp
-    plexlib/source/lexer/token.cpp
-
     plexlib/source/parser/parser.hpp
-    plexlib/source/parser/parser.cpp
     plexlib/source/parser/tree.hpp
-    plexlib/source/parser/tree.cpp
-
     plexlib/source/analyzer/analyzer.hpp
-    plexlib/source/analyzer/analyzer.cpp
-
     plexlib/source/template/template.hpp
+
+    PRIVATE
+    plexlib/source/error.cpp
+    plexlib/source/plexlib.cpp
+    plexlib/source/utils.cpp
+    plexlib/source/lexer/lexer.cpp
+    plexlib/source/lexer/token.cpp
+    plexlib/source/parser/parser.cpp
+    plexlib/source/parser/tree.cpp
+    plexlib/source/analyzer/analyzer.cpp
     plexlib/source/template/template.cpp
 )
 target_include_directories(plexlib PUBLIC plexlib/source)
@@ -49,7 +49,7 @@ add_executable(plextest
     source/test/main.cpp
     source/test/doctest.h
     source/test/read_test_file.hpp
-    
+
     source/test/test_lexer.cpp
     source/test/test_parameters.cpp
     source/test/test_parser.cpp
