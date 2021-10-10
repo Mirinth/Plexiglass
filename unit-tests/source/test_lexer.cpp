@@ -6,7 +6,7 @@
 #include <lexer/lexer.hpp>
 #include <lexer/token.hpp>
 
-#include "read_test_file.hpp"
+#include "test_files.hpp"
 
 TEST_CASE("Lexer: Test the lexer")
 {

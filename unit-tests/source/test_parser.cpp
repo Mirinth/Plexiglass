@@ -5,7 +5,7 @@
 
 #include "doctest.h"
 
-#include "read_test_file.hpp"
+#include "test_files.hpp"
 
 // ============================================================================
 // Misc test cases

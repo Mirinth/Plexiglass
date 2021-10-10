@@ -9,8 +9,13 @@
 #include "doctest.h"
 #pragma warning(pop)
 
+std::string GetTestRoot()
+{
+    return "../../../../tests/";
+}
+
 std::string ReadTestFile(std::string name)
 {
-    std::string path = "../../../../tests/" + name;
+    std::string path = GetTestRoot() + name;
     return ReadFile(path);
 }

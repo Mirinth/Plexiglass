@@ -5,7 +5,7 @@
 #include <parser/parser.hpp>
 #include <parser/tree.hpp>
 
-#include "read_test_file.hpp"
+#include "test_files.hpp"
 
 std::string BuildTree(std::string path)
 {
