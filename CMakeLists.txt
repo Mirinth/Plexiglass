@@ -19,30 +19,30 @@ else()
 endif()
 
 add_library(plexlib STATIC
-    source/plexlib/error.hpp
-    source/plexlib/error.cpp
-    source/plexlib/plexlib.hpp
-    source/plexlib/plexlib.cpp
-    source/plexlib/utils.hpp
-    source/plexlib/utils.cpp
+    plexlib/source/error.hpp
+    plexlib/source/error.cpp
+    plexlib/source/plexlib.hpp
+    plexlib/source/plexlib.cpp
+    plexlib/source/utils.hpp
+    plexlib/source/utils.cpp
     
-    source/plexlib/lexer/lexer.hpp
-    source/plexlib/lexer/lexer.cpp
-    source/plexlib/lexer/token.hpp
-    source/plexlib/lexer/token.cpp
+    plexlib/source/lexer/lexer.hpp
+    plexlib/source/lexer/lexer.cpp
+    plexlib/source/lexer/token.hpp
+    plexlib/source/lexer/token.cpp
 
-    source/plexlib/parser/parser.hpp
-    source/plexlib/parser/parser.cpp
-    source/plexlib/parser/tree.hpp
-    source/plexlib/parser/tree.cpp
+    plexlib/source/parser/parser.hpp
+    plexlib/source/parser/parser.cpp
+    plexlib/source/parser/tree.hpp
+    plexlib/source/parser/tree.cpp
 
-    source/plexlib/analyzer/analyzer.hpp
-    source/plexlib/analyzer/analyzer.cpp
+    plexlib/source/analyzer/analyzer.hpp
+    plexlib/source/analyzer/analyzer.cpp
 
-    source/plexlib/template/template.hpp
-    source/plexlib/template/template.cpp
+    plexlib/source/template/template.hpp
+    plexlib/source/template/template.cpp
 )
-target_include_directories(plexlib PUBLIC source/plexlib)
+target_include_directories(plexlib PUBLIC plexlib/source)
 target_compile_features(plexlib PUBLIC cxx_std_17)
 
 
