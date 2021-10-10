@@ -7,11 +7,11 @@
 #include <parser/tree.hpp>
 #include <template/template.hpp>
 
-#include "read_test_file.hpp"
+#include "test_files.hpp"
 
 TEST_CASE("Template: Test template")
 {
-    std::string testDir = "../../../tests/template/";
+    std::string testDir = GetTestRoot() + "template/";
 
     std::string testName = "template_test";
     std::string header = testDir + "template_test-out.hpp";
