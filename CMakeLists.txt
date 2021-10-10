@@ -18,32 +18,7 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-add_library(plexlib STATIC)
-target_sources(plexlib
-    PUBLIC
-    plexlib/source/error.hpp
-    plexlib/source/plexlib.hpp
-    plexlib/source/utils.hpp
-    plexlib/source/lexer/lexer.hpp
-    plexlib/source/lexer/token.hpp
-    plexlib/source/parser/parser.hpp
-    plexlib/source/parser/tree.hpp
-    plexlib/source/analyzer/analyzer.hpp
-    plexlib/source/template/template.hpp
-
-    PRIVATE
-    plexlib/source/error.cpp
-    plexlib/source/plexlib.cpp
-    plexlib/source/utils.cpp
-    plexlib/source/lexer/lexer.cpp
-    plexlib/source/lexer/token.cpp
-    plexlib/source/parser/parser.cpp
-    plexlib/source/parser/tree.cpp
-    plexlib/source/analyzer/analyzer.cpp
-    plexlib/source/template/template.cpp
-)
-target_include_directories(plexlib PUBLIC plexlib/source)
-target_compile_features(plexlib PUBLIC cxx_std_17)
+add_subdirectory(plexlib)
 
 add_executable(plextest
     source/test/main.cpp
