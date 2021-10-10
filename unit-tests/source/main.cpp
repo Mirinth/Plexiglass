@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <string>
 
 #include <utils.hpp>
@@ -11,7 +12,8 @@
 
 std::string GetTestRoot()
 {
-    return "../../../../tests/";
+    auto root = std::filesystem::absolute("../../../../unit-tests/test-files/");
+    return root.string();
 }
 
 std::string ReadTestFile(std::string name)
