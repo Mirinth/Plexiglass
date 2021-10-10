@@ -19,5 +19,6 @@ else()
 endif()
 
 add_subdirectory(plexlib)
-add_subdirectory(unit-tests)
 add_subdirectory(plexi)
+add_subdirectory(unit-tests)
+add_subdirectory(integration-tests)
