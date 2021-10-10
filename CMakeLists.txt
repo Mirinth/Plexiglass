@@ -45,16 +45,6 @@ add_library(plexlib STATIC
 target_include_directories(plexlib PUBLIC plexlib/source)
 target_compile_features(plexlib PUBLIC cxx_std_17)
 
-
-
-# add_executable(plexi
-#     source/plexi/main.cpp
-#     source/plexlib/RegularExpressionParser.hpp
-#     source/plexlib/RegularExpressionParser.cpp
-# )
-# target_link_libraries(plexi PUBLIC plexlib)
-
-
 add_executable(plextest
     source/test/main.cpp
     source/test/doctest.h
