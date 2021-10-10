@@ -22,7 +22,7 @@ add_subdirectory(plexlib)
 add_subdirectory(unit-tests)
 
 add_executable(plexiglass
-    source/plexi/main.cpp
+    plexi/source/main.cpp
 )
 target_compile_features(plexiglass PUBLIC cxx_std_17)
 target_link_libraries(plexiglass PUBLIC plexlib)
