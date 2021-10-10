@@ -21,16 +21,16 @@ endif()
 add_subdirectory(plexlib)
 
 add_executable(plextest
-    source/test/main.cpp
-    source/test/doctest.h
-    source/test/read_test_file.hpp
+    unit-tests/source/main.cpp
+    unit-tests/source/doctest.h
+    unit-tests/source/read_test_file.hpp
 
-    source/test/test_lexer.cpp
-    source/test/test_parameters.cpp
-    source/test/test_parser.cpp
-    source/test/test_semantics.cpp
-    source/test/test_template.cpp
-    source/test/test_tree.cpp
+    unit-tests/source/test_lexer.cpp
+    unit-tests/source/test_parameters.cpp
+    unit-tests/source/test_parser.cpp
+    unit-tests/source/test_semantics.cpp
+    unit-tests/source/test_template.cpp
+    unit-tests/source/test_tree.cpp
 )
 target_link_libraries(plextest PUBLIC plexlib)
 
