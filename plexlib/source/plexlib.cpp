@@ -58,10 +58,11 @@ int PlexMain(std::vector<std::string>& args,
     }
     catch (const std::filesystem::filesystem_error& exc)
     {
-        // path1 can be inserted directly, but it prints an escaped string,
+        // path can be inserted directly, but it prints an escaped string,
         // which might mislead users into thinking the problem is redundant
         // backslashes.
-        err << "Unable to read file " << exc.path1().string() << std::endl;
+        auto path = std::filesystem::absolute(exc.path1());
+        err << "Unable to read file " << path.string() << std::endl;
         return unreadable_file;
     }
     catch (const std::exception& exc)
