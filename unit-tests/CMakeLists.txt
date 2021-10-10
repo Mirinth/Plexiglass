@@ -1,7 +1,7 @@
 add_executable(plextest
     source/main.cpp
     source/doctest.h
-    source/read_test_file.hpp
+    source/test_files.hpp
 
     source/test_lexer.cpp
     source/test_parameters.cpp
