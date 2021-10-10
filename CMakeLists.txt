@@ -19,20 +19,7 @@ else()
 endif()
 
 add_subdirectory(plexlib)
-
-add_executable(plextest
-    unit-tests/source/main.cpp
-    unit-tests/source/doctest.h
-    unit-tests/source/read_test_file.hpp
-
-    unit-tests/source/test_lexer.cpp
-    unit-tests/source/test_parameters.cpp
-    unit-tests/source/test_parser.cpp
-    unit-tests/source/test_semantics.cpp
-    unit-tests/source/test_template.cpp
-    unit-tests/source/test_tree.cpp
-)
-target_link_libraries(plextest PUBLIC plexlib)
+add_subdirectory(unit-tests)
 
 add_executable(plexiglass
     source/plexi/main.cpp
