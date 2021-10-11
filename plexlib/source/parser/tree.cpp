@@ -94,7 +94,7 @@ std::string _FileNode::GetRuleString(std::string illegalTokenName) const
         }
         out << "\n\t\t{ " << (rule.Produces ? "true" : "false") << ", "
             << rule.Token << ", " << rule.Increment << ", " << rule.Pattern
-            << "};";
+            << "},";
     }
 
     return out.str();
