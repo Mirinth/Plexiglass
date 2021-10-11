@@ -13,7 +13,7 @@ struct Rule
     std::regex Pattern;
 };
 
-$LEXER_NAME::$LEXER_NAME(istream& input)
+$LEXER_NAME::$LEXER_NAME(std::string path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
