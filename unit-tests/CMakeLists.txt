@@ -12,14 +12,3 @@ add_executable(plextest
 )
 target_link_libraries(plextest PUBLIC plexlib)
 target_compile_features(plexlib PUBLIC cxx_std_17)
-
-configure_file(
-    ../plexlib/templates/template.hpp
-    template.hpp
-    COPYONLY
-)
-configure_file(
-    ../plexlib/templates/template.cpp
-    template.cpp
-    COPYONLY
-)

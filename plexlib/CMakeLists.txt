@@ -24,3 +24,11 @@ target_sources(plexlib
 )
 target_include_directories(plexlib PUBLIC source)
 target_compile_features(plexlib PUBLIC cxx_std_17)
+
+file(READ templates/template.hpp PLEXLIB_HEADER_TEMPLATE_CONTENT)
+file(READ templates/template.cpp PLEXLIB_CODE_TEMPLATE_CONTENT)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+configure_file(
+    templates/template-holder.hpp
+    template-holder.hpp
+)
