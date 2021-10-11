@@ -7,6 +7,7 @@
 #include <set>
 #include <sstream>
 
+#include <template-holder.hpp>
 #include <utils.hpp>
 
 void ReplaceErrorName(std::string& content, const std::string& name)
@@ -58,7 +59,7 @@ void SaveFile(const std::string& content, const std::string& path)
 
 std::string TemplateHeader(FileNode file, std::string header, std::string name)
 {
-    std::string content = ReadFile("template.hpp");
+    std::string content = header_template;
 
     ReplaceName(content, name);
     std::string errorName = ReplaceTokens(content, file);
@@ -73,7 +74,7 @@ void TemplateBody(FileNode file,
                   std::string code,
                   std::string name)
 {
-    std::string content = ReadFile("template.cpp");
+    std::string content = code_template;
 
     ReplaceErrorName(content, errorName);
     ReplaceName(content, name);
