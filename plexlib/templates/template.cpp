@@ -42,17 +42,17 @@ std::string $LEXER_NAME::PeekText() const
 
 void $LEXER_NAME::Shift()
 {
+    using vmatch = std::match_results<std::string_view::const_iterator>;
     static std::vector<Rule> rules = GetRules();
 
-    unsigned int max_index = 0;
-    unsigned int max_length = 0;
+    size_t max_index = 0;
+    size_t max_length = 0;
     std::string max_string;
 
     for (size_t index = 0; index < rules.size(); index++)
     {
         Rule rule = rules[index];
-        std::smatch m;
-        std::match_results<std::string_view::const_iterator> m;
+        vmatch m;
         bool matched =
             std::regex_search(m_data.begin(), m_data.end(), m, rule.Pattern);
         if (!matched)
@@ -60,9 +60,16 @@ void $LEXER_NAME::Shift()
             continue;
         }
 
-        if (m.length() > max_length)
+        // Ensure following cast is safe
+        if (m.length() < 0)
         {
-            max_length = m.length();
+            throw std::exception("$LEXER_NAME::Shift(): Length was negative.");
+        }
+        size_t length = static_cast<size_t>(std::abs(m.length()));
+
+        if (length > max_length)
+        {
+            max_length = length;
             max_index = index;
             max_string = m.str();
         }
