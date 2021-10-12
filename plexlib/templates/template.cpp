@@ -48,11 +48,13 @@ void $LEXER_NAME::Shift()
     unsigned int max_length = 0;
     std::string max_string;
 
-    for (size_t index = 0; index < rules.length(); index++)
+    for (size_t index = 0; index < rules.size(); index++)
     {
-        auto& [type, regex] = rules[index];
-        std::match_results m;
-        bool matched = std::regex_search(m_data.begin(), m_data.end(), m, regex);
+        Rule rule = rules[index];
+        std::smatch m;
+        std::match_results<std::string_view::const_iterator> m;
+        bool matched =
+            std::regex_search(m_data.begin(), m_data.end(), m, rule.Pattern);
         if (!matched)
         {
             continue;
