@@ -7,11 +7,21 @@ std::string ReadFile(std::string path);
 
 struct Rule
 {
+    Rule(bool nothing, bool produce, int line, std::regex pattern)
+        : Nothing(nothing), Produce(produce), Line(line), Pattern(pattern)
+    {}
+    
     bool Nothing;
     bool Produce;
     int Line;
     std::regex Pattern;
 };
+
+std::vector<Rule> GetRules()
+{
+    std::vector<Rule> rules;$LEXER_RULES
+    return rules;
+}
 
 $LEXER_NAME::$LEXER_NAME(std::string path)
 {
@@ -32,8 +42,7 @@ std::string $LEXER_NAME::PeekText() const
 
 void $LEXER_NAME::Shift()
 {
-    static std::vector<Rule> rules = {$LEXER_RULES
-    };
+    static std::vector<Rule> rules = GetRules();
 
     unsigned int max_index = 0;
     unsigned int max_length = 0;
