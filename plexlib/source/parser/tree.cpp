@@ -92,9 +92,9 @@ std::string _FileNode::GetRuleString(std::string illegalTokenName) const
         {
             rule.Token = illegalTokenName;
         }
-        out << "\n\trules.emplace_back(" << (rule.Produces ? "true" : "false")
-            << ", " << rule.Token << ", " << rule.Increment << ", "
-            << rule.Pattern << ");";
+        out << "\n\trules.emplace_back(" << rule.Token << ", "
+            << (rule.Produces ? "true" : "false") << ", " << rule.Token << ", "
+            << rule.Increment << ", " << rule.Pattern << ");";
     }
 
     return out.str();

@@ -7,10 +7,11 @@ std::string ReadFile(std::string path);
 
 struct Rule
 {
-    Rule(bool nothing, bool produce, int line, std::regex pattern)
-        : Nothing(nothing), Produce(produce), Line(line), Pattern(pattern)
+    Rule(TokenType token, bool nothing, bool produce, int line, std::regex pattern)
+        : Token(token), Nothing(nothing), Produce(produce), Line(line), Pattern(pattern)
     {}
     
+    TokenType Token;
     bool Nothing;
     bool Produce;
     int Line;
@@ -77,7 +78,7 @@ void $LEXER_NAME::Shift()
 
     if (max_length > 0)
     {
-        m_type = rules[max_index].first();
+        m_type = rules[max_index].Token;
         m_text = m_data.substr(0, max_length);
         m_data.remove_prefix(max_length);
     }
