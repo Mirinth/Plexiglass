@@ -1,5 +1,7 @@
 #include "$LEXER_NAME.hpp"
 
+#include <filesystem>
+#include <fstream>
 #include <regex>
 #include <vector>
 
