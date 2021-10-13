@@ -40,7 +40,10 @@ std::string ReplaceTokens(std::string& content, FileNode file)
         names << "\n\t" << tokenName << ",";
     }
 
-    Replace(content, "$TOKEN_NAMES", names.str());
+    std::string namesStr = names.str();
+    namesStr.erase(0, 2); // Erase the leading "\n\t"
+
+    Replace(content, "$TOKEN_NAMES", namesStr);
 
     return errorName;
 }

@@ -22,6 +22,7 @@ struct Rule
 std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
+    
     $LEXER_RULES
     
     return rules;
