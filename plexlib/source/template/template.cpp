@@ -51,6 +51,11 @@ void ReplaceRules(std::string& content, FileNode file, std::string errorName)
     Replace(content, "$LEXER_RULES", ruleString);
 }
 
+void ReplaceToString(std::string& content, FileNode /*file*/)
+{
+    Replace(content, "$TOKEN_TO_STRING", "Implementation;");
+}
+
 void SaveFile(const std::string& content, const std::string& path)
 {
     std::ofstream out(path);
@@ -79,6 +84,7 @@ void TemplateBody(FileNode file,
     ReplaceErrorName(content, errorName);
     ReplaceName(content, name);
     ReplaceRules(content, file, errorName);
+    ReplaceToString(content, file);
     SaveFile(content, code);
 }
 

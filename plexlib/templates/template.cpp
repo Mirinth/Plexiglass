@@ -21,8 +21,15 @@ struct Rule
 
 std::vector<Rule> GetRules()
 {
-    std::vector<Rule> rules;$LEXER_RULES
+    std::vector<Rule> rules;
+    $LEXER_RULES
+    
     return rules;
+}
+
+std::string ToString(TokenType type)
+{
+$TOKEN_TO_STRING
 }
 
 $LEXER_NAME::$LEXER_NAME(std::string path)
