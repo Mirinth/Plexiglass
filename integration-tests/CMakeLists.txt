@@ -3,6 +3,9 @@ add_executable(basic-integration-test
 	basic-test/lexer.hpp
 	basic-test/lexer.cpp
 )
+target_include_directories(basic-integration-test
+	PRIVATE basic-test
+)
 add_dependencies(basic-integration-test plexiglass)
 target_compile_features(basic-integration-test PUBLIC cxx_std_17)
 
