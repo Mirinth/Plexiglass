@@ -30,7 +30,10 @@ std::vector<Rule> GetRules()
 
 std::string ToString(TokenType type)
 {
-$TOKEN_TO_STRING
+    switch (type)
+    {
+        $TOKEN_TO_STRING
+    }
 }
 
 $LEXER_NAME::$LEXER_NAME(std::string path)

@@ -54,9 +54,21 @@ void ReplaceRules(std::string& content, FileNode file, std::string errorName)
     Replace(content, "$LEXER_RULES", ruleString);
 }
 
-void ReplaceToString(std::string& content, FileNode /*file*/)
+void ReplaceToString(std::string& content, FileNode file, std::string errorName)
 {
-    Replace(content, "$TOKEN_TO_STRING", "Implementation;");
+    std::set<std::string> tokenNames;
+    file->GetTokenNames(tokenNames);
+    tokenNames.insert(errorName);
+
+    std::stringstream out;
+    for (const std::string& name : tokenNames)
+    {
+        out << "case " << name << ":\n\t\t\treturn \"" << name << "\";\n\t\t";
+    }
+
+    out << "default:\n\t\t\tthrow std::exception(\"Unknown token\");";
+
+    Replace(content, "$TOKEN_TO_STRING", out.str());
 }
 
 void SaveFile(const std::string& content, const std::string& path)
@@ -87,7 +99,7 @@ void TemplateBody(FileNode file,
     ReplaceErrorName(content, errorName);
     ReplaceName(content, name);
     ReplaceRules(content, file, errorName);
-    ReplaceToString(content, file);
+    ReplaceToString(content, file, errorName);
     SaveFile(content, code);
 }
 
