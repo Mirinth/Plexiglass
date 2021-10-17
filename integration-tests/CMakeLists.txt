@@ -17,3 +17,13 @@ add_custom_command(
 	DEPENDS plexiglass basic-test/lexer.txt
 	VERBATIM
 )
+
+set(LEXER_FILE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/basic-test")
+
+configure_file(
+	source/path.hpp
+	path.hpp
+)
+target_include_directories(basic-integration-test
+	PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+)
