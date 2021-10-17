@@ -55,6 +55,13 @@ std::string $LEXER_NAME::PeekText() const
 
 void $LEXER_NAME::Shift()
 {
+    if (m_data.empty())
+    {
+        m_type = $EOF_TOKEN;
+        m_text = "";
+        return;
+    }
+
     using vmatch = std::match_results<std::string_view::const_iterator>;
     static std::vector<Rule> rules = GetRules();
 
