@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 
 #include <lexer.hpp>
@@ -7,11 +8,19 @@
 int main()
 {
     std::string basePath = base_path;
-    std::string lexerPath = basePath + "lexer.txt";
-    lexer lex(lexerPath);
+    std::string inputPath = basePath + "input.txt";
+    std::string outputPath = basePath + "out.txt";
+    lexer lex(inputPath);
 
+    std::ofstream out(outputPath);
 
+    while (lex.PeekToken() != TokenType::PLEXIGLASS_EOF)
+    {
+        out << ToString(lex.PeekToken()) << " " << lex.PeekText() << "\n";
+        lex.Shift();
+    }
 
-    std::cout << "Integration test\n";
+    out << ToString(lex.PeekToken()) << " " << lex.PeekText() << "\n";
+
     return 0;
 }
