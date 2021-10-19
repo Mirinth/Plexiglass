@@ -75,7 +75,7 @@ void $LEXER_NAME::Shift()
         vmatch m;
         bool matched =
             std::regex_search(m_data.begin(), m_data.end(), m, rule.Pattern);
-        if (!matched)
+        if (!matched || m.position() != 0)
         {
             continue;
         }
