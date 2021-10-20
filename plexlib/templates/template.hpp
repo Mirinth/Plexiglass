@@ -23,4 +23,6 @@ private:
     std::string_view m_data;
     TokenType m_type;
     std::string m_text;
+
+    bool ShiftHelper();
 };

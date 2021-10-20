@@ -55,11 +55,20 @@ std::string $LEXER_NAME::PeekText() const
 
 void $LEXER_NAME::Shift()
 {
+    bool success = false;
+    while (!success)
+    {
+        success = ShiftHelper();
+    }
+}
+
+bool $LEXER_NAME::ShiftHelper()
+{
     if (m_data.empty())
     {
         m_type = $EOF_TOKEN;
         m_text = "";
-        return;
+        return true;
     }
 
     using vmatch = std::match_results<std::string_view::const_iterator>;
@@ -95,17 +104,24 @@ void $LEXER_NAME::Shift()
         }
     }
 
-    if (max_length > 0)
+    if (max_length > 0 && rules[max_index].Produce)
     {
         m_type = rules[max_index].Token;
         m_text = m_data.substr(0, max_length);
         m_data.remove_prefix(max_length);
+        return true;
+    }
+    else if (max_length > 0)
+    {
+        m_data.remove_prefix(max_length);
+        return false;
     }
     else
     {
         m_type = $INVALID_TOKEN;
         m_text = "";
         m_data.remove_prefix(1);
+        return true;
     }
 }
 
