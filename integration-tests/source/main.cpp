@@ -19,14 +19,15 @@ void RunLexer(std::string inputPath, std::string outputPath)
         lex.Shift();
     }
 
-    out << ToString(lex.PeekToken()) << " " << lex.PeekText() << "\n";
+    out << ToString(lex.PeekToken()) << lex.PeekText() << "\n";
 }
 
 int main()
 {
-    std::string basePath = base_path;
-    std::string inputPath = basePath + "input.txt";
-    std::string outputPath = basePath + "out.txt";
+    std::string testDir = base_path;
+    std::string inputPath = testDir + "input.txt";
+    std::string basePath = testDir + "base.txt";
+    std::string outputPath = testDir + "out.txt";
 
     RunLexer(inputPath, outputPath);
     
