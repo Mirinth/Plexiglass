@@ -56,12 +56,13 @@ int PlexMain(std::vector<std::string>& args,
         err << "Generation failed: " << exc.what() << std::endl;
         return bad_lexer;
     }
-    catch (const std::filesystem::filesystem_error&)
+    catch (const std::filesystem::filesystem_error& exc)
     {
-        // source can be inserted directly, but it prints an escaped string,
+        // path can be inserted directly, but it prints an escaped string,
         // which might mislead users into thinking the problem is redundant
         // backslashes.
-        err << "Unable to read file " << source.string() << std::endl;
+        auto path = std::filesystem::absolute(exc.path1());
+        err << "Unable to read file " << path.string() << std::endl;
         return unreadable_file;
     }
     catch (const std::exception& exc)

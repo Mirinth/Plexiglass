@@ -10,6 +10,24 @@
 #include <template-holder.hpp>
 #include <utils.hpp>
 
+std::string MakeUnique(const std::set<std::string>& names,
+                       const std::string& name)
+{
+    std::string uniqueName = name;
+    for (size_t unique = 0; unique < std::numeric_limits<size_t>::max()
+                            && names.count(uniqueName) != 0;
+         unique++)
+    {
+        uniqueName = name + "_" + std::to_string(unique);
+    }
+    return uniqueName;
+}
+
+void ReplaceEofName(std::string& content, const std::string& name)
+{
+    Replace(content, "$EOF_TOKEN", name);
+}
+
 void ReplaceErrorName(std::string& content, const std::string& name)
 {
     Replace(content, "$INVALID_TOKEN", name);
@@ -20,19 +38,17 @@ void ReplaceName(std::string& content, const std::string& name)
     Replace(content, "$LEXER_NAME", name);
 }
 
-std::string ReplaceTokens(std::string& content, FileNode file)
+std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
+                                                   FileNode file)
 {
     std::set<std::string> tokenNames;
     file->GetTokenNames(tokenNames);
 
-    std::string errorName = "PLEXIGLASS_NO_MATCH_TOKEN";
-    for (size_t unique = 0; unique < std::numeric_limits<size_t>::max()
-                            && tokenNames.count(errorName) != 0;
-         unique++)
-    {
-        errorName = "PLEXIGLASS_NO_MATCH_TOKEN_" + std::to_string(unique);
-    }
+    std::string errorName = MakeUnique(tokenNames, "PLEXIGLASS_NO_MATCH_TOKEN");
     tokenNames.insert(errorName);
+
+    std::string eofName = MakeUnique(tokenNames, "PLEXIGLASS_EOF");
+    tokenNames.insert(eofName);
 
     std::stringstream names;
     for (auto& tokenName : tokenNames)
@@ -40,9 +56,12 @@ std::string ReplaceTokens(std::string& content, FileNode file)
         names << "\n\t" << tokenName << ",";
     }
 
-    Replace(content, "$TOKEN_NAMES", names.str());
+    std::string namesStr = names.str();
+    namesStr.erase(0, 2); // Erase the leading "\n\t"
 
-    return errorName;
+    Replace(content, "$TOKEN_NAMES", namesStr);
+
+    return std::make_tuple(eofName, errorName);
 }
 
 void ReplaceRules(std::string& content, FileNode file, std::string errorName)
@@ -51,25 +70,49 @@ void ReplaceRules(std::string& content, FileNode file, std::string errorName)
     Replace(content, "$LEXER_RULES", ruleString);
 }
 
+void ReplaceToString(std::string& content,
+                     FileNode file,
+                     std::string eofName,
+                     std::string errorName)
+{
+    std::set<std::string> tokenNames;
+    file->GetTokenNames(tokenNames);
+    tokenNames.insert(eofName);
+    tokenNames.insert(errorName);
+
+    std::stringstream out;
+    for (const std::string& name : tokenNames)
+    {
+        out << "case " << name << ":\n\t\t\treturn \"" << name << "\";\n\t\t";
+    }
+
+    out << "default:\n\t\t\tthrow std::exception(\"Unknown token\");";
+
+    Replace(content, "$TOKEN_TO_STRING", out.str());
+}
+
 void SaveFile(const std::string& content, const std::string& path)
 {
     std::ofstream out(path);
     out << content;
 }
 
-std::string TemplateHeader(FileNode file, std::string header, std::string name)
+std::tuple<std::string, std::string> TemplateHeader(FileNode file,
+                                                    std::string header,
+                                                    std::string name)
 {
     std::string content = header_template;
 
     ReplaceName(content, name);
-    std::string errorName = ReplaceTokens(content, file);
+    auto names = ReplaceTokens(content, file);
 
     SaveFile(content, header);
 
-    return errorName;
+    return names;
 }
 
 void TemplateBody(FileNode file,
+                  std::string eofName,
                   std::string errorName,
                   std::string code,
                   std::string name)
@@ -77,8 +120,10 @@ void TemplateBody(FileNode file,
     std::string content = code_template;
 
     ReplaceErrorName(content, errorName);
+    ReplaceEofName(content, eofName);
     ReplaceName(content, name);
-    ReplaceRules(content, file, errorName);
+    ReplaceRules(content, file, eofName);
+    ReplaceToString(content, file, eofName, errorName);
     SaveFile(content, code);
 }
 
@@ -89,6 +134,6 @@ void Template(FileNode file,
 {
     std::filesystem::remove(header);
     std::filesystem::remove(code);
-    std::string errorName = TemplateHeader(file, header, name);
-    TemplateBody(file, errorName, code, name);
+    auto [eofName, errorName] = TemplateHeader(file, header, name);
+    TemplateBody(file, eofName, errorName, code, name);
 }

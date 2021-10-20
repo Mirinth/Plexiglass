@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <sstream>
 
 #include "doctest.h"
@@ -46,11 +47,13 @@ TEST_CASE("Parameters: Extra parameters")
 TEST_CASE("Parameters: Nonexistent file")
 {
     std::stringstream out, err, base;
-    std::vector<std::string> params = { "z:/path/to/file/that/doesn't/exist/.txt" };
+    std::filesystem::path inputFile("z:/path/to/file/that/doesn't/exist/.txt");
+    inputFile.make_preferred();
+    std::vector<std::string> params = { inputFile.string() };
 
     int result = PlexMain(params, out, err);
 
     CHECK(unreadable_file == result);
     CHECK("" == out.str());
-    CHECK("Unable to read file z:/path/to/file/that/doesn't/exist/.txt\n" == err.str());
+    CHECK("Unable to read file " + inputFile.string() + "\n" == err.str());
 }

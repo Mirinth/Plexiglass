@@ -4,8 +4,11 @@
 #include <string_view>
 
 enum TokenType
-{$TOKEN_NAMES
+{
+    $TOKEN_NAMES
 };
+
+std::string ToString(TokenType type);
 
 class $LEXER_NAME
 {
@@ -20,4 +23,6 @@ private:
     std::string_view m_data;
     TokenType m_type;
     std::string m_text;
+
+    bool ShiftHelper();
 };
