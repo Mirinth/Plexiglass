@@ -53,11 +53,11 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
     std::stringstream names;
     for (auto& tokenName : tokenNames)
     {
-        names << "\n\t" << tokenName << ",";
+        names << "\n    " << tokenName << ",";
     }
 
     std::string namesStr = names.str();
-    namesStr.erase(0, 2); // Erase the leading "\n\t"
+    namesStr.erase(0, 5); // Erase the leading "\n    "
 
     Replace(content, "$TOKEN_NAMES", namesStr);
 
