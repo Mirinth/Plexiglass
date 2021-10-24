@@ -7,8 +7,11 @@ enum TokenType
 {
 	CatToken,
 	DogToken,
+	PLEXIGLASS_EOF,
 	PLEXIGLASS_NO_MATCH_TOKEN,
 };
+
+std::string ToString(TokenType type);
 
 class template_test
 {
@@ -23,4 +26,6 @@ private:
     std::string_view m_data;
     TokenType m_type;
     std::string m_text;
+
+    bool ShiftHelper();
 };
