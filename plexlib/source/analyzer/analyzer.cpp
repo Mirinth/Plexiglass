@@ -18,17 +18,17 @@ void CheckDuplicateNames(NodeType& nodes, MapType& map)
 {
     for (auto& node : nodes)
     {
-        std::string name = node->GetName();
+        std::string name = node->name;
 
         if (map.count(name) > 0)
         {
-            size_t original = std::min(node->GetLine(), map[name]);
-            size_t duplicate = std::max(node->GetLine(), map[name]);
+            size_t original = std::min(node->line, map[name]);
+            size_t duplicate = std::max(node->line, map[name]);
             DuplicateNameError(duplicate, original, name);
         }
         else
         {
-            map[name] = node->GetLine();
+            map[name] = node->line;
         }
     }
 }
@@ -37,27 +37,27 @@ void _FileNode::CheckDuplicateNames()
 {
     std::map<std::string, size_t> nameMap;
 
-    ::CheckDuplicateNames(m_expressions, nameMap);
-    ::CheckDuplicateNames(m_patterns, nameMap);
+    ::CheckDuplicateNames(expressions, nameMap);
+    ::CheckDuplicateNames(patterns, nameMap);
 }
 
 void _FileNode::CheckMissingNames()
 {
     std::set<std::string> names;
 
-    for (auto& expression : m_expressions)
+    for (auto& expression : expressions)
     {
-        names.insert(expression->GetName());
+        names.insert(expression->name);
     }
-    for (auto& pattern : m_patterns)
+    for (auto& pattern : patterns)
     {
-        names.insert(pattern->GetName());
+        names.insert(pattern->name);
     }
-    for (auto& pattern : m_patterns)
+    for (auto& pattern : patterns)
     {
         pattern->CheckMissingNames(names);
     }
-    for (auto& rule : m_rules)
+    for (auto& rule : rules)
     {
         rule->CheckMissingNames(names);
     }
@@ -65,7 +65,7 @@ void _FileNode::CheckMissingNames()
 
 void _PatternNode::CheckMissingNames(std::set<std::string>& names)
 {
-    for (auto& sequence : m_sequences)
+    for (auto& sequence : sequences)
     {
         sequence->CheckMissingNames(names);
     }
@@ -73,26 +73,26 @@ void _PatternNode::CheckMissingNames(std::set<std::string>& names)
 
 void _IdentifierSequenceNode::CheckMissingNames(std::set<std::string>& names)
 {
-    for (auto& identifier : m_identifiers)
+    for (auto& identifier : identifiers)
     {
         if (names.count(identifier) == 0)
         {
-            MissingNameError(m_line, identifier);
+            MissingNameError(line, identifier);
         }
     }
 }
 
 void _RuleNode::CheckMissingNames(std::set<std::string>& names)
 {
-    if (names.count(m_name) == 0)
+    if (names.count(name) == 0)
     {
-        MissingNameError(m_line, m_name);
+        MissingNameError(line, name);
     }
 }
 
 void _FileNode::CheckIllegalActions()
 {
-    for (auto& rule : m_rules)
+    for (auto& rule : rules)
     {
         rule->CheckIllegalActions();
     }
@@ -100,16 +100,16 @@ void _FileNode::CheckIllegalActions()
 
 void _FileNode::CheckIllegalStatements()
 {
-    if (m_patterns.size() > 0)
+    if (patterns.size() > 0)
     {
-        Error(m_patterns[0]->GetLine(),
+        Error(patterns[0]->line,
               "'pattern' statement not yet supported");
     }
 }
 
 void _RuleNode::CheckIllegalActions()
 {
-    for (auto& action : m_actions)
+    for (auto& action : actions)
     {
         action->CheckIllegalActions();
     }
@@ -117,12 +117,12 @@ void _RuleNode::CheckIllegalActions()
 
 void _ActionNode::CheckIllegalActions()
 {
-    if (m_name == "rewind")
+    if (name == "rewind")
     {
-        Error(m_line, "'rewind' action not yet supported");
+        Error(line, "'rewind' action not yet supported");
     }
-    if (m_name == "transition")
+    if (name == "transition")
     {
-        Error(m_line, "'transition' action not yet supported");
+        Error(line, "'transition' action not yet supported");
     }
 }

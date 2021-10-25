@@ -49,10 +49,9 @@ public:
     void CheckIllegalActions();
     void CheckIllegalStatements();
 
-private:
-    std::vector<ExpressionNode> m_expressions;
-    std::vector<PatternNode> m_patterns;
-    std::vector<RuleNode> m_rules;
+    std::vector<ExpressionNode> expressions;
+    std::vector<PatternNode> patterns;
+    std::vector<RuleNode> rules;
 };
 
 class _ExpressionNode
@@ -64,14 +63,9 @@ public:
     friend std::ostream& operator<<(std::ostream& out,
                                     const ExpressionNode& node);
 
-    size_t GetLine() const;
-    std::string GetName() const;
-    std::string GetExpression() const;
-
-private:
-    size_t m_line;
-    std::string m_name;
-    std::string m_expression;
+    size_t line;
+    std::string name;
+    std::string expression;
 };
 
 class _PatternNode
@@ -82,15 +76,11 @@ public:
 
     void Add(IdentifierSequenceNode node);
 
-    size_t GetLine() const;
-    std::string GetName() const;
-
     void CheckMissingNames(std::set<std::string>& names);
 
-private:
-    size_t m_line;
-    std::string m_name;
-    std::vector<IdentifierSequenceNode> m_sequences;
+    size_t line;
+    std::string name;
+    std::vector<IdentifierSequenceNode> sequences;
 };
 
 class _IdentifierSequenceNode
@@ -104,9 +94,8 @@ public:
 
     void CheckMissingNames(std::set<std::string>& names);
 
-private:
-    size_t m_line;
-    std::vector<std::string> m_identifiers;
+    size_t line;
+    std::vector<std::string> identifiers;
 };
 
 class _RuleNode
@@ -124,10 +113,9 @@ public:
     void CheckIllegalActions();
     void CheckMissingNames(std::set<std::string>& names);
 
-private:
-    size_t m_line;
-    std::string m_name;
-    std::vector<ActionNode> m_actions;
+    size_t line;
+    std::string name;
+    std::vector<ActionNode> actions;
 };
 
 class _ActionNode
@@ -143,8 +131,7 @@ public:
 
     void CheckIllegalActions();
 
-private:
-    size_t m_line;
-    std::string m_name;
-    std::string m_identifier;
+    size_t line;
+    std::string name;
+    std::string identifier;
 };

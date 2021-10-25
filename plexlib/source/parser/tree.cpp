@@ -17,19 +17,19 @@ std::ostream& operator<<(std::ostream& out, const FileNode& node)
     out << "File:\n";
 
     out << "\tExpressions:\n";
-    for (auto& expression : node->m_expressions)
+    for (auto& expression : node->expressions)
     {
         out << expression;
     }
 
     out << "\tPatterns:\n";
-    for (auto& pattern : node->m_patterns)
+    for (auto& pattern : node->patterns)
     {
         out << pattern;
     }
 
     out << "\tRules:\n";
-    for (auto& rule : node->m_rules)
+    for (auto& rule : node->rules)
     {
         out << rule;
     }
@@ -39,22 +39,22 @@ std::ostream& operator<<(std::ostream& out, const FileNode& node)
 
 void _FileNode::Add(ExpressionNode node)
 {
-    m_expressions.push_back(node);
+    expressions.push_back(node);
 }
 
 void _FileNode::Add(PatternNode node)
 {
-    m_patterns.push_back(node);
+    patterns.push_back(node);
 }
 
 void _FileNode::Add(RuleNode node)
 {
-    m_rules.push_back(node);
+    rules.push_back(node);
 }
 
 void _FileNode::GetTokenNames(std::set<std::string>& names) const
 {
-    for (const auto& rule : m_rules)
+    for (const auto& rule : rules)
     {
         rule->GetTokenNames(names);
     }
@@ -62,39 +62,39 @@ void _FileNode::GetTokenNames(std::set<std::string>& names) const
 
 std::string _FileNode::GetRuleString(std::string illegalTokenName) const
 {
-    std::vector<Rule> rules;
+    std::vector<Rule> producedRules;
 
-    for (auto& m_rule : m_rules)
+    for (auto& rule : rules)
     {
-        Rule rule = m_rule->GetRule();
+        Rule producedRule = rule->GetRule();
 
-        for (auto& expression : m_expressions)
+        for (auto& expression : expressions)
         {
-            if (expression->GetName() == rule.Pattern)
+            if (expression->name == producedRule.Pattern)
             {
-                rule.Pattern = expression->GetExpression();
+                producedRule.Pattern = expression->expression;
 
                 // Needs to come first so \ inserted by next one aren't escaped
-                Replace(rule.Pattern, "\\", "\\\\"); // Escape backslaches
-                Replace(rule.Pattern, "\"", "\\\""); // Escape double quotes
+                Replace(producedRule.Pattern, "\\", "\\\\"); // Escape backslaches
+                Replace(producedRule.Pattern, "\"", "\\\""); // Escape double quotes
 
-                rule.Pattern = "\"" + rule.Pattern + "\"";
+                producedRule.Pattern = "\"" + producedRule.Pattern + "\"";
             }
         }
 
-        rules.push_back(rule);
+        producedRules.push_back(producedRule);
     }
 
     std::stringstream out;
-    for (auto& rule : rules)
+    for (auto& producedRule : producedRules)
     {
-        if (rule.Token == "")
+        if (producedRule.Token == "")
         {
-            rule.Token = illegalTokenName;
+            producedRule.Token = illegalTokenName;
         }
-        out << "\n    rules.emplace_back(" << rule.Token << ", "
-            << (rule.Produces ? "true" : "false") << ", "
-            << rule.Increment << ", " << rule.Pattern << ");";
+        out << "\n    rules.emplace_back(" << producedRule.Token << ", "
+            << (producedRule.Produces ? "true" : "false") << ", "
+            << producedRule.Increment << ", " << producedRule.Pattern << ");";
     }
 
     std::string outStr = out.str();
@@ -107,122 +107,97 @@ ExpressionNode _ExpressionNode::New(size_t line,
                                     std::string expression)
 {
     ExpressionNode node = std::make_shared<_ExpressionNode>();
-    node->m_line = line;
-    node->m_name = name;
-    node->m_expression = expression;
+    node->line = line;
+    node->name = name;
+    node->expression = expression;
     return node;
 }
 
 std::ostream& operator<<(std::ostream& out, const ExpressionNode& node)
 {
-    out << "\t\t" << node->m_name << " : " << node->m_expression << "\n";
+    out << "\t\t" << node->name << " : " << node->expression << "\n";
     return out;
-}
-
-size_t _ExpressionNode::GetLine() const
-{
-    return m_line;
-}
-
-std::string _ExpressionNode::GetName() const
-{
-    return m_name;
-}
-
-std::string _ExpressionNode::GetExpression() const
-{
-    return m_expression;
 }
 
 PatternNode _PatternNode::New(size_t line, std::string name)
 {
     PatternNode node = std::make_shared<_PatternNode>();
-    node->m_line = line;
-    node->m_name = name;
+    node->line = line;
+    node->name = name;
     return node;
 }
 
 std::ostream& operator<<(std::ostream& out, const PatternNode& node)
 {
-    out << "\t\t" << node->m_name << " : ";
+    out << "\t\t" << node->name << " : ";
 
-    for (size_t i = 0; i < node->m_sequences.size() - 1; i++)
+    for (size_t i = 0; i < node->sequences.size() - 1; i++)
     {
-        out << node->m_sequences[i] << ", ";
+        out << node->sequences[i] << ", ";
     }
 
-    out << node->m_sequences.back() << '\n';
+    out << node->sequences.back() << '\n';
 
     return out;
 }
 
 void _PatternNode::Add(IdentifierSequenceNode node)
 {
-    m_sequences.push_back(node);
-}
-
-size_t _PatternNode::GetLine() const
-{
-    return m_line;
-}
-
-std::string _PatternNode::GetName() const
-{
-    return m_name;
+    sequences.push_back(node);
 }
 
 IdentifierSequenceNode _IdentifierSequenceNode::New(size_t line)
 {
     IdentifierSequenceNode node = std::make_shared<_IdentifierSequenceNode>();
-    node->m_line = line;
+    node->line = line;
     return node;
 }
 
 std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node)
 {
-    for (size_t i = 0; i < node->m_identifiers.size() - 1; i++)
+    for (size_t i = 0; i < node->identifiers.size() - 1; i++)
     {
-        out << node->m_identifiers[i] << ' ';
+        out << node->identifiers[i] << ' ';
     }
 
-    out << node->m_identifiers.back();
+    out << node->identifiers.back();
     return out;
 }
 
 void _IdentifierSequenceNode::Add(std::string identifier)
 {
-    m_identifiers.push_back(identifier);
+    identifiers.push_back(identifier);
 }
 
 RuleNode _RuleNode::New(size_t line, std::string name)
 {
     RuleNode node = std::make_shared<_RuleNode>();
-    node->m_line = line;
-    node->m_name = name;
+    node->line = line;
+    node->name = name;
     return node;
 }
 
 std::ostream& operator<<(std::ostream& out, const RuleNode& node)
 {
-    out << "\t\t" << node->m_name << " : ";
+    out << "\t\t" << node->name << " : ";
 
-    for (size_t i = 0; i < node->m_actions.size() - 1; i++)
+    for (size_t i = 0; i < node->actions.size() - 1; i++)
     {
-        out << node->m_actions[i] << ", ";
+        out << node->actions[i] << ", ";
     }
 
-    out << node->m_actions.back() << "\n";
+    out << node->actions.back() << "\n";
     return out;
 }
 
 void _RuleNode::Add(ActionNode node)
 {
-    m_actions.push_back(node);
+    actions.push_back(node);
 }
 
 void _RuleNode::GetTokenNames(std::set<std::string>& names) const
 {
-    for (const auto& action : m_actions)
+    for (const auto& action : actions)
     {
         action->GetTokenNames(names);
     }
@@ -230,9 +205,9 @@ void _RuleNode::GetTokenNames(std::set<std::string>& names) const
 
 Rule _RuleNode::GetRule() const
 {
-    Rule rule = { false, "", 0, m_name };
+    Rule rule = { false, "", 0, name };
     
-    for (const auto& action : m_actions)
+    for (const auto& action : actions)
     {
         action->GetRule(rule);
     }
@@ -245,46 +220,46 @@ ActionNode _ActionNode::New(size_t line,
                             std::string identifier /*= ""*/)
 {
     ActionNode node = std::make_shared<_ActionNode>();
-    node->m_line = line;
-    node->m_name = name;
-    node->m_identifier = identifier;
+    node->line = line;
+    node->name = name;
+    node->identifier = identifier;
     return node;
 }
 
 std::ostream& operator<<(std::ostream& out, const ActionNode& node)
 {
-    out << node->m_name;
-    if (!node->m_identifier.empty())
+    out << node->name;
+    if (!node->identifier.empty())
     {
-        out << ' ' << node->m_identifier;
+        out << ' ' << node->identifier;
     }
     return out;
 }
 
 void _ActionNode::GetTokenNames(std::set<std::string>& names) const
 {
-    if (m_name == "produce")
+    if (name == "produce")
     {
-        names.insert(m_identifier);
+        names.insert(identifier);
     }
 }
 
 void _ActionNode::GetRule(Rule& rule)
 {
-    if (m_name == "produce-nothing")
+    if (name == "produce-nothing")
     {
         rule.Produces = false;
     }
-    else if (m_name == "produce")
+    else if (name == "produce")
     {
         rule.Produces = true;
-        rule.Token = m_identifier;
+        rule.Token = identifier;
     }
-    else if (m_name == "++line" || m_name == "line++")
+    else if (name == "++line" || name == "line++")
     {
         rule.Increment = 1;
     }
-    else if (m_name == "--line" || m_name == "line--")
+    else if (name == "--line" || name == "line--")
     {
         rule.Increment = -1;
     }
