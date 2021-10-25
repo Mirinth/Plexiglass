@@ -40,8 +40,6 @@ public:
     void GetTokenNames(std::set<std::string>& names) const;
     std::string GetRuleString(std::string illegalTokenName) const;
 
-    void CheckIllegalStatements();
-
     std::vector<ExpressionNode> expressions;
     std::vector<PatternNode> patterns;
     std::vector<RuleNode> rules;

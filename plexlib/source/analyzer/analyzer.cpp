@@ -9,6 +9,7 @@ void CheckDuplicateNames(FileNode node);
 void CheckIllegalActions(FileNode node);
 void CheckIllegalActions(RuleNode node);
 void CheckIllegalActions(ActionNode node);
+void CheckIllegalStatements(FileNode node);
 void CheckMissingNames(FileNode node);
 void CheckMissingNames(PatternNode node, std::set<std::string>& names);
 void CheckMissingNames(RuleNode node, std::set<std::string>& names);
@@ -19,7 +20,7 @@ void Analyze(FileNode file)
     CheckDuplicateNames(file);
     CheckMissingNames(file);
     CheckIllegalActions(file);
-    file->CheckIllegalStatements();
+    CheckIllegalStatements(file);
 }
 
 template <typename NodeType, typename MapType>
@@ -107,11 +108,11 @@ void CheckIllegalActions(FileNode node)
     }
 }
 
-void _FileNode::CheckIllegalStatements()
+void CheckIllegalStatements(FileNode node)
 {
-    if (patterns.size() > 0)
+    if (node->patterns.size() > 0)
     {
-        Error(patterns[0]->line,
+        Error(node->patterns[0]->line,
               "'pattern' statement not yet supported");
     }
 }
