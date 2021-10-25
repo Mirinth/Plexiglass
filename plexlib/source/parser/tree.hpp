@@ -7,6 +7,7 @@
 
 class _FileNode;
 typedef std::shared_ptr<_FileNode> FileNode;
+std::ostream& operator<<(std::ostream& out, const FileNode& node);
 
 class _ExpressionNode;
 typedef std::shared_ptr<_ExpressionNode> ExpressionNode;
@@ -37,14 +38,11 @@ public:
     static FileNode New();
 
     void GetTokenNames(std::set<std::string>& names) const;
-    std::string GetRuleString(std::string illegalTokenName) const;
 
     std::vector<ExpressionNode> expressions;
     std::vector<PatternNode> patterns;
     std::vector<RuleNode> rules;
 };
-
-std::ostream& operator<<(std::ostream& out, const FileNode& node);
 
 class _ExpressionNode
 {
@@ -84,8 +82,6 @@ public:
     
     void GetTokenNames(std::set<std::string>& names) const;
 
-    Rule GetRule() const;
-
     size_t line;
     std::string name;
     std::vector<ActionNode> actions;
@@ -99,7 +95,6 @@ public:
                           std::string identifier = "");
     
     void GetTokenNames(std::set<std::string>& names) const;
-    void GetRule(Rule& rule);
 
     size_t line;
     std::string name;
