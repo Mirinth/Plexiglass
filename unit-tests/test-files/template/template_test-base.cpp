@@ -9,9 +9,13 @@ std::string ReadFile(std::string path);
 
 struct Rule
 {
-    bool Nothing;
+    Rule(TokenType token, bool produce, int increment, const char* pattern)
+        : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
+    {}
+
+    TokenType Token;
     bool Produce;
-    int Line;
+    int Increment;
     std::regex Pattern;
 };
 
