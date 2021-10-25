@@ -5,6 +5,20 @@
 
 #include <error.hpp>
 
+void CheckDuplicateNames(FileNode node);
+void CheckMissingNames(FileNode node);
+void CheckMissingNames(PatternNode node, std::set<std::string>& names);
+void CheckMissingNames(RuleNode node, std::set<std::string>& names);
+void CheckMissingNames(IdentifierSequenceNode node, std::set<std::string>& names);
+
+void Analyze(FileNode file)
+{
+    CheckDuplicateNames(file);
+    CheckMissingNames(file);
+    file->CheckIllegalActions();
+    file->CheckIllegalStatements();
+}
+
 template <typename NodeType, typename MapType>
 void CheckDuplicateNames(NodeType& nodes, MapType& map)
 {
@@ -33,52 +47,52 @@ void CheckDuplicateNames(FileNode file)
     ::CheckDuplicateNames(file->patterns, nameMap);
 }
 
-void _FileNode::CheckMissingNames()
+void CheckMissingNames(FileNode file)
 {
     std::set<std::string> names;
 
-    for (auto& expression : expressions)
+    for (auto& expression : file->expressions)
     {
         names.insert(expression->name);
     }
-    for (auto& pattern : patterns)
+    for (auto& pattern : file->patterns)
     {
         names.insert(pattern->name);
     }
-    for (auto& pattern : patterns)
+    for (auto& pattern : file->patterns)
     {
-        pattern->CheckMissingNames(names);
+        CheckMissingNames(pattern, names);
     }
-    for (auto& rule : rules)
+    for (auto& rule : file->rules)
     {
-        rule->CheckMissingNames(names);
-    }
-}
-
-void _PatternNode::CheckMissingNames(std::set<std::string>& names)
-{
-    for (auto& sequence : sequences)
-    {
-        sequence->CheckMissingNames(names);
+        CheckMissingNames(rule, names);
     }
 }
 
-void _IdentifierSequenceNode::CheckMissingNames(std::set<std::string>& names)
+void CheckMissingNames(PatternNode node, std::set<std::string>& names)
 {
-    for (auto& identifier : identifiers)
+    for (auto& sequence : node->sequences)
+    {
+        CheckMissingNames(sequence, names);
+    }
+}
+
+void CheckMissingNames(IdentifierSequenceNode node, std::set<std::string>& names)
+{
+    for (auto& identifier : node->identifiers)
     {
         if (names.count(identifier) == 0)
         {
-            MissingNameError(line, identifier);
+            MissingNameError(node->line, identifier);
         }
     }
 }
 
-void _RuleNode::CheckMissingNames(std::set<std::string>& names)
+void CheckMissingNames(RuleNode node, std::set<std::string>& names)
 {
-    if (names.count(name) == 0)
+    if (names.count(node->name) == 0)
     {
-        MissingNameError(line, name);
+        MissingNameError(node->line, node->name);
     }
 }
 
@@ -117,12 +131,4 @@ void _ActionNode::CheckIllegalActions()
     {
         Error(line, "'transition' action not yet supported");
     }
-}
-
-void Analyze(FileNode file)
-{
-    CheckDuplicateNames(file);
-    file->CheckMissingNames();
-    file->CheckIllegalActions();
-    file->CheckIllegalStatements();
 }

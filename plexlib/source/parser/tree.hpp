@@ -40,7 +40,6 @@ public:
     void GetTokenNames(std::set<std::string>& names) const;
     std::string GetRuleString(std::string illegalTokenName) const;
 
-    void CheckMissingNames();
     void CheckIllegalActions();
     void CheckIllegalStatements();
 
@@ -69,8 +68,6 @@ public:
     static PatternNode New(size_t line, std::string name);
     friend std::ostream& operator<<(std::ostream& out, const PatternNode& node);
 
-    void CheckMissingNames(std::set<std::string>& names);
-
     size_t line;
     std::string name;
     std::vector<IdentifierSequenceNode> sequences;
@@ -82,8 +79,6 @@ public:
     static IdentifierSequenceNode New(size_t line);
     friend std::ostream& operator<<(std::ostream& out,
                                     const IdentifierSequenceNode& node);
-
-    void CheckMissingNames(std::set<std::string>& names);
 
     size_t line;
     std::vector<std::string> identifiers;
@@ -100,7 +95,6 @@ public:
     Rule GetRule() const;
 
     void CheckIllegalActions();
-    void CheckMissingNames(std::set<std::string>& names);
 
     size_t line;
     std::string name;
