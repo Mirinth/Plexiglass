@@ -19,6 +19,17 @@ struct Rule
     std::regex Pattern;
 };
 
+std::vector<Rule> GetRules()
+{
+    std::vector<Rule> rules;
+
+    rules.emplace_back(CatToken, true, 0, "cat");
+    rules.emplace_back(DogToken, true, 0, "dog");
+    rules.emplace_back(PLEXIGLASS_EOF, false, 0, "\\s+");
+
+    return rules;
+}
+
 template_test::template_test(istream& input)
 {
     m_input = ReadFile(path);
