@@ -6,6 +6,9 @@
 #include <error.hpp>
 
 void CheckDuplicateNames(FileNode node);
+void CheckIllegalActions(FileNode node);
+void CheckIllegalActions(RuleNode node);
+void CheckIllegalActions(ActionNode node);
 void CheckMissingNames(FileNode node);
 void CheckMissingNames(PatternNode node, std::set<std::string>& names);
 void CheckMissingNames(RuleNode node, std::set<std::string>& names);
@@ -15,7 +18,7 @@ void Analyze(FileNode file)
 {
     CheckDuplicateNames(file);
     CheckMissingNames(file);
-    file->CheckIllegalActions();
+    CheckIllegalActions(file);
     file->CheckIllegalStatements();
 }
 
@@ -96,11 +99,11 @@ void CheckMissingNames(RuleNode node, std::set<std::string>& names)
     }
 }
 
-void _FileNode::CheckIllegalActions()
+void CheckIllegalActions(FileNode node)
 {
-    for (auto& rule : rules)
+    for (auto& rule : node->rules)
     {
-        rule->CheckIllegalActions();
+        CheckIllegalActions(rule);
     }
 }
 
@@ -113,22 +116,22 @@ void _FileNode::CheckIllegalStatements()
     }
 }
 
-void _RuleNode::CheckIllegalActions()
+void CheckIllegalActions(RuleNode node)
 {
-    for (auto& action : actions)
+    for (auto& action : node->actions)
     {
-        action->CheckIllegalActions();
+        CheckIllegalActions(action);
     }
 }
 
-void _ActionNode::CheckIllegalActions()
+void CheckIllegalActions(ActionNode node)
 {
-    if (name == "rewind")
+    if (node->name == "rewind")
     {
-        Error(line, "'rewind' action not yet supported");
+        Error(node->line, "'rewind' action not yet supported");
     }
-    if (name == "transition")
+    if (node->name == "transition")
     {
-        Error(line, "'transition' action not yet supported");
+        Error(node->line, "'transition' action not yet supported");
     }
 }

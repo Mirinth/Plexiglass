@@ -40,7 +40,6 @@ public:
     void GetTokenNames(std::set<std::string>& names) const;
     std::string GetRuleString(std::string illegalTokenName) const;
 
-    void CheckIllegalActions();
     void CheckIllegalStatements();
 
     std::vector<ExpressionNode> expressions;
@@ -94,8 +93,6 @@ public:
 
     Rule GetRule() const;
 
-    void CheckIllegalActions();
-
     size_t line;
     std::string name;
     std::vector<ActionNode> actions;
@@ -111,8 +108,6 @@ public:
 
     void GetTokenNames(std::set<std::string>& names) const;
     void GetRule(Rule& rule);
-
-    void CheckIllegalActions();
 
     size_t line;
     std::string name;
