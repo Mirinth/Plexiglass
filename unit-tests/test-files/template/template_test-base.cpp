@@ -30,6 +30,23 @@ std::vector<Rule> GetRules()
     return rules;
 }
 
+std::string ToString(TokenType type)
+{
+    switch (type)
+    {
+        case CatToken:
+            return "CatToken";
+        case DogToken:
+            return "DogToken";
+        case PLEXIGLASS_EOF:
+            return "PLEXIGLASS_EOF";
+        case PLEXIGLASS_NO_MATCH_TOKEN:
+            return "PLEXIGLASS_NO_MATCH_TOKEN";
+        default:
+            throw std::exception("Unknown token");
+    }
+}
+
 template_test::template_test(istream& input)
 {
     m_input = ReadFile(path);

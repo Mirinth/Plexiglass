@@ -83,10 +83,10 @@ void ReplaceToString(std::string& content,
     std::stringstream out;
     for (const std::string& name : tokenNames)
     {
-        out << "case " << name << ":\n\t\t\treturn \"" << name << "\";\n\t\t";
+        out << "case " << name << ":\n            return \"" << name << "\";\n        ";
     }
 
-    out << "default:\n\t\t\tthrow std::exception(\"Unknown token\");";
+    out << "default:\n            throw std::exception(\"Unknown token\");";
 
     Replace(content, "$TOKEN_TO_STRING", out.str());
 }
