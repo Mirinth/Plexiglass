@@ -53,11 +53,11 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
     std::stringstream names;
     for (auto& tokenName : tokenNames)
     {
-        names << "\n\t" << tokenName << ",";
+        names << "\n    " << tokenName << ",";
     }
 
     std::string namesStr = names.str();
-    namesStr.erase(0, 2); // Erase the leading "\n\t"
+    namesStr.erase(0, 5); // Erase the leading "\n    "
 
     Replace(content, "$TOKEN_NAMES", namesStr);
 
@@ -83,10 +83,10 @@ void ReplaceToString(std::string& content,
     std::stringstream out;
     for (const std::string& name : tokenNames)
     {
-        out << "case " << name << ":\n\t\t\treturn \"" << name << "\";\n\t\t";
+        out << "case " << name << ":\n            return \"" << name << "\";\n        ";
     }
 
-    out << "default:\n\t\t\tthrow std::exception(\"Unknown token\");";
+    out << "default:\n            throw std::exception(\"Unknown token\");";
 
     Replace(content, "$TOKEN_TO_STRING", out.str());
 }

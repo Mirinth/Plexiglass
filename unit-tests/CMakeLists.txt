@@ -11,4 +11,4 @@ add_executable(plextest
     source/test_tree.cpp
 )
 target_link_libraries(plextest PUBLIC plexlib)
-target_compile_features(plexlib PUBLIC cxx_std_17)
+target_compile_features(plextest PUBLIC cxx_std_17)

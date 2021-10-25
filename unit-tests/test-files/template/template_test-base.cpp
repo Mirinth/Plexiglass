@@ -1,5 +1,7 @@
 #include "template_test.hpp"
 
+#include <filesystem>
+#include <fstream>
 #include <regex>
 #include <vector>
 
@@ -7,13 +9,45 @@ std::string ReadFile(std::string path);
 
 struct Rule
 {
-    bool Nothing;
+    Rule(TokenType token, bool produce, int increment, const char* pattern)
+        : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
+    {}
+
+    TokenType Token;
     bool Produce;
-    int Line;
+    int Increment;
     std::regex Pattern;
 };
 
-template_test::template_test(istream& input)
+std::vector<Rule> GetRules()
+{
+    std::vector<Rule> rules;
+
+    rules.emplace_back(CatToken, true, 0, "cat");
+    rules.emplace_back(DogToken, true, 0, "dog");
+    rules.emplace_back(PLEXIGLASS_EOF, false, 0, "\\s+");
+
+    return rules;
+}
+
+std::string ToString(TokenType type)
+{
+    switch (type)
+    {
+        case CatToken:
+            return "CatToken";
+        case DogToken:
+            return "DogToken";
+        case PLEXIGLASS_EOF:
+            return "PLEXIGLASS_EOF";
+        case PLEXIGLASS_NO_MATCH_TOKEN:
+            return "PLEXIGLASS_NO_MATCH_TOKEN";
+        default:
+            throw std::exception("Unknown token");
+    }
+}
+
+template_test::template_test(std::string path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
@@ -32,45 +66,73 @@ std::string template_test::PeekText() const
 
 void template_test::Shift()
 {
-    static std::vector<Rule> rules = {
-		{ true, CatToken, 0, "cat"};
-		{ true, DogToken, 0, "dog"};
-		{ false, PLEXIGLASS_NO_MATCH_TOKEN, 0, "\\s+"};
-    };
+    bool success = false;
+    while (!success)
+    {
+        success = ShiftHelper();
+    }
+}
 
-    unsigned int max_index = 0;
-    unsigned int max_length = 0;
+bool template_test::ShiftHelper()
+{
+    if (m_data.empty())
+    {
+        m_type = PLEXIGLASS_EOF;
+        m_text = "";
+        return true;
+    }
+
+    using vmatch = std::match_results<std::string_view::const_iterator>;
+    static std::vector<Rule> rules = GetRules();
+
+    size_t max_index = 0;
+    size_t max_length = 0;
     std::string max_string;
 
-    for (size_t index = 0; index < rules.length(); index++)
+    for (size_t index = 0; index < rules.size(); index++)
     {
-        auto& [type, regex] = rules[index];
-        std::match_results m;
-        bool matched = std::regex_search(m_data.begin(), m_data.end(), m, regex);
-        if (!matched)
+        Rule rule = rules[index];
+        vmatch m;
+        bool matched =
+            std::regex_search(m_data.begin(), m_data.end(), m, rule.Pattern);
+        if (!matched || m.position() != 0)
         {
             continue;
         }
 
-        if (m.length() > max_length)
+        // Ensure following cast is safe
+        if (m.length() < 0)
         {
-            max_length = m.length();
+            throw std::exception("template_test::Shift(): Length was negative.");
+        }
+        size_t length = static_cast<size_t>(std::abs(m.length()));
+
+        if (length > max_length)
+        {
+            max_length = length;
             max_index = index;
             max_string = m.str();
         }
     }
 
-    if (max_length > 0)
+    if (max_length > 0 && rules[max_index].Produce)
     {
-        m_type = rules[max_index].first();
+        m_type = rules[max_index].Token;
         m_text = m_data.substr(0, max_length);
         m_data.remove_prefix(max_length);
+        return true;
+    }
+    else if (max_length > 0)
+    {
+        m_data.remove_prefix(max_length);
+        return false;
     }
     else
     {
         m_type = PLEXIGLASS_NO_MATCH_TOKEN;
         m_text = "";
         m_data.remove_prefix(1);
+        return true;
     }
 }
 

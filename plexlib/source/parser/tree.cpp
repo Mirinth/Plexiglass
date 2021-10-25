@@ -92,13 +92,13 @@ std::string _FileNode::GetRuleString(std::string illegalTokenName) const
         {
             rule.Token = illegalTokenName;
         }
-        out << "\n\trules.emplace_back(" << rule.Token << ", "
+        out << "\n    rules.emplace_back(" << rule.Token << ", "
             << (rule.Produces ? "true" : "false") << ", "
             << rule.Increment << ", " << rule.Pattern << ");";
     }
 
     std::string outStr = out.str();
-    outStr.erase(0, 2); // Erase leading "\n\t"
+    outStr.erase(0, 5); // Erase leading "\n    "
     return outStr;
 }
 

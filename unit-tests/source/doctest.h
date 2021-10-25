@@ -357,6 +357,11 @@ DOCTEST_MSVC_SUPPRESS_WARNING(26812) // Prefer 'enum class' over 'enum'
     static const int var DOCTEST_UNUSED // NOLINT(fuchsia-statically-constructed-objects,cert-err58-cpp)
 #define DOCTEST_GLOBAL_NO_WARNINGS_END() DOCTEST_CLANG_SUPPRESS_WARNING_POP
 
+// Added by Mirinth to disable triggering of breakpoints when tests fail.
+// If a test fails, you can just re-run it with a breakpoint at the point
+// of failure.
+#define DOCTEST_BREAK_INTO_DEBUGGER() ((void)0)
+
 #ifndef DOCTEST_BREAK_INTO_DEBUGGER
 // should probably take a look at https://github.com/scottt/debugbreak
 #ifdef DOCTEST_PLATFORM_LINUX
@@ -4843,14 +4848,15 @@ namespace {
     :   m_writer( other.m_writer ){
         other.m_writer = nullptr;
     }
-    XmlWriter::ScopedElement& XmlWriter::ScopedElement::operator=( ScopedElement&& other ) DOCTEST_NOEXCEPT {
-        if ( m_writer ) {
-            m_writer->endElement();
-        }
-        m_writer = other.m_writer;
-        other.m_writer = nullptr;
-        return *this;
-    }
+    // Commented out by Mirinth. This causes warnings since it's never used.
+    //XmlWriter::ScopedElement& XmlWriter::ScopedElement::operator=( ScopedElement&& other ) DOCTEST_NOEXCEPT {
+    //    if ( m_writer ) {
+    //        m_writer->endElement();
+    //    }
+    //    m_writer = other.m_writer;
+    //    other.m_writer = nullptr;
+    //    return *this;
+    //}
 
 
     XmlWriter::ScopedElement::~ScopedElement() {
