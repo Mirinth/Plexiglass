@@ -13,7 +13,8 @@ void CheckIllegalStatements(FileNode node);
 void CheckMissingNames(FileNode node);
 void CheckMissingNames(PatternNode node, std::set<std::string>& names);
 void CheckMissingNames(RuleNode node, std::set<std::string>& names);
-void CheckMissingNames(IdentifierSequenceNode node, std::set<std::string>& names);
+void CheckMissingNames(IdentifierSequenceNode node,
+                       std::set<std::string>& names);
 
 void Analyze(FileNode file)
 {
@@ -81,7 +82,8 @@ void CheckMissingNames(PatternNode node, std::set<std::string>& names)
     }
 }
 
-void CheckMissingNames(IdentifierSequenceNode node, std::set<std::string>& names)
+void CheckMissingNames(IdentifierSequenceNode node,
+                       std::set<std::string>& names)
 {
     for (auto& identifier : node->identifiers)
     {
@@ -112,8 +114,7 @@ void CheckIllegalStatements(FileNode node)
 {
     if (node->patterns.size() > 0)
     {
-        Error(node->patterns[0]->line,
-              "'pattern' statement not yet supported");
+        Error(node->patterns[0]->line, "'pattern' statement not yet supported");
     }
 }
 

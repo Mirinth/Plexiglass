@@ -178,7 +178,8 @@ void ReplaceToString(std::string& content,
     std::stringstream out;
     for (const std::string& name : tokenNames)
     {
-        out << "case " << name << ":\n            return \"" << name << "\";\n        ";
+        out << "case " << name << ":\n            return \"" << name
+            << "\";\n        ";
     }
 
     out << "default:\n            throw std::exception(\"Unknown token\");";

@@ -44,8 +44,8 @@ std::ostream& operator<<(std::ostream& out, const FileNode& node)
 }
 
 ExpressionNode NewExpressionNode(size_t line,
-                                    std::string name,
-                                    std::string expression)
+                                 std::string name,
+                                 std::string expression)
 {
     ExpressionNode node = std::make_shared<_ExpressionNode>();
     node->line = line;
@@ -122,8 +122,8 @@ std::ostream& operator<<(std::ostream& out, const RuleNode& node)
 }
 
 ActionNode NewActionNode(size_t line,
-                            std::string name,
-                            std::string identifier /*= ""*/)
+                         std::string name,
+                         std::string identifier /*= ""*/)
 {
     ActionNode node = std::make_shared<_ActionNode>();
     node->line = line;

@@ -33,7 +33,7 @@ typedef std::shared_ptr<_ActionNode> ActionNode;
 ActionNode NewActionNode(size_t line,
                          std::string name,
                          std::string identifier = "");
-    
+
 
 struct Rule
 {
