@@ -37,21 +37,6 @@ std::ostream& operator<<(std::ostream& out, const FileNode& node)
     return out;
 }
 
-void _FileNode::Add(ExpressionNode node)
-{
-    expressions.push_back(node);
-}
-
-void _FileNode::Add(PatternNode node)
-{
-    patterns.push_back(node);
-}
-
-void _FileNode::Add(RuleNode node)
-{
-    rules.push_back(node);
-}
-
 void _FileNode::GetTokenNames(std::set<std::string>& names) const
 {
     for (const auto& rule : rules)
@@ -141,11 +126,6 @@ std::ostream& operator<<(std::ostream& out, const PatternNode& node)
     return out;
 }
 
-void _PatternNode::Add(IdentifierSequenceNode node)
-{
-    sequences.push_back(node);
-}
-
 IdentifierSequenceNode _IdentifierSequenceNode::New(size_t line)
 {
     IdentifierSequenceNode node = std::make_shared<_IdentifierSequenceNode>();
@@ -162,11 +142,6 @@ std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node)
 
     out << node->identifiers.back();
     return out;
-}
-
-void _IdentifierSequenceNode::Add(std::string identifier)
-{
-    identifiers.push_back(identifier);
 }
 
 RuleNode _RuleNode::New(size_t line, std::string name)
@@ -188,11 +163,6 @@ std::ostream& operator<<(std::ostream& out, const RuleNode& node)
 
     out << node->actions.back() << "\n";
     return out;
-}
-
-void _RuleNode::Add(ActionNode node)
-{
-    actions.push_back(node);
 }
 
 void _RuleNode::GetTokenNames(std::set<std::string>& names) const

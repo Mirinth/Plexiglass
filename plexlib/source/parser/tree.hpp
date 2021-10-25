@@ -37,10 +37,6 @@ public:
     static FileNode New();
     friend std::ostream& operator<<(std::ostream& out, const FileNode& node);
 
-    void Add(ExpressionNode node);
-    void Add(PatternNode node);
-    void Add(RuleNode node);
-
     void GetTokenNames(std::set<std::string>& names) const;
     std::string GetRuleString(std::string illegalTokenName) const;
 
@@ -74,8 +70,6 @@ public:
     static PatternNode New(size_t line, std::string name);
     friend std::ostream& operator<<(std::ostream& out, const PatternNode& node);
 
-    void Add(IdentifierSequenceNode node);
-
     void CheckMissingNames(std::set<std::string>& names);
 
     size_t line;
@@ -90,8 +84,6 @@ public:
     friend std::ostream& operator<<(std::ostream& out,
                                     const IdentifierSequenceNode& node);
 
-    void Add(std::string identifier);
-
     void CheckMissingNames(std::set<std::string>& names);
 
     size_t line;
@@ -103,8 +95,6 @@ class _RuleNode
 public:
     static RuleNode New(size_t line, std::string name);
     friend std::ostream& operator<<(std::ostream& out, const RuleNode& node);
-
-    void Add(ActionNode node);
 
     void GetTokenNames(std::set<std::string>& names) const;
 

@@ -109,17 +109,17 @@ FileNode File(Lexer& lexer)
         if (tok.text == "expression")
         {
             ExpressionNode node = Expression(lexer);
-            file->Add(node);
+            file->expressions.push_back(node);
         }
         else if (tok.text == "rule")
         {
             RuleNode node = Rule(lexer);
-            file->Add(node);
+            file->rules.push_back(node);
         }
         else if (tok.text == "pattern")
         {
             PatternNode node = Pattern(lexer);
-            file->Add(node);
+            file->patterns.push_back(node);
         }
         else
         {
@@ -150,12 +150,12 @@ IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 
     IdentifierSequenceNode sequence = _IdentifierSequenceNode::New(indent.line);
     Token identifier = Require(lexer, "identifier", TokenType::Text);
-    sequence->Add(identifier.text);
+    sequence->identifiers.push_back(identifier.text);
 
     while (lexer.Peek().type == TokenType::Text)
     {
         identifier = Require(lexer, "identifier", TokenType::Text);
-        sequence->Add(identifier.text);
+        sequence->identifiers.push_back(identifier.text);
     }
 
     return sequence;
@@ -172,12 +172,12 @@ PatternNode Pattern(Lexer& lexer)
     PatternNode node = _PatternNode::New(name.line, name.text);
 
     IdentifierSequenceNode sequence = IdentifierSequence(lexer, true);
-    node->Add(sequence);
+    node->sequences.push_back(sequence);
 
     while (lexer.Peek().type == TokenType::Indent)
     {
         sequence = IdentifierSequence(lexer, false);
-        node->Add(sequence);
+        node->sequences.push_back(sequence);
     }
 
     return node;
@@ -201,7 +201,7 @@ RuleNode Rule(Lexer& lexer)
     while (lexer.Peek().type == TokenType::Indent)
     {
         ActionNode node = Action(lexer);
-        rule->Add(node);
+        rule->actions.push_back(node);
     }
 
     return rule;
