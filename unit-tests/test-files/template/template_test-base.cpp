@@ -47,7 +47,7 @@ std::string ToString(TokenType type)
     }
 }
 
-template_test::template_test(istream& input)
+template_test::template_test(std::string path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
