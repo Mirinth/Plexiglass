@@ -10,27 +10,17 @@
 #include <template-holder.hpp>
 #include <utils.hpp>
 
-void GetTokenNames(ActionNode node, std::set<std::string>& names)
-{
-    if (node->name == "produce")
-    {
-        names.insert(node->identifier);
-    }
-}
-
-void GetTokenNames(RuleNode node, std::set<std::string>& names)
-{
-    for (const auto& action : node->actions)
-    {
-        GetTokenNames(action, names);
-    }
-}
-
 void GetTokenNames(FileNode node, std::set<std::string>& names)
 {
     for (const auto& rule : node->rules)
     {
-        GetTokenNames(rule, names);
+        for (const auto& action : rule->actions)
+        {
+            if (action->name == "produce")
+            {
+                names.insert(action->identifier);
+            }
+        }
     }
 }
 
