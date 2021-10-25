@@ -13,7 +13,7 @@ void Replace(std::string& subject,
              const std::string& find,
              const std::string& replace);
 
-FileNode _FileNode::New()
+FileNode NewFileNode()
 {
     return std::make_shared<_FileNode>();
 }
@@ -43,7 +43,7 @@ std::ostream& operator<<(std::ostream& out, const FileNode& node)
     return out;
 }
 
-ExpressionNode _ExpressionNode::New(size_t line,
+ExpressionNode NewExpressionNode(size_t line,
                                     std::string name,
                                     std::string expression)
 {
@@ -60,7 +60,7 @@ std::ostream& operator<<(std::ostream& out, const ExpressionNode& node)
     return out;
 }
 
-PatternNode _PatternNode::New(size_t line, std::string name)
+PatternNode NewPatternNode(size_t line, std::string name)
 {
     PatternNode node = std::make_shared<_PatternNode>();
     node->line = line;
@@ -82,7 +82,7 @@ std::ostream& operator<<(std::ostream& out, const PatternNode& node)
     return out;
 }
 
-IdentifierSequenceNode _IdentifierSequenceNode::New(size_t line)
+IdentifierSequenceNode NewIdentifierSequenceNode(size_t line)
 {
     IdentifierSequenceNode node = std::make_shared<_IdentifierSequenceNode>();
     node->line = line;
@@ -100,7 +100,7 @@ std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node)
     return out;
 }
 
-RuleNode _RuleNode::New(size_t line, std::string name)
+RuleNode NewRuleNode(size_t line, std::string name)
 {
     RuleNode node = std::make_shared<_RuleNode>();
     node->line = line;
@@ -121,7 +121,7 @@ std::ostream& operator<<(std::ostream& out, const RuleNode& node)
     return out;
 }
 
-ActionNode _ActionNode::New(size_t line,
+ActionNode NewActionNode(size_t line,
                             std::string name,
                             std::string identifier /*= ""*/)
 {

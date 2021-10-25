@@ -7,22 +7,33 @@
 
 class _FileNode;
 typedef std::shared_ptr<_FileNode> FileNode;
+FileNode NewFileNode();
 std::ostream& operator<<(std::ostream& out, const FileNode& node);
 
 class _ExpressionNode;
 typedef std::shared_ptr<_ExpressionNode> ExpressionNode;
+ExpressionNode NewExpressionNode(size_t line,
+                                 std::string name,
+                                 std::string expression);
 
 class _PatternNode;
 typedef std::shared_ptr<_PatternNode> PatternNode;
+PatternNode NewPatternNode(size_t line, std::string name);
 
 class _IdentifierSequenceNode;
 typedef std::shared_ptr<_IdentifierSequenceNode> IdentifierSequenceNode;
+IdentifierSequenceNode NewIdentifierSequenceNode(size_t line);
 
 class _RuleNode;
 typedef std::shared_ptr<_RuleNode> RuleNode;
+RuleNode NewRuleNode(size_t line, std::string name);
 
 class _ActionNode;
 typedef std::shared_ptr<_ActionNode> ActionNode;
+ActionNode NewActionNode(size_t line,
+                         std::string name,
+                         std::string identifier = "");
+    
 
 struct Rule
 {
@@ -35,8 +46,6 @@ struct Rule
 class _FileNode
 {
 public:
-    static FileNode New();
-
     std::vector<ExpressionNode> expressions;
     std::vector<PatternNode> patterns;
     std::vector<RuleNode> rules;
@@ -45,10 +54,6 @@ public:
 class _ExpressionNode
 {
 public:
-    static ExpressionNode New(size_t line,
-                              std::string name,
-                              std::string expression);
-
     size_t line;
     std::string name;
     std::string expression;
@@ -57,8 +62,6 @@ public:
 class _PatternNode
 {
 public:
-    static PatternNode New(size_t line, std::string name);
-    
     size_t line;
     std::string name;
     std::vector<IdentifierSequenceNode> sequences;
@@ -67,8 +70,6 @@ public:
 class _IdentifierSequenceNode
 {
 public:
-    static IdentifierSequenceNode New(size_t line);
-    
     size_t line;
     std::vector<std::string> identifiers;
 };
@@ -76,8 +77,6 @@ public:
 class _RuleNode
 {
 public:
-    static RuleNode New(size_t line, std::string name);
-
     size_t line;
     std::string name;
     std::vector<ActionNode> actions;
@@ -86,10 +85,6 @@ public:
 class _ActionNode
 {
 public:
-    static ActionNode New(size_t line,
-                          std::string name,
-                          std::string identifier = "");
-    
     size_t line;
     std::string name;
     std::string identifier;

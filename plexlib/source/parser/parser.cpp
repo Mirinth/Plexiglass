@@ -46,7 +46,7 @@ ActionNode Action(Lexer& lexer)
 
     if (unitActions.count(action.text) > 0)
     {
-        return _ActionNode::New(action.line, action.text);
+        return NewActionNode(action.line, action.text);
     }
     else if (compositeActions.count(action.text) > 0)
     {
@@ -55,7 +55,7 @@ ActionNode Action(Lexer& lexer)
             Error(action.line, "Expected identifier before end of line");
         }
         Token identifier = Require(lexer, "identifier", TokenType::Text);
-        return _ActionNode::New(action.line, action.text, identifier.text);
+        return NewActionNode(action.line, action.text, identifier.text);
     }
     else
     {
@@ -84,7 +84,7 @@ ExpressionNode Expression(Lexer& lexer)
         Error(expression.line, "Malformed regex.");
     }
 
-    return _ExpressionNode::New(name.line, name.text, expression.text);
+    return NewExpressionNode(name.line, name.text, expression.text);
 }
 
 /// <summary>
@@ -99,7 +99,7 @@ FileNode File(Lexer& lexer)
         Error("keyword", lexer.Peek());
     }
 
-    FileNode file = _FileNode::New();
+    FileNode file = NewFileNode();
 
     while (lexer.Peek().type != TokenType::Eof)
     {
@@ -148,7 +148,7 @@ IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
         Require(lexer, "alternator", TokenType::Alternator);
     }
 
-    IdentifierSequenceNode sequence = _IdentifierSequenceNode::New(indent.line);
+    IdentifierSequenceNode sequence = NewIdentifierSequenceNode(indent.line);
     Token identifier = Require(lexer, "identifier", TokenType::Text);
     sequence->identifiers.push_back(identifier.text);
 
@@ -169,7 +169,7 @@ IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 PatternNode Pattern(Lexer& lexer)
 {
     Token name = Require(lexer, "identifier", TokenType::Text);
-    PatternNode node = _PatternNode::New(name.line, name.text);
+    PatternNode node = NewPatternNode(name.line, name.text);
 
     IdentifierSequenceNode sequence = IdentifierSequence(lexer, true);
     node->sequences.push_back(sequence);
@@ -191,7 +191,7 @@ PatternNode Pattern(Lexer& lexer)
 RuleNode Rule(Lexer& lexer)
 {
     Token name = Require(lexer, "identifier", TokenType::Text);
-    RuleNode rule = _RuleNode::New(name.line, name.text);
+    RuleNode rule = NewRuleNode(name.line, name.text);
 
     if (lexer.Peek().type != TokenType::Indent)
     {
