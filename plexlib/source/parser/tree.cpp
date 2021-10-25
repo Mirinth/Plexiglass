@@ -47,11 +47,8 @@ ExpressionNode NewExpressionNode(size_t line,
                                  std::string name,
                                  std::string expression)
 {
-    ExpressionNode node = std::make_shared<_ExpressionNode>();
-    node->line = line;
-    node->name = name;
-    node->expression = expression;
-    return node;
+    _ExpressionNode node = { line, name, expression };
+    return std::make_shared<_ExpressionNode>(node);
 }
 
 std::ostream& operator<<(std::ostream& out, const ExpressionNode& node)
@@ -62,10 +59,8 @@ std::ostream& operator<<(std::ostream& out, const ExpressionNode& node)
 
 PatternNode NewPatternNode(size_t line, std::string name)
 {
-    PatternNode node = std::make_shared<_PatternNode>();
-    node->line = line;
-    node->name = name;
-    return node;
+    _PatternNode node = { line, name };
+    return std::make_shared<_PatternNode>(node);
 }
 
 std::ostream& operator<<(std::ostream& out, const PatternNode& node)
@@ -84,9 +79,8 @@ std::ostream& operator<<(std::ostream& out, const PatternNode& node)
 
 IdentifierSequenceNode NewIdentifierSequenceNode(size_t line)
 {
-    IdentifierSequenceNode node = std::make_shared<_IdentifierSequenceNode>();
-    node->line = line;
-    return node;
+    _IdentifierSequenceNode node = { line };
+    return std::make_shared<_IdentifierSequenceNode>(node);
 }
 
 std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node)
@@ -102,10 +96,8 @@ std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node)
 
 RuleNode NewRuleNode(size_t line, std::string name)
 {
-    RuleNode node = std::make_shared<_RuleNode>();
-    node->line = line;
-    node->name = name;
-    return node;
+    _RuleNode node = { line, name };
+    return std::make_shared<_RuleNode>(node);
 }
 
 std::ostream& operator<<(std::ostream& out, const RuleNode& node)
@@ -125,11 +117,8 @@ ActionNode NewActionNode(size_t line,
                          std::string name,
                          std::string identifier /*= ""*/)
 {
-    ActionNode node = std::make_shared<_ActionNode>();
-    node->line = line;
-    node->name = name;
-    node->identifier = identifier;
-    return node;
+    _ActionNode node = { line, name, identifier };
+    return std::make_shared<_ActionNode>(node);
 }
 
 std::ostream& operator<<(std::ostream& out, const ActionNode& node)
