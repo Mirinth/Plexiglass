@@ -66,6 +66,15 @@ std::string template_test::PeekText() const
 
 void template_test::Shift()
 {
+    bool success = false;
+    while (!success)
+    {
+        success = ShiftHelper();
+    }
+}
+
+bool template_test::ShiftHelper()
+{
     static std::vector<Rule> rules = {
 		{ true, CatToken, 0, "cat"};
 		{ true, DogToken, 0, "dog"};
