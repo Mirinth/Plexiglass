@@ -40,7 +40,6 @@ public:
     void GetTokenNames(std::set<std::string>& names) const;
     std::string GetRuleString(std::string illegalTokenName) const;
 
-    void CheckDuplicateNames();
     void CheckMissingNames();
     void CheckIllegalActions();
     void CheckIllegalStatements();

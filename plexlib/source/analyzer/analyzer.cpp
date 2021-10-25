@@ -5,14 +5,6 @@
 
 #include <error.hpp>
 
-void Analyze(FileNode file)
-{
-    file->CheckDuplicateNames();
-    file->CheckMissingNames();
-    file->CheckIllegalActions();
-    file->CheckIllegalStatements();
-}
-
 template <typename NodeType, typename MapType>
 void CheckDuplicateNames(NodeType& nodes, MapType& map)
 {
@@ -33,12 +25,12 @@ void CheckDuplicateNames(NodeType& nodes, MapType& map)
     }
 }
 
-void _FileNode::CheckDuplicateNames()
+void CheckDuplicateNames(FileNode file)
 {
     std::map<std::string, size_t> nameMap;
 
-    ::CheckDuplicateNames(expressions, nameMap);
-    ::CheckDuplicateNames(patterns, nameMap);
+    ::CheckDuplicateNames(file->expressions, nameMap);
+    ::CheckDuplicateNames(file->patterns, nameMap);
 }
 
 void _FileNode::CheckMissingNames()
@@ -125,4 +117,12 @@ void _ActionNode::CheckIllegalActions()
     {
         Error(line, "'transition' action not yet supported");
     }
+}
+
+void Analyze(FileNode file)
+{
+    CheckDuplicateNames(file);
+    file->CheckMissingNames();
+    file->CheckIllegalActions();
+    file->CheckIllegalStatements();
 }
