@@ -43,14 +43,6 @@ std::ostream& operator<<(std::ostream& out, const FileNode& node)
     return out;
 }
 
-void _FileNode::GetTokenNames(std::set<std::string>& names) const
-{
-    for (const auto& rule : rules)
-    {
-        rule->GetTokenNames(names);
-    }
-}
-
 ExpressionNode _ExpressionNode::New(size_t line,
                                     std::string name,
                                     std::string expression)
@@ -129,14 +121,6 @@ std::ostream& operator<<(std::ostream& out, const RuleNode& node)
     return out;
 }
 
-void _RuleNode::GetTokenNames(std::set<std::string>& names) const
-{
-    for (const auto& action : actions)
-    {
-        action->GetTokenNames(names);
-    }
-}
-
 ActionNode _ActionNode::New(size_t line,
                             std::string name,
                             std::string identifier /*= ""*/)
@@ -156,12 +140,4 @@ std::ostream& operator<<(std::ostream& out, const ActionNode& node)
         out << ' ' << node->identifier;
     }
     return out;
-}
-
-void _ActionNode::GetTokenNames(std::set<std::string>& names) const
-{
-    if (name == "produce")
-    {
-        names.insert(identifier);
-    }
 }

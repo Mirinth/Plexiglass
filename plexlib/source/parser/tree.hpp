@@ -37,8 +37,6 @@ class _FileNode
 public:
     static FileNode New();
 
-    void GetTokenNames(std::set<std::string>& names) const;
-
     std::vector<ExpressionNode> expressions;
     std::vector<PatternNode> patterns;
     std::vector<RuleNode> rules;
@@ -79,8 +77,6 @@ class _RuleNode
 {
 public:
     static RuleNode New(size_t line, std::string name);
-    
-    void GetTokenNames(std::set<std::string>& names) const;
 
     size_t line;
     std::string name;
@@ -94,8 +90,6 @@ public:
                           std::string name,
                           std::string identifier = "");
     
-    void GetTokenNames(std::set<std::string>& names) const;
-
     size_t line;
     std::string name;
     std::string identifier;

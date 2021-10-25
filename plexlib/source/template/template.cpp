@@ -10,6 +10,30 @@
 #include <template-holder.hpp>
 #include <utils.hpp>
 
+void GetTokenNames(ActionNode node, std::set<std::string>& names)
+{
+    if (node->name == "produce")
+    {
+        names.insert(node->identifier);
+    }
+}
+
+void GetTokenNames(RuleNode node, std::set<std::string>& names)
+{
+    for (const auto& action : node->actions)
+    {
+        GetTokenNames(action, names);
+    }
+}
+
+void GetTokenNames(FileNode node, std::set<std::string>& names)
+{
+    for (const auto& rule : node->rules)
+    {
+        GetTokenNames(rule, names);
+    }
+}
+
 void GetRule(ActionNode node, Rule& rule)
 {
     if (node->name == "produce-nothing")
@@ -123,7 +147,7 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
                                                    FileNode file)
 {
     std::set<std::string> tokenNames;
-    file->GetTokenNames(tokenNames);
+    GetTokenNames(file, tokenNames);
 
     std::string errorName = MakeUnique(tokenNames, "PLEXIGLASS_NO_MATCH_TOKEN");
     tokenNames.insert(errorName);
@@ -157,7 +181,7 @@ void ReplaceToString(std::string& content,
                      std::string errorName)
 {
     std::set<std::string> tokenNames;
-    file->GetTokenNames(tokenNames);
+    GetTokenNames(file, tokenNames);
     tokenNames.insert(eofName);
     tokenNames.insert(errorName);
 
