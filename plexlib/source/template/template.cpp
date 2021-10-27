@@ -10,6 +10,101 @@
 #include <template-holder.hpp>
 #include <utils.hpp>
 
+void GetTokenNames(FileNode node, std::set<std::string>& names)
+{
+    for (const auto& rule : node->rules)
+    {
+        for (const auto& action : rule->actions)
+        {
+            if (action->name == "produce")
+            {
+                names.insert(action->identifier);
+            }
+        }
+    }
+}
+
+void GetRule(ActionNode node, Rule& rule)
+{
+    if (node->name == "produce-nothing")
+    {
+        rule.Produces = false;
+    }
+    else if (node->name == "produce")
+    {
+        rule.Produces = true;
+        rule.Token = node->identifier;
+    }
+    else if (node->name == "++line" || node->name == "line++")
+    {
+        rule.Increment = 1;
+    }
+    else if (node->name == "--line" || node->name == "line--")
+    {
+        rule.Increment = -1;
+    }
+    else
+    {
+        throw std::exception("Illegal action name");
+    }
+}
+
+Rule GetRule(RuleNode node)
+{
+    Rule rule = { false, "", 0, node->name };
+
+    for (const auto& action : node->actions)
+    {
+        GetRule(action, rule);
+    }
+
+    return rule;
+}
+
+std::string GetRuleString(FileNode node, std::string illegalTokenName)
+{
+    std::vector<Rule> producedRules;
+
+    for (auto& rule : node->rules)
+    {
+        Rule producedRule = GetRule(rule);
+
+        for (auto& expression : node->expressions)
+        {
+            if (expression->name == producedRule.Pattern)
+            {
+                producedRule.Pattern = expression->expression;
+
+                // Needs to come first so \ inserted by next one aren't escaped
+                Replace(producedRule.Pattern, "\\",
+                        "\\\\"); // Escape backslaches
+                Replace(producedRule.Pattern, "\"",
+                        "\\\""); // Escape double quotes
+
+                producedRule.Pattern = "\"" + producedRule.Pattern + "\"";
+            }
+        }
+
+        producedRules.push_back(producedRule);
+    }
+
+    std::stringstream out;
+    for (auto& producedRule : producedRules)
+    {
+        if (producedRule.Token == "")
+        {
+            producedRule.Token = illegalTokenName;
+        }
+        out << "\n    rules.emplace_back(" << producedRule.Token << ", "
+            << (producedRule.Produces ? "true" : "false") << ", "
+            << producedRule.Increment << ", " << producedRule.Pattern << ");";
+    }
+
+    std::string outStr = out.str();
+    outStr.erase(0, 5); // Erase leading "\n    "
+    return outStr;
+}
+
 std::string MakeUnique(const std::set<std::string>& names,
                        const std::string& name)
 {
@@ -42,7 +137,7 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
                                                    FileNode file)
 {
     std::set<std::string> tokenNames;
-    file->GetTokenNames(tokenNames);
+    GetTokenNames(file, tokenNames);
 
     std::string errorName = MakeUnique(tokenNames, "PLEXIGLASS_NO_MATCH_TOKEN");
     tokenNames.insert(errorName);
@@ -66,7 +161,7 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
 
 void ReplaceRules(std::string& content, FileNode file, std::string errorName)
 {
-    std::string ruleString = file->GetRuleString(errorName);
+    std::string ruleString = GetRuleString(file, errorName);
     Replace(content, "$LEXER_RULES", ruleString);
 }
 
@@ -76,14 +171,15 @@ void ReplaceToString(std::string& content,
                      std::string errorName)
 {
     std::set<std::string> tokenNames;
-    file->GetTokenNames(tokenNames);
+    GetTokenNames(file, tokenNames);
     tokenNames.insert(eofName);
     tokenNames.insert(errorName);
 
     std::stringstream out;
     for (const std::string& name : tokenNames)
     {
-        out << "case " << name << ":\n            return \"" << name << "\";\n        ";
+        out << "case " << name << ":\n            return \"" << name
+            << "\";\n        ";
     }
 
     out << "default:\n            throw std::exception(\"Unknown token\");";
