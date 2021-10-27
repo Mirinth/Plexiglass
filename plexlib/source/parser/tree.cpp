@@ -9,10 +9,6 @@ std::ostream& operator<<(std::ostream& out, const IdentifierSequenceNode& node);
 std::ostream& operator<<(std::ostream& out, const RuleNode& node);
 std::ostream& operator<<(std::ostream& out, const ActionNode& node);
 
-void Replace(std::string& subject,
-             const std::string& find,
-             const std::string& replace);
-
 FileNode NewFileNode()
 {
     return std::make_shared<_FileNode>();
