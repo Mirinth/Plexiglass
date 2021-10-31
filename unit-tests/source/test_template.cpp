@@ -21,7 +21,7 @@ TEST_CASE("Template: Test template")
     std::string data = ReadTestFile(source);
     FileNode file = Parse(data);
     Analyze(file);
-    Template(file, testName, header, code);
+    Template(file, testName, header, code, false);
 
     std::string base = ReadTestFile("template/template_test-base.hpp");
     std::string out = ReadTestFile("template/template_test-out.hpp");

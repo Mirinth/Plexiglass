@@ -7,4 +7,5 @@
 void Template(FileNode file,
               std::string name,
               std::string header,
-              std::string code);
+              std::string code,
+              bool debug);
