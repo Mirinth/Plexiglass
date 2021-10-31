@@ -152,3 +152,26 @@ TEST_CASE("Semantics: Reject duplicate transition")
         "Error on line 7: `transition` already used in rule on line 6",
         PlexiException);
 }
+
+TEST_CASE("Semantics: Reject duplicate increment")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-increment.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `++line` already used in rule on line 6",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject mismatched duplicate increment")
+{
+    std::string data =
+        ReadTestFile("semantics/rule-mismatched-duplicate-increment.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `line++` already used in rule on line 6",
+        PlexiException);
+}
