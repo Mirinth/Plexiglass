@@ -57,3 +57,17 @@ TEST_CASE("Parameters: Nonexistent file")
     CHECK("" == out.str());
     CHECK("Unable to read file " + inputFile.string() + "\n" == err.str());
 }
+
+TEST_CASE("Parameters: File with bad identifier")
+{
+    std::stringstream out, err, base;
+    std::filesystem::path inputFile("z:/c++.txt");
+    inputFile.make_preferred();
+    std::vector<std::string> params = { inputFile.string() };
+
+    int result = PlexMain(params, out, err);
+
+    CHECK(bad_lexer_name == result);
+    CHECK("" == out.str());
+    CHECK("Lexer name `c++` is not a valid identifier" == err.str());
+}
