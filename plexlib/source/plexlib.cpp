@@ -69,8 +69,8 @@ int PlexMain(std::vector<std::string>& args,
     if (!IsValidLexerName(lexerName))
     {
         err << "File generates lexer named `" << lexerName
-                  << "` which is not a valid identifier. Rename the file to be "
-                     "a valid C++ identifier.";
+            << "` which is not a valid C++ identifier. Rename the file to be "
+               "a valid C++ identifier.\n";
         return bad_lexer_name;
     }
 

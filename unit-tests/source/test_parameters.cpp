@@ -46,7 +46,7 @@ TEST_CASE("Parameters: Extra parameters")
 
 TEST_CASE("Parameters: Nonexistent file")
 {
-    std::stringstream out, err, base;
+    std::stringstream out, err;
     std::filesystem::path inputFile(
         "z:/path/to/file/that/doesn't/exist/nonexistent.txt");
     inputFile.make_preferred();
@@ -61,7 +61,10 @@ TEST_CASE("Parameters: Nonexistent file")
 
 TEST_CASE("Parameters: File with bad identifier")
 {
-    std::stringstream out, err, base;
+    std::stringstream out, err;
+    std::string base =
+        "File generates lexer named `c++` which is not a valid C++ identifier. "
+        "Rename the file to be a valid C++ identifier.\n";
     std::filesystem::path inputFile("z:/c++.txt");
     inputFile.make_preferred();
     std::vector<std::string> params = { inputFile.string() };
@@ -70,5 +73,5 @@ TEST_CASE("Parameters: File with bad identifier")
 
     CHECK(bad_lexer_name == result);
     CHECK("" == out.str());
-    CHECK("Lexer name `c++` is not a valid identifier" == err.str());
+    CHECK(base == err.str());
 }
