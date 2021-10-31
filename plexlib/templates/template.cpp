@@ -11,7 +11,8 @@ struct Rule
 {
     Rule(TokenType token, bool produce, int increment, const char* pattern)
         : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
-    {}
+    {
+    }
 
     TokenType Token;
     bool Produce;
@@ -137,3 +138,51 @@ std::string ReadFile(std::string path)
 
     return data;
 }
+
+#if $DEBUG_MODE // Used to include/exclude driver code. Filled in by templater.
+
+#include <fstream>
+#include <iostream>
+
+#include <path.hpp>
+
+void RunLexer(std::string inputPath, std::string outputPath)
+{
+    lexer lex(inputPath);
+
+    std::ofstream out(outputPath);
+
+    while (lex.PeekToken() != TokenType::PLEXIGLASS_EOF)
+    {
+        out << ToString(lex.PeekToken()) << " " << lex.PeekText() << "\n";
+        lex.Shift();
+    }
+
+    out << ToString(lex.PeekToken()) << lex.PeekText() << "\n";
+}
+
+int main()
+{
+    std::string testDir = base_path;
+    std::string inputPath = testDir + "input.txt";
+    std::string basePath = testDir + "base.txt";
+    std::string outputPath = testDir + "out.txt";
+
+    RunLexer(inputPath, outputPath);
+
+    std::string base = ReadFile(basePath);
+    std::string out = ReadFile(outputPath);
+
+    if (base == out)
+    {
+        std::cout << "Pass\n";
+        return 0;
+    }
+    else
+    {
+        std::cout << "Fail\n";
+        return 1;
+    }
+}
+
+#endif
