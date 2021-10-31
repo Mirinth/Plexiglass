@@ -130,3 +130,14 @@ TEST_CASE("Semantics: Reject duplicate produce")
                          "Error on line 7: `produce` already used in rule on line 6",
                          PlexiException);
 }
+
+TEST_CASE("Semantics: Reject duplicate rewind")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-rewind.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `rewind` already used in rule on line 6",
+        PlexiException);
+}
