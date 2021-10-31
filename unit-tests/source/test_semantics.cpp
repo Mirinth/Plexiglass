@@ -175,3 +175,26 @@ TEST_CASE("Semantics: Reject mismatched duplicate increment")
         "Error on line 7: `line++` already used in rule on line 6",
         PlexiException);
 }
+
+TEST_CASE("Semantics: Reject duplicate decrement")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-decrement.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `--line` already used in rule on line 6",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject mismatched duplicate decrement")
+{
+    std::string data =
+        ReadTestFile("semantics/rule-mismatched-duplicate-decrement.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `line--` already used in rule on line 6",
+        PlexiException);
+}
