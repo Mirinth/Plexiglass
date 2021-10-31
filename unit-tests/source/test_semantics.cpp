@@ -141,3 +141,14 @@ TEST_CASE("Semantics: Reject duplicate rewind")
         "Error on line 7: `rewind` already used in rule on line 6",
         PlexiException);
 }
+
+TEST_CASE("Semantics: Reject duplicate transition")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-transition.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `transition` already used in rule on line 6",
+        PlexiException);
+}
