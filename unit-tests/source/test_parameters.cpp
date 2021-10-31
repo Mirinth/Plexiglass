@@ -46,8 +46,9 @@ TEST_CASE("Parameters: Extra parameters")
 
 TEST_CASE("Parameters: Nonexistent file")
 {
-    std::stringstream out, err, base;
-    std::filesystem::path inputFile("z:/path/to/file/that/doesn't/exist/.txt");
+    std::stringstream out, err;
+    std::filesystem::path inputFile(
+        "z:/path/to/file/that/doesn't/exist/nonexistent.txt");
     inputFile.make_preferred();
     std::vector<std::string> params = { inputFile.string() };
 
@@ -56,4 +57,21 @@ TEST_CASE("Parameters: Nonexistent file")
     CHECK(unreadable_file == result);
     CHECK("" == out.str());
     CHECK("Unable to read file " + inputFile.string() + "\n" == err.str());
+}
+
+TEST_CASE("Parameters: File with bad identifier")
+{
+    std::stringstream out, err;
+    std::string base =
+        "File generates lexer named `c++` which is not a valid C++ identifier. "
+        "Rename the file to be a valid C++ identifier.\n";
+    std::filesystem::path inputFile("z:/c++.txt");
+    inputFile.make_preferred();
+    std::vector<std::string> params = { inputFile.string() };
+
+    int result = PlexMain(params, out, err);
+
+    CHECK(bad_lexer_name == result);
+    CHECK("" == out.str());
+    CHECK(base == err.str());
 }
