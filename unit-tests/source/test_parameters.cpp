@@ -47,7 +47,8 @@ TEST_CASE("Parameters: Extra parameters")
 TEST_CASE("Parameters: Nonexistent file")
 {
     std::stringstream out, err, base;
-    std::filesystem::path inputFile("z:/path/to/file/that/doesn't/exist/.txt");
+    std::filesystem::path inputFile(
+        "z:/path/to/file/that/doesn't/exist/nonexistent.txt");
     inputFile.make_preferred();
     std::vector<std::string> params = { inputFile.string() };
 
