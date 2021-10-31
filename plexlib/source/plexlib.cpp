@@ -20,6 +20,11 @@ void PrintUsage(std::ostream& out)
         << "Note: Output file and lexer name are based on input file name.\n";
 }
 
+bool IsValidLexerName(const std::string& /*name*/)
+{
+    return true;
+}
+
 int PlexMain(std::vector<std::string>& args,
              std::ostream& out,
              std::ostream& err)
@@ -42,6 +47,14 @@ int PlexMain(std::vector<std::string>& args,
     header.replace_extension(".hpp");
     code.replace_extension(".cpp");
     std::string lexerName = source.filename().stem().string();
+
+    if (!IsValidLexerName(lexerName))
+    {
+        std::cerr << "File generates lexer named `" << lexerName
+                  << "` which is not a valid identifier. Rename the file to be "
+                     "a valid C++ identifier.";
+        return bad_lexer_name;
+    }
 
     try
     {
