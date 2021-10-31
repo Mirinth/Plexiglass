@@ -21,9 +21,9 @@ void CheckMissingNames(IdentifierSequenceNode node,
 void Analyze(FileNode file)
 {
     CheckDuplicateNames(file);
+    CheckDuplicateActions(file);
     CheckMissingNames(file);
     CheckIllegalActions(file);
-    CheckDuplicateActions(file);
     CheckIllegalStatements(file);
 }
 
@@ -43,7 +43,9 @@ void CheckDuplicateActions(RuleNode node)
         {
             if (node->actions[i]->name == node->actions[j]->name)
             {
-                Error(node->actions[j]->line, "Duplicate action");
+                DuplicateActionError(node->actions[i]->line,
+                                     node->actions[j]->line,
+                                     node->actions[j]->name);
             }
         }
     }

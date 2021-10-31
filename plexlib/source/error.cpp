@@ -16,6 +16,22 @@ PlexiException::PlexiException(const char* msg)
 // clang-format on
 
 /// <summary>
+/// Generate a duplicate action error and stop parsing.
+/// </summary>
+/// <param name="originalLine">Line action was originally used on.</param>
+/// <param name="original">Line duplicate action is on.</param>
+/// <param name="name">Name of the action.</param>
+void DuplicateActionError(size_t originalLine,
+                          size_t duplicateLine,
+                          std::string name)
+{
+    std::stringstream out;
+    out << "Error on line " << duplicateLine << ": "
+        << "`" << name << "` already used in rule on line " << originalLine;
+    throw PlexiException(out.str().c_str());
+}
+
+/// <summary>
 /// Generate a duplicate name error message and stop parsing.
 /// </summary>
 /// <param name="line">Line to report the error on.</param>
