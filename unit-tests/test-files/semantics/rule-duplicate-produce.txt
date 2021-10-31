@@ -1,0 +1,7 @@
+# Check that duplicate produce actions are rejected
+expression exp
+	a
+
+rule exp
+	produce token
+	produce another

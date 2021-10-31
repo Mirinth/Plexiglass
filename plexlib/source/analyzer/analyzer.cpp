@@ -5,6 +5,8 @@
 
 #include <error.hpp>
 
+void CheckDuplicateActions(FileNode node);
+void CheckDuplicateActions(RuleNode node);
 void CheckDuplicateNames(FileNode node);
 void CheckIllegalActions(FileNode node);
 void CheckIllegalActions(RuleNode node);
@@ -16,12 +18,62 @@ void CheckMissingNames(RuleNode node, std::set<std::string>& names);
 void CheckMissingNames(IdentifierSequenceNode node,
                        std::set<std::string>& names);
 
+bool BothLineOperationsSame(const std::string& left, const std::string& right);
+
 void Analyze(FileNode file)
 {
     CheckDuplicateNames(file);
+    CheckDuplicateActions(file);
     CheckMissingNames(file);
     CheckIllegalActions(file);
     CheckIllegalStatements(file);
+}
+
+bool BothLineOperationsSame(const std::string& left, const std::string& right)
+{
+    if (left == "line++" || left == "++line")
+    {
+        if (right == "line++" || right == "++line")
+        {
+            return true;
+        }
+    }
+
+    if (left == "line--" || left == "--line")
+    {
+        if (right == "line--" || right == "--line")
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void CheckDuplicateActions(FileNode node)
+{
+    for (const auto& rule : node->rules)
+    {
+        CheckDuplicateActions(rule);
+    }
+}
+
+void CheckDuplicateActions(RuleNode node)
+{
+    for (size_t i = 0; i < node->actions.size(); i++)
+    {
+        for (size_t j = i + 1; j < node->actions.size(); j++)
+        {
+            if (node->actions[i]->name == node->actions[j]->name
+                || BothLineOperationsSame(node->actions[i]->name,
+                                          node->actions[j]->name))
+            {
+                DuplicateActionError(node->actions[i]->line,
+                                     node->actions[j]->line,
+                                     node->actions[j]->name);
+            }
+        }
+    }
 }
 
 template <typename NodeType, typename MapType>

@@ -108,3 +108,93 @@ TEST_CASE("Semantics: Reject pattern statements")
         Analyze(file), "Error on line 5: 'pattern' statement not yet supported",
         PlexiException);
 }
+
+TEST_CASE("Semantics: Reject duplicate produce-nothing")
+{
+    std::string data =
+        ReadTestFile("semantics/rule-duplicate-produce-nothing.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file), "Error on line 7: `produce-nothing` already used in rule on line 6",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject duplicate produce")
+{
+    std::string data =
+        ReadTestFile("semantics/rule-duplicate-produce.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(Analyze(file),
+                         "Error on line 7: `produce` already used in rule on line 6",
+                         PlexiException);
+}
+
+TEST_CASE("Semantics: Reject duplicate rewind")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-rewind.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `rewind` already used in rule on line 6",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject duplicate transition")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-transition.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `transition` already used in rule on line 6",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject duplicate increment")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-increment.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `++line` already used in rule on line 6",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject mismatched duplicate increment")
+{
+    std::string data =
+        ReadTestFile("semantics/rule-duplicate-mismatched-increment.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `line++` already used in rule on line 6",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject duplicate decrement")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-decrement.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `--line` already used in rule on line 6",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject mismatched duplicate decrement")
+{
+    std::string data =
+        ReadTestFile("semantics/rule-duplicate-mismatched-decrement.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 7: `line--` already used in rule on line 6",
+        PlexiException);
+}

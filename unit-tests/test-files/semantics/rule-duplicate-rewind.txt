@@ -1,0 +1,7 @@
+# Check that duplicate rewind actions are rejected
+expression exp
+	a
+
+rule exp
+	rewind
+	rewind
