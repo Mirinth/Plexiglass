@@ -108,3 +108,13 @@ TEST_CASE("Semantics: Reject pattern statements")
         Analyze(file), "Error on line 5: 'pattern' statement not yet supported",
         PlexiException);
 }
+
+TEST_CASE("Semantics: Reject duplicate produce-nothing")
+{
+    std::string data = ReadTestFile("semantics/rule-duplicate-produce-nothing.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file), "Error on line 7: Redundant `produce-nothing`",
+        PlexiException);
+}
