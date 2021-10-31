@@ -167,7 +167,7 @@ TEST_CASE("Semantics: Reject duplicate increment")
 TEST_CASE("Semantics: Reject mismatched duplicate increment")
 {
     std::string data =
-        ReadTestFile("semantics/rule-mismatched-duplicate-increment.txt");
+        ReadTestFile("semantics/rule-duplicate-mismatched-increment.txt");
     FileNode file = Parse(data);
 
     CHECK_THROWS_WITH_AS(
@@ -190,7 +190,7 @@ TEST_CASE("Semantics: Reject duplicate decrement")
 TEST_CASE("Semantics: Reject mismatched duplicate decrement")
 {
     std::string data =
-        ReadTestFile("semantics/rule-mismatched-duplicate-decrement.txt");
+        ReadTestFile("semantics/rule-duplicate-mismatched-decrement.txt");
     FileNode file = Parse(data);
 
     CHECK_THROWS_WITH_AS(
