@@ -111,10 +111,22 @@ TEST_CASE("Semantics: Reject pattern statements")
 
 TEST_CASE("Semantics: Reject duplicate produce-nothing")
 {
-    std::string data = ReadTestFile("semantics/rule-duplicate-produce-nothing.txt");
+    std::string data =
+        ReadTestFile("semantics/rule-duplicate-produce-nothing.txt");
     FileNode file = Parse(data);
 
     CHECK_THROWS_WITH_AS(
-        Analyze(file), "Error on line 7: Redundant `produce-nothing`",
+        Analyze(file), "Error on line 7: `produce-nothing` already used in rule on line 6",
         PlexiException);
+}
+
+TEST_CASE("Semantics: Reject duplicate produce")
+{
+    std::string data =
+        ReadTestFile("semantics/rule-duplicate-produce.txt");
+    FileNode file = Parse(data);
+
+    CHECK_THROWS_WITH_AS(Analyze(file),
+                         "Error on line 7: `produce` already used in rule on line 6",
+                         PlexiException);
 }
