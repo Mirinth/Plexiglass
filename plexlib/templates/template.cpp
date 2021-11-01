@@ -161,28 +161,22 @@ void RunLexer(std::string inputPath, std::string outputPath)
     out << ToString(lex.PeekToken()) << lex.PeekText() << "\n";
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    std::string testDir = base_path;
-    std::string inputPath = testDir + "input.txt";
-    std::string basePath = testDir + "base.txt";
-    std::string outputPath = testDir + "out.txt";
+    argc--; // discard program name
+    argv++;
 
-    RunLexer(inputPath, outputPath);
-
-    std::string base = ReadFile(basePath);
-    std::string out = ReadFile(outputPath);
-
-    if (base == out)
+    if (argc != 2)
     {
-        std::cout << "Pass\n";
-        return 0;
+        std::cout << "Invalid arguments. Call with just input and output "
+                     "filenames.\n";
+        return -1;
     }
-    else
-    {
-        std::cout << "Fail\n";
-        return 1;
-    }
+
+    std::string input = argv[0];
+    std::string output = argv[1];
+
+    RunLexer(input, output);
 }
 
 #endif
