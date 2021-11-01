@@ -1,4 +1,4 @@
-#include "$LEXER_NAME.hpp"
+#include "template_test_debug.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -24,7 +24,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    $LEXER_RULES
+    rules.emplace_back(CatToken, true, 0, "cat");
+    rules.emplace_back(DogToken, true, 0, "dog");
+    rules.emplace_back(PLEXIGLASS_EOF, false, 0, "\\s+");
 
     return rules;
 }
@@ -33,28 +35,37 @@ std::string ToString(TokenType type)
 {
     switch (type)
     {
-        $TOKEN_TO_STRING
+        case CatToken:
+            return "CatToken";
+        case DogToken:
+            return "DogToken";
+        case PLEXIGLASS_EOF:
+            return "PLEXIGLASS_EOF";
+        case PLEXIGLASS_NO_MATCH_TOKEN:
+            return "PLEXIGLASS_NO_MATCH_TOKEN";
+        default:
+            throw std::exception("Unknown token");
     }
 }
 
-$LEXER_NAME::$LEXER_NAME(std::string path)
+template_test_debug::template_test_debug(std::string path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
     Shift();
 }
 
-TokenType $LEXER_NAME::PeekToken() const
+TokenType template_test_debug::PeekToken() const
 {
     return m_type;
 }
 
-std::string $LEXER_NAME::PeekText() const
+std::string template_test_debug::PeekText() const
 {
     return m_text;
 }
 
-void $LEXER_NAME::Shift()
+void template_test_debug::Shift()
 {
     bool success = false;
     while (!success)
@@ -63,11 +74,11 @@ void $LEXER_NAME::Shift()
     }
 }
 
-bool $LEXER_NAME::ShiftHelper()
+bool template_test_debug::ShiftHelper()
 {
     if (m_data.empty())
     {
-        m_type = $EOF_TOKEN;
+        m_type = PLEXIGLASS_EOF;
         m_text = "";
         return true;
     }
@@ -93,7 +104,7 @@ bool $LEXER_NAME::ShiftHelper()
         // Ensure following cast is safe
         if (m.length() < 0)
         {
-            throw std::exception("$LEXER_NAME::Shift(): Length was negative.");
+            throw std::exception("template_test_debug::Shift(): Length was negative.");
         }
         size_t length = static_cast<size_t>(std::abs(m.length()));
 
@@ -119,7 +130,7 @@ bool $LEXER_NAME::ShiftHelper()
     }
     else
     {
-        m_type = $INVALID_TOKEN;
+        m_type = PLEXIGLASS_NO_MATCH_TOKEN;
         m_text = "";
         m_data.remove_prefix(1);
         return true;
@@ -139,7 +150,7 @@ std::string ReadFile(std::string path)
     return data;
 }
 
-#if $DEBUG_MODE // Used to include/exclude driver code. Filled in by templater.
+#if 1 // Used to include/exclude driver code. Filled in by templater.
 
 #include <fstream>
 #include <iostream>

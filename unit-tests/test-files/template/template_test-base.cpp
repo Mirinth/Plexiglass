@@ -11,7 +11,8 @@ struct Rule
 {
     Rule(TokenType token, bool produce, int increment, const char* pattern)
         : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
-    {}
+    {
+    }
 
     TokenType Token;
     bool Produce;
@@ -148,3 +149,45 @@ std::string ReadFile(std::string path)
 
     return data;
 }
+
+#if 0 // Used to include/exclude driver code. Filled in by templater.
+
+#include <fstream>
+#include <iostream>
+
+#include <path.hpp>
+
+void RunLexer(std::string inputPath, std::string outputPath)
+{
+    lexer lex(inputPath);
+
+    std::ofstream out(outputPath);
+
+    while (lex.PeekToken() != TokenType::PLEXIGLASS_EOF)
+    {
+        out << ToString(lex.PeekToken()) << " " << lex.PeekText() << "\n";
+        lex.Shift();
+    }
+
+    out << ToString(lex.PeekToken()) << lex.PeekText() << "\n";
+}
+
+int main(int argc, char** argv)
+{
+    argc--; // discard program name
+    argv++;
+
+    if (argc != 2)
+    {
+        std::cout << "Invalid arguments. Call with just input and output "
+                     "filenames.\n";
+        return -1;
+    }
+
+    std::string input = argv[0];
+    std::string output = argv[1];
+
+    RunLexer(input, output);
+}
+
+#endif

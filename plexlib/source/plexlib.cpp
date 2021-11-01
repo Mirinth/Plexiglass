@@ -13,7 +13,9 @@
 void PrintUsage(std::ostream& out)
 {
     out << "Usage:\n"
-        << "    plexiglass filename\n"
+        << "    plexiglass [--debug] filename\n"
+        << "\n"
+        << "  --debug: Generate a lexer with a debug driver.\n"
         << "\n"
         << "  filename: Name of the input file.\n"
         << "\n"
@@ -43,25 +45,76 @@ bool IsValidLexerName(const std::string& name)
     return true;
 }
 
+bool ParseArgs(const std::vector<std::string>& args,
+               std::string& path,
+               bool& help,
+               bool& debug)
+{
+    path = "";
+    help = false;
+    debug = false;
+    bool good = true;
+
+    for (const auto& arg : args)
+    {
+        if (arg == "-h" || arg == "--help")
+        {
+            if (help)
+            {
+                good = false;
+            }
+            help = true;
+        }
+        else if (arg == "-d" || arg == "--debug")
+        {
+            if (debug)
+            {
+                good = false;
+            }
+            debug = true;
+        }
+        else
+        {
+            if (path.size() > 0)
+            {
+                good = false;
+            }
+            path = arg;
+        }
+    }
+
+    return good;
+}
+
 int PlexMain(std::vector<std::string>& args,
              std::ostream& out,
              std::ostream& err)
 {
-    if (args.size() != 1)
+    std::string lexerPath;
+    bool help, debug;
+
+    bool good = ParseArgs(args, lexerPath, help, debug);
+
+    if (!good)
     {
         PrintUsage(out);
         return bad_usage;
     }
 
-    std::string param = args[0];
-
-    if (param == "-h")
+    if (help)
     {
         PrintUsage(out);
         return help_invoked;
     }
 
-    std::filesystem::path source = param, header = param, code = param;
+    if (lexerPath.size() == 0)
+    {
+        PrintUsage(out);
+        return bad_usage;
+    }
+
+    std::filesystem::path source = lexerPath, header = lexerPath,
+                          code = lexerPath;
     header.replace_extension(".hpp");
     code.replace_extension(".cpp");
     std::string lexerName = source.filename().stem().string();
@@ -79,7 +132,7 @@ int PlexMain(std::vector<std::string>& args,
         std::string data = ReadFile(source.string());
         FileNode file = Parse(data);
         Analyze(file);
-        Template(file, lexerName, header.string(), code.string());
+        Template(file, lexerName, header.string(), code.string(), debug);
         return success;
     }
     catch (const PlexiException& exc)

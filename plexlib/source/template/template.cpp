@@ -187,6 +187,12 @@ void ReplaceToString(std::string& content,
     Replace(content, "$TOKEN_TO_STRING", out.str());
 }
 
+void ReplaceDebug(std::string& content, bool debug)
+{
+    std::string replacement = (debug ? "1" : "0");
+    Replace(content, "$DEBUG_MODE", replacement);
+}
+
 void SaveFile(const std::string& content, const std::string& path)
 {
     std::ofstream out(path);
@@ -211,7 +217,8 @@ void TemplateBody(FileNode file,
                   std::string eofName,
                   std::string errorName,
                   std::string code,
-                  std::string name)
+                  std::string name,
+                  bool debug)
 {
     std::string content = code_template;
 
@@ -220,16 +227,18 @@ void TemplateBody(FileNode file,
     ReplaceName(content, name);
     ReplaceRules(content, file, eofName);
     ReplaceToString(content, file, eofName, errorName);
+    ReplaceDebug(content, debug);
     SaveFile(content, code);
 }
 
 void Template(FileNode file,
               std::string name,
               std::string header,
-              std::string code)
+              std::string code,
+              bool debug)
 {
     std::filesystem::remove(header);
     std::filesystem::remove(code);
     auto [eofName, errorName] = TemplateHeader(file, header, name);
-    TemplateBody(file, eofName, errorName, code, name);
+    TemplateBody(file, eofName, errorName, code, name, debug);
 }
