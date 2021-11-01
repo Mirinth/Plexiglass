@@ -7,6 +7,11 @@
 
 #include "test_files.hpp"
 
+/// <summary>
+/// Build a parse tree and serialize it to a string.
+/// </summary>
+/// <param name="path">Path to the file to parse.</param>
+/// <returns>The parse tree, serialized to a string.</returns>
 std::string BuildTree(std::string path)
 {
     std::string data = ReadTestFile(path);

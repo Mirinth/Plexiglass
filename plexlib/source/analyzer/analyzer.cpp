@@ -18,8 +18,12 @@ void CheckMissingNames(RuleNode node, std::set<std::string>& names);
 void CheckMissingNames(IdentifierSequenceNode node,
                        std::set<std::string>& names);
 
-bool BothLineOperationsSame(const std::string& left, const std::string& right);
+bool ActionsEqual(const std::string& left, const std::string& right);
 
+/// <summary>
+/// Check whether a lexer is semantically valid.
+/// </summary>
+/// <param name="file">The lexer.</param>
 void Analyze(FileNode file)
 {
     CheckDuplicateNames(file);
@@ -29,7 +33,13 @@ void Analyze(FileNode file)
     CheckIllegalStatements(file);
 }
 
-bool BothLineOperationsSame(const std::string& left, const std::string& right)
+/// <summary>
+/// Check whether two actions are the same.
+/// </summary>
+/// <param name="left">The earlier action.</param>
+/// <param name="right">The later action.</param>
+/// <returns>True if the actions are the same.</returns>
+bool ActionsEqual(const std::string& left, const std::string& right)
 {
     if (left == "line++" || left == "++line")
     {
@@ -47,9 +57,13 @@ bool BothLineOperationsSame(const std::string& left, const std::string& right)
         }
     }
 
-    return false;
+    return (left == right);
 }
 
+/// <summary>
+/// Check whether a lexer contains rules with duplicate actions.
+/// </summary>
+/// <param name="node">The lexer.</param>
 void CheckDuplicateActions(FileNode node)
 {
     for (const auto& rule : node->rules)
@@ -58,15 +72,17 @@ void CheckDuplicateActions(FileNode node)
     }
 }
 
+/// <summary>
+/// Check whether a rule contains duplicate actions.
+/// </summary>
+/// <param name="node">The rule.</param>
 void CheckDuplicateActions(RuleNode node)
 {
     for (size_t i = 0; i < node->actions.size(); i++)
     {
         for (size_t j = i + 1; j < node->actions.size(); j++)
         {
-            if (node->actions[i]->name == node->actions[j]->name
-                || BothLineOperationsSame(node->actions[i]->name,
-                                          node->actions[j]->name))
+            if (ActionsEqual(node->actions[i]->name, node->actions[j]->name))
             {
                 DuplicateActionError(node->actions[i]->line,
                                      node->actions[j]->line,
@@ -76,8 +92,19 @@ void CheckDuplicateActions(RuleNode node)
     }
 }
 
-template <typename NodeType, typename MapType>
-void CheckDuplicateNames(NodeType& nodes, MapType& map)
+/// <summary>
+/// Check whether a container of nodes contains duplicate names.
+/// </summary>
+/// <typeparam name="NodeType">
+/// Type of node container being checked.
+/// </typeparam>
+/// <param name="nodes">Nodes to check for duplicate names.</param>
+/// <param name="map">
+/// If populated, names in nodes are looked up in map to see if they're
+/// duplicates. Names contained in nodes will be added to map.
+/// </param>
+template <typename NodeType>
+void CheckDuplicateNames(NodeType& nodes, std::map<std::string, size_t>& map)
 {
     for (auto& node : nodes)
     {
@@ -96,6 +123,10 @@ void CheckDuplicateNames(NodeType& nodes, MapType& map)
     }
 }
 
+/// <summary>
+/// Check whether a lexer contains duplicate names.
+/// </summary>
+/// <param name="file">The lexer.</param>
 void CheckDuplicateNames(FileNode file)
 {
     std::map<std::string, size_t> nameMap;
@@ -104,6 +135,10 @@ void CheckDuplicateNames(FileNode file)
     ::CheckDuplicateNames(file->patterns, nameMap);
 }
 
+/// <summary>
+/// Check if a lexer refers to undefined names.
+/// </summary>
+/// <param name="file">The lexer.</param>
 void CheckMissingNames(FileNode file)
 {
     std::set<std::string> names;
@@ -126,6 +161,11 @@ void CheckMissingNames(FileNode file)
     }
 }
 
+/// <summary>
+/// Check if a pattern refers to an undefined name.
+/// </summary>
+/// <param name="node">The pattern.</param>
+/// <param name="names">Defined names.</param>
 void CheckMissingNames(PatternNode node, std::set<std::string>& names)
 {
     for (auto& sequence : node->sequences)
@@ -134,6 +174,11 @@ void CheckMissingNames(PatternNode node, std::set<std::string>& names)
     }
 }
 
+/// <summary>
+/// Check if an identifier sequence refers to an undefined name.
+/// </summary>
+/// <param name="node">The identifier sequence.</param>
+/// <param name="names">Defined names.</param>
 void CheckMissingNames(IdentifierSequenceNode node,
                        std::set<std::string>& names)
 {
@@ -146,6 +191,11 @@ void CheckMissingNames(IdentifierSequenceNode node,
     }
 }
 
+/// <summary>
+/// Check if a rule refers to an undefined name.
+/// </summary>
+/// <param name="node">The rule.</param>
+/// <param name="names">Defined names.</param>
 void CheckMissingNames(RuleNode node, std::set<std::string>& names)
 {
     if (names.count(node->name) == 0)
@@ -154,38 +204,38 @@ void CheckMissingNames(RuleNode node, std::set<std::string>& names)
     }
 }
 
+/// <summary>
+/// Check whether a lexer uses actions that are syntactically allowed but
+/// semantically forbidden.
+/// </summary>
+/// <param name="node">The lexer.</param>
 void CheckIllegalActions(FileNode node)
 {
     for (auto& rule : node->rules)
     {
-        CheckIllegalActions(rule);
+        for (auto& action : rule->actions)
+        {
+            if (action->name == "rewind")
+            {
+                Error(action->line, "'rewind' action not yet supported");
+            }
+            if (action->name == "transition")
+            {
+                Error(action->line, "'transition' action not yet supported");
+            }
+        }
     }
 }
 
+/// <summary>
+/// Check whether a lexer uses statements that are syntactically allowed but
+/// semantically forbidden. 
+/// </summary>
+/// <param name="node">The lexer.</param>
 void CheckIllegalStatements(FileNode node)
 {
     if (node->patterns.size() > 0)
     {
         Error(node->patterns[0]->line, "'pattern' statement not yet supported");
-    }
-}
-
-void CheckIllegalActions(RuleNode node)
-{
-    for (auto& action : node->actions)
-    {
-        CheckIllegalActions(action);
-    }
-}
-
-void CheckIllegalActions(ActionNode node)
-{
-    if (node->name == "rewind")
-    {
-        Error(node->line, "'rewind' action not yet supported");
-    }
-    if (node->name == "transition")
-    {
-        Error(node->line, "'transition' action not yet supported");
     }
 }

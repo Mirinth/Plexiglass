@@ -3,6 +3,11 @@
 #include <filesystem>
 #include <fstream>
 
+/// <summary>
+/// Read an entire file into a string.
+/// </summary>
+/// <param name="path">Path to the file.</param>
+/// <returns>The file's contents.</returns>
 std::string ReadFile(std::string path)
 {
     std::ifstream in(path);
@@ -16,12 +21,18 @@ std::string ReadFile(std::string path)
     return data;
 }
 
-// https://stackoverflow.com/a/3418285
-// https://creativecommons.org/licenses/by-sa/3.0/
+/// <summary>
+/// String replace function.
+/// </summary>
+/// <param name="subject">String to replace.</param>
+/// <param name="find">What to replace.</param>
+/// <param name="replace">What to replace it with.</param>
 void Replace(std::string& subject,
              const std::string& find,
              const std::string& replace)
 {
+    // https://stackoverflow.com/a/3418285
+    // https://creativecommons.org/licenses/by-sa/3.0/
     if (find.empty())
     {
         return;

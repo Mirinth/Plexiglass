@@ -4,6 +4,14 @@
 
 #include <plexlib.hpp>
 
+/// <summary>
+/// The entry point for Plexiglass.
+/// </summary>
+/// <param name="argc">Number of command line parameters.</param>
+/// <param name="argv">Command line parameters.</param>
+/// <returns>
+/// One of the constants listed at the top of plexlib.hpp.
+/// </returns>
 int main(int argc, const char** argv)
 {
     argc--; // discard program name
