@@ -10,6 +10,10 @@
 #include <template/template.hpp>
 #include <utils.hpp>
 
+/// <summary>
+/// Write the Plexiglass usage message to out.
+/// </summary>
+/// <param name="out">Output stream to write the usage message to.</param>
 void PrintUsage(std::ostream& out)
 {
     out << "Usage:\n"
@@ -22,6 +26,11 @@ void PrintUsage(std::ostream& out)
         << "Note: Output file and lexer name are based on input file name.\n";
 }
 
+/// <summary>
+/// Check whether a lexer name is valid.
+/// </summary>
+/// <param name="name">The name to check.</param>
+/// <returns>Whether the name is valid.</returns>
 bool IsValidLexerName(const std::string& name)
 {
     if (name.size() == 0)
@@ -45,6 +54,16 @@ bool IsValidLexerName(const std::string& name)
     return true;
 }
 
+/// <summary>
+/// Parse the program arguments into variables.
+/// </summary>
+/// <param name="args">Arguments to parse.</param>
+/// <param name="path">Initialized to the lexer file's path.</param>
+/// <param name="help">Initialized to whether help was requested.</param>
+/// <param name="debug">
+/// Initialized to whether debug mode was requested.
+/// </param>
+/// <returns>Whether the command line arguments were valid.</returns>
 bool ParseArgs(const std::vector<std::string>& args,
                std::string& path,
                bool& help,
@@ -86,6 +105,13 @@ bool ParseArgs(const std::vector<std::string>& args,
     return good;
 }
 
+/// <summary>
+/// Runs Plexiglass and generates a lexer.
+/// </summary>
+/// <param name="args">Command line arguments.</param>
+/// <param name="out">Where to write output messages. Can be std::cout.</param>
+/// <param name="err">Where to write error messages. Can be std::cerr.</param>
+/// <returns></returns>
 int PlexMain(std::vector<std::string>& args,
              std::ostream& out,
              std::ostream& err)
