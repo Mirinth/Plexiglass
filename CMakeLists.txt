@@ -20,12 +20,17 @@ endif()
 
 add_subdirectory(plexlib)
 add_subdirectory(plexi)
-add_subdirectory(integration-tests)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
     include(CTest)
+    
     add_subdirectory(unit-tests)
-    add_test(NAME "unit_tests"
+    add_test(NAME "unit-tests"
              COMMAND plextest
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/unit-tests/test-files)
+
+    add_subdirectory(integration-tests)
+    add_test(NAME "integration-tests"
+             COMMAND basic-integration-test
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/integration-tests/basic-test)
 endif()
