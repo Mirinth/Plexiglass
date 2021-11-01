@@ -1,0 +1,17 @@
+expression cat
+	cat
+
+expression dog
+	dog
+
+expression white
+	\s+
+
+rule cat
+	produce CatToken
+
+rule dog
+	produce DogToken
+
+rule white
+	produce-nothing
