@@ -9,6 +9,17 @@ std::string ReadFile(std::string path);
 
 struct Rule
 {
+    /// <summary>
+    /// Construct a Rule.
+    /// </summary>
+    /// <param name="token">The TokenType produced.</param>
+    /// <param name="produce">Whether a token is produced at all.</param>
+    /// <param name="increment">
+    /// How much to change the current line number by.
+    /// </param>
+    /// <param name="pattern">
+    /// A regular expression describing what the rule matches.
+    /// </param>
     Rule(TokenType token, bool produce, int increment, const char* pattern)
         : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
     {
@@ -20,6 +31,10 @@ struct Rule
     std::regex Pattern;
 };
 
+/// <summary>
+/// Get the rules to be used by the lexer.
+/// </summary>
+/// <returns>The rules to be used by the lexer.</returns>
 std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
@@ -29,6 +44,11 @@ std::vector<Rule> GetRules()
     return rules;
 }
 
+/// <summary>
+/// Convert a TokenType to a string.
+/// </summary>
+/// <param name="type">TokenType to convert to a string.</param>
+/// <returns>A string representation of the TokenType.</returns>
 std::string ToString(TokenType type)
 {
     switch (type)
@@ -37,6 +57,10 @@ std::string ToString(TokenType type)
     }
 }
 
+/// <summary>
+/// Construct $LEXER_NAME.
+/// </summary>
+/// <param name="path">Path to the file to lex.</param>
 $LEXER_NAME::$LEXER_NAME(std::string path)
 {
     m_input = ReadFile(path);
@@ -44,16 +68,27 @@ $LEXER_NAME::$LEXER_NAME(std::string path)
     Shift();
 }
 
+/// <summary>
+/// Retrieve the next TokenType without removing it.
+/// </summary>
+/// <returns>The next TokenType.</returns>
 TokenType $LEXER_NAME::PeekToken() const
 {
     return m_type;
 }
 
+/// <summary>
+/// Retrieve the next token's text without removing it.
+/// </summary>
+/// <returns>The next token's text.</returns>
 std::string $LEXER_NAME::PeekText() const
 {
     return m_text;
 }
 
+/// <summary>
+/// Advance the lexer to the next token.
+/// </summary>
 void $LEXER_NAME::Shift()
 {
     bool success = false;
@@ -63,6 +98,12 @@ void $LEXER_NAME::Shift()
     }
 }
 
+/// <summary>
+/// Helper function for $LEXER_NAME::Shift().
+/// </summary>
+/// <returns>
+/// true if the found token should be used, false if it should be skipped.
+/// </returns>
 bool $LEXER_NAME::ShiftHelper()
 {
     if (m_data.empty())
@@ -126,6 +167,11 @@ bool $LEXER_NAME::ShiftHelper()
     }
 }
 
+/// <summary>
+/// Read the contents of a file in as a string.
+/// </summary>
+/// <param name="path">Path to the file to read the contents of.</param>
+/// <returns>The contents of the file.</returns>
 std::string ReadFile(std::string path)
 {
     std::ifstream in(path);
@@ -146,6 +192,11 @@ std::string ReadFile(std::string path)
 
 #include <path.hpp>
 
+/// <summary>
+/// Runs the lexer, writing all the tokens it generates to an output file.
+/// </summary>
+/// <param name="inputPath">Path to file to lex.</param>
+/// <param name="outputPath">Path to output file.</param>
 void RunLexer(std::string inputPath, std::string outputPath)
 {
     lexer lex(inputPath);
@@ -161,6 +212,14 @@ void RunLexer(std::string inputPath, std::string outputPath)
     out << ToString(lex.PeekToken()) << lex.PeekText() << "\n";
 }
 
+/// <summary>
+/// Main entry point for lexer driver code.
+/// </summary>
+/// <param name="argc">Number of command line parameters.</param>
+/// <param name="argv">Command line parameters.</param>
+/// <returns>
+/// 0 if the lexer ran, -1 if command line parameters were bad.
+/// </returns>
 int main(int argc, char** argv)
 {
     argc--; // discard program name
@@ -177,6 +236,7 @@ int main(int argc, char** argv)
     std::string output = argv[1];
 
     RunLexer(input, output);
+    return 0;
 }
 
 #endif
