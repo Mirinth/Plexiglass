@@ -8,7 +8,7 @@
 
 std::string GetTestRoot()
 {
-    auto root = std::filesystem::absolute("../../../../unit-tests/test-files/");
+    auto root = std::filesystem::absolute("./");
     return root.string();
 }
 
