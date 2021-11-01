@@ -10,8 +10,15 @@
 #include <template-holder.hpp>
 #include <utils.hpp>
 
+/// <summary>
+/// Get names defined by a lexer.
+/// </summary>
+/// <param name="node">The lexer.</param>
+/// <param name="names">Populated with defined names.</param>
 void GetTokenNames(FileNode node, std::set<std::string>& names)
 {
+    names.clear();
+
     for (const auto& rule : node->rules)
     {
         for (const auto& action : rule->actions)
@@ -24,6 +31,11 @@ void GetTokenNames(FileNode node, std::set<std::string>& names)
     }
 }
 
+/// <summary>
+/// Modify a Rule's members to match an action.
+/// </summary>
+/// <param name="node">The action.</param>
+/// <param name="rule">The rule.</param>
 void GetRule(ActionNode node, Rule& rule)
 {
     if (node->name == "produce-nothing")
@@ -49,6 +61,11 @@ void GetRule(ActionNode node, Rule& rule)
     }
 }
 
+/// <summary>
+/// Modify a Rule's members to match a rule. 
+/// </summary>
+/// <param name="node"></param>
+/// <returns></returns>
 Rule GetRule(RuleNode node)
 {
     Rule rule = { false, "", 0, node->name };
@@ -61,6 +78,14 @@ Rule GetRule(RuleNode node)
     return rule;
 }
 
+/// <summary>
+/// Get the string to be substituted into the template's rule location.
+/// </summary>
+/// <param name="node">The lexer.</param>
+/// <param name="illegalTokenName">
+/// Name to use for the token generated when no other token is.
+/// </param>
+/// <returns>The rule string.</returns>
 std::string GetRuleString(FileNode node, std::string illegalTokenName)
 {
     std::vector<Rule> producedRules;
@@ -105,6 +130,12 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
     return outStr;
 }
 
+/// <summary>
+/// Make a name unique, by appending _# to it with different numbers for #.
+/// </summary>
+/// <param name="names">Disallowed names.</param>
+/// <param name="name">Desired name.</param>
+/// <returns>Desired name, made unique.</returns>
 std::string MakeUnique(const std::set<std::string>& names,
                        const std::string& name)
 {
@@ -118,21 +149,45 @@ std::string MakeUnique(const std::set<std::string>& names,
     return uniqueName;
 }
 
+/// <summary>
+/// Replace $EOF_TOKEN.
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="name">What to replace with.</param>
 void ReplaceEofName(std::string& content, const std::string& name)
 {
     Replace(content, "$EOF_TOKEN", name);
 }
 
+/// <summary>
+/// Replace $INVALID_TOKEN.
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="name">What to replace with.</param>
 void ReplaceErrorName(std::string& content, const std::string& name)
 {
     Replace(content, "$INVALID_TOKEN", name);
 }
 
+/// <summary>
+/// Replace $LEXER_NAME.
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="name">What to replace with.</param>
 void ReplaceName(std::string& content, const std::string& name)
 {
     Replace(content, "$LEXER_NAME", name);
 }
 
+/// <summary>
+/// Replace $TOKEN_NAMES with list of token names.
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="file">Lexer to extract token names from.</param>
+/// <returns>
+/// The name used for the end-of-file token and the name used for the error
+/// token.
+/// </returns>
 std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
                                                    FileNode file)
 {
@@ -159,12 +214,25 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
     return std::make_tuple(eofName, errorName);
 }
 
+/// <summary>
+/// Replace $LEXER_RULES.
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="file">The lexer to generate rules from.</param>
+/// <param name="errorName">Name to use for error token.</param>
 void ReplaceRules(std::string& content, FileNode file, std::string errorName)
 {
     std::string ruleString = GetRuleString(file, errorName);
     Replace(content, "$LEXER_RULES", ruleString);
 }
 
+/// <summary>
+/// Insert the ToString function into the template.
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="file">The lexer to generate from.</param>
+/// <param name="eofName">Name to use for end-of-file token.</param>
+/// <param name="errorName">Name to use for error token.</param>
 void ReplaceToString(std::string& content,
                      FileNode file,
                      std::string eofName,
@@ -187,18 +255,38 @@ void ReplaceToString(std::string& content,
     Replace(content, "$TOKEN_TO_STRING", out.str());
 }
 
+/// <summary>
+/// Replace $DEBUG_MODE.
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="debug">Whether debug mode is enabled.</param>
 void ReplaceDebug(std::string& content, bool debug)
 {
     std::string replacement = (debug ? "1" : "0");
     Replace(content, "$DEBUG_MODE", replacement);
 }
 
+/// <summary>
+/// Save a file.
+/// </summary>
+/// <param name="content">What to write.</param>
+/// <param name="path">Where to write it.</param>
 void SaveFile(const std::string& content, const std::string& path)
 {
     std::ofstream out(path);
     out << content;
 }
 
+/// <summary>
+/// Generate a header from the template.
+/// </summary>
+/// <param name="file">The lexer to generate from.</param>
+/// <param name="header">Path to the output header.</param>
+/// <param name="name">Name of the lexer.</param>
+/// <returns>
+/// The name used for the end-of-file token and the name used for the error
+/// token.
+/// </returns>
 std::tuple<std::string, std::string> TemplateHeader(FileNode file,
                                                     std::string header,
                                                     std::string name)
@@ -213,6 +301,15 @@ std::tuple<std::string, std::string> TemplateHeader(FileNode file,
     return names;
 }
 
+/// <summary>
+/// Generate a code file from the template.
+/// </summary>
+/// <param name="file">The lexer to generate from.</param>
+/// <param name="eofName">Name to use for end-of-file token.</param>
+/// <param name="errorName">Name to use for error token.</param>
+/// <param name="code">Path to the output code file.</param>
+/// <param name="name">Name of the lexer.</param>
+/// <param name="debug">Whether to generate a debug mode lexer.</param>
 void TemplateBody(FileNode file,
                   std::string eofName,
                   std::string errorName,
@@ -231,6 +328,14 @@ void TemplateBody(FileNode file,
     SaveFile(content, code);
 }
 
+/// <summary>
+/// Generate a header and code file from the template.
+/// </summary>
+/// <param name="file">The lexer to generate from.</param>
+/// <param name="name">Name of the lexer.</param>
+/// <param name="header">Path to the output header.</param>
+/// <param name="code">Path to the output code file.</param>
+/// <param name="debug">Whether to generate a debug mode lexer.</param>
 void Template(FileNode file,
               std::string name,
               std::string header,
