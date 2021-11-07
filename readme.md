@@ -1,3 +1,11 @@
+Plexiglass is a lexer generater, in the spirit of GNU Flex. It takes as input a
+description of a lexer and generates an implementation of it in C++.
+
+Plexiglass aims to do all the work in the lexer's domain-specific language,
+without having to drop into the underlying C++ to implement actions. This may
+make it easier to read a Plexiglass lexer, at the expense of not being as
+powerful.
+
 # File format
 
 Input files consist of expressions and rules.
