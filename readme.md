@@ -64,10 +64,10 @@ Allowed actions include:
                          rule.
 - `produce token-name` : The lexer will produce a token named `token-name` when
                          applying this rule.
-`++line`, `line++`     : Increment the current line number.
-`--line`, `line--`     : Decrement the current line number.
+- `++line`, `line++`   : Increment the current line number.
+- `--line`, `line--`   : Decrement the current line number.
 
-## The generated lexer
+# The generated lexer
 
 The generated lexer will include a `.hpp` and `.cpp` file, named after the input
 file and placed in the same folder. The lexer itself will also be named after
@@ -83,8 +83,8 @@ The lexer API includes the following members. Members assume your lexer is named
 	if not used in the lexer description. `PLEXIGLASS_NO_MATCH_TOKEN` is
 	generated when the lexer fails to match any input, and `PLEXIGLASS_EOF` is
 	generated when no input is available.
-- `std::strin ToString(TokenType type)`:
-	A utility function that converts a TokenType to a string containing its
+- `std::string ToString(TokenType type)`:
+	A utility function that converts a `TokenType` to a string containing its
 	name. e.g. `PLEXIGLASS_EOF` will be converted to `"PLEXIGLASS_EOF"`.
 - `lexer::lexer(std::string path)`:
 	Constructs the lexer. `path` is the path to the lexer's input file.
@@ -96,3 +96,30 @@ The lexer API includes the following members. Members assume your lexer is named
 	Retrieve the line number the token started on without modifying the lexer.
 - `lexer::Shift()`:
 	Advance the lexer to the next token.
+
+# Debug lexers
+
+Plexiglass supports a debugging mode useful for seeing how a file is lexed. To
+generate a debug lexer, pass the `--debug` flag to Plexiglass when generating
+your lexer. Alternatively, you can look for the
+`Used to include/exclude driver code.` comment in your lexer and change the
+preprocessor condition to enable the driver.
+
+When enabled, this mode generates a complete program which can be built and run
+on a file. The program will output each token matched and the text associated
+with it.
+
+# Building Plexiglass
+
+Plexiglass is a CMake project. There are several targets available:
+- `plexiglass` :
+	The Plexiglass executable. This is what you'll want to generate lexers.
+- `plexlib` :
+	The implementation of Plexiglass as a static library. All the work
+	Plexiglass does happens here.
+- `plextest` :
+	The unit tester. Runs various unit tests on Plexiglass. Used when running
+	`CTest` to verify that Plexiglass works.
+- `basic-integration-test` :
+	The integration tester. Generates a lexer and runs it on a file. Used when
+	running `CTest` to verify that Plexiglass works.
