@@ -131,25 +131,6 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
 }
 
 /// <summary>
-/// Make a name unique, by appending _# to it with different numbers for #.
-/// </summary>
-/// <param name="names">Disallowed names.</param>
-/// <param name="name">Desired name.</param>
-/// <returns>Desired name, made unique.</returns>
-std::string MakeUnique(const std::set<std::string>& names,
-                       const std::string& name)
-{
-    std::string uniqueName = name;
-    for (size_t unique = 0; unique < std::numeric_limits<size_t>::max()
-                            && names.count(uniqueName) != 0;
-         unique++)
-    {
-        uniqueName = name + "_" + std::to_string(unique);
-    }
-    return uniqueName;
-}
-
-/// <summary>
 /// Replace $EOF_TOKEN.
 /// </summary>
 /// <param name="content">String to replace in.</param>
@@ -194,10 +175,10 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
     std::set<std::string> tokenNames;
     GetTokenNames(file, tokenNames);
 
-    std::string errorName = MakeUnique(tokenNames, "PLEXIGLASS_NO_MATCH_TOKEN");
+    std::string errorName = "PLEXIGLASS_NO_MATCH_TOKEN";
     tokenNames.insert(errorName);
 
-    std::string eofName = MakeUnique(tokenNames, "PLEXIGLASS_EOF");
+    std::string eofName = "PLEXIGLASS_EOF";
     tokenNames.insert(eofName);
 
     std::stringstream names;
