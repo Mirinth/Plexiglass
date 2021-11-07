@@ -65,7 +65,17 @@ $LEXER_NAME::$LEXER_NAME(std::string path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
+    m_line = 1;
     Shift();
+}
+
+/// <summary>
+/// Retrieve the line the next token starts on.
+/// </summary>
+/// <returns>The line the next token starts on.</returns>
+size_t $LEXER_NAME::PeekLine() const
+{
+    return m_line;
 }
 
 /// <summary>
@@ -151,11 +161,13 @@ bool $LEXER_NAME::ShiftHelper()
         m_type = rules[max_index].Token;
         m_text = m_data.substr(0, max_length);
         m_data.remove_prefix(max_length);
+        m_line += rules[max_index].Increment;
         return true;
     }
     else if (max_length > 0)
     {
         m_data.remove_prefix(max_length);
+        m_line += rules[max_index].Increment;
         return false;
     }
     else
