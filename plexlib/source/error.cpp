@@ -8,12 +8,7 @@
 /// Initialize the exception.
 /// </summary>
 /// <param name="msg">The exception's message.</param>
-// clang-format off
-// Issue #86
-PlexiException::PlexiException(const char* msg)
-    : std::exception(msg)
-{}
-// clang-format on
+PlexiException::PlexiException(const char* msg) : std::exception(msg) {}
 
 /// <summary>
 /// Generate a duplicate action error and stop parsing.

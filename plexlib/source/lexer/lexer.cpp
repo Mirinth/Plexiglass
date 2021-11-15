@@ -232,12 +232,6 @@ std::string_view StripWhitespace(std::string_view line)
 /// <returns>Whether the line is blank.</returns>
 bool IsBlank(std::string_view line)
 {
-    // clang-format off
-    // Issue #86
-    return (
-           line.empty()
-        || line[0] == '\n'
-        || line.find_first_not_of(whitespace) == std::string_view::npos
-        );
-    // clang-format on
+    return (line.empty()
+            || line.find_first_not_of(whitespace) == std::string_view::npos);
 }
