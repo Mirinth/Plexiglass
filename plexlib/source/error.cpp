@@ -74,9 +74,8 @@ void Error(size_t line, std::string message)
 /// <param name="text">Text of token actually found.</param>
 void Error(std::string expected, size_t line, TokenType type, std::string text)
 {
-    Token tok(line, type, text);
     std::stringstream out;
-    out << "Error on line " << tok.line << ": "
-        << "Expected " << expected << " found " << tok.ToString();
+    out << "Error on line " << line << ": "
+        << "Expected " << expected << " found " << ToString(type, text);
     throw PlexiException(out.str().c_str());
 }
