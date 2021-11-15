@@ -10,8 +10,10 @@ class Lexer
 {
 public:
     Lexer(std::string_view data);
+    size_t PeekLine() const;
+    TokenType PeekToken() const;
+    std::string PeekText() const;
     void Shift();
-    const Token& Peek() const;
 
 private:
     std::string LexToken(std::string_view& line);
