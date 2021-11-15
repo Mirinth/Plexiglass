@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include <lexer/token.hpp>
+#include <lexer/lexer.hpp>
 
 /// <summary>
 /// Initialize the exception.
