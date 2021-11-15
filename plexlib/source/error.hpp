@@ -3,7 +3,7 @@
 #include <exception>
 #include <string>
 
-enum TokenType;
+enum class TokenType;
 
 class PlexiException : public std::exception
 {
