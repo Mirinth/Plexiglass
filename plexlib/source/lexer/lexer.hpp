@@ -4,7 +4,18 @@
 #include <string>
 #include <string_view>
 
-#include <lexer/token.hpp>
+enum class TokenType
+{
+    Alternator,
+    Eof,
+    Indent,
+    Keyword,
+    Regex,
+    Text,
+    Unknown,
+};
+
+std::string ToString(TokenType type, const std::string& text);
 
 class Lexer
 {
@@ -22,7 +33,9 @@ private:
     void FillBuffer();
 
     std::string_view m_data;
-    std::queue<Token> m_buffer;
+    std::queue<size_t> m_LineNumberBuffer;
+    std::queue<TokenType> m_TokenTypeBuffer;
+    std::queue<std::string> m_TokenTextBuffer;
     size_t m_lineNumber;
     bool m_expectExpression;
 };

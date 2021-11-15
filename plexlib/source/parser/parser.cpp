@@ -5,7 +5,6 @@
 
 #include <error.hpp>
 #include <lexer/lexer.hpp>
-#include <lexer/token.hpp>
 
 ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
@@ -14,7 +13,7 @@ IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial);
 PatternNode Pattern(Lexer& lexer);
 RuleNode Rule(Lexer& lexer);
 
-Token Require(Lexer& lexer,
+std::string Require(Lexer& lexer,
               std::string name,
               TokenType type,
               std::string value = "");
@@ -43,24 +42,26 @@ ActionNode Action(Lexer& lexer)
     static std::set<std::string> compositeActions = { "produce", "transition" };
 
     Require(lexer, "indent", TokenType::Indent);
-    Token action = Require(lexer, "action", TokenType::Text);
+    size_t line = lexer.PeekLine();
+    TokenType token = lexer.PeekToken();
+    std::string action = Require(lexer, "action", TokenType::Text);
 
-    if (unitActions.count(action.text) > 0)
+    if (unitActions.count(action) > 0)
     {
-        return NewActionNode(action.line, action.text);
+        return NewActionNode(line, action);
     }
-    else if (compositeActions.count(action.text) > 0)
+    else if (compositeActions.count(action) > 0)
     {
         if (lexer.PeekToken() != TokenType::Text)
         {
-            Error(action.line, "Expected identifier before end of line");
+            Error(line, "Expected identifier before end of line");
         }
-        Token identifier = Require(lexer, "identifier", TokenType::Text);
-        return NewActionNode(action.line, action.text, identifier.text);
+        std::string identifier = Require(lexer, "identifier", TokenType::Text);
+        return NewActionNode(line, action, identifier);
     }
     else
     {
-        Error("action", action.line, action.type, action.text);
+        Error("action", line, token, action);
         return nullptr; // Silence warning; Error never returns.
     }
 }
@@ -72,20 +73,22 @@ ActionNode Action(Lexer& lexer)
 /// <returns>ExpressionNode representing the parsed expression.</returns>
 ExpressionNode Expression(Lexer& lexer)
 {
-    Token name = Require(lexer, "identifier", TokenType::Text);
+    size_t nameLine = lexer.PeekLine();
+    std::string name = Require(lexer, "identifier", TokenType::Text);
+    size_t expressionLine = lexer.PeekLine();
     Require(lexer, "indent", TokenType::Indent);
-    Token expression = Require(lexer, "regular expression", TokenType::Regex);
+    std::string expression = Require(lexer, "regular expression", TokenType::Regex);
 
     try
     {
-        std::regex dummy(expression.text);
+        std::regex dummy(expression);
     }
     catch (std::regex_error&)
     {
-        Error(expression.line, "Malformed regex.");
+        Error(expressionLine, "Malformed regex.");
     }
 
-    return NewExpressionNode(name.line, name.text, expression.text);
+    return NewExpressionNode(nameLine, name, expression);
 }
 
 /// <summary>
@@ -104,27 +107,28 @@ FileNode File(Lexer& lexer)
 
     while (lexer.PeekToken() != TokenType::Eof)
     {
-        Token tok = Require(lexer, "'expression', 'pattern', or 'rule'",
+        size_t line = lexer.PeekLine();
+        std::string keyword = Require(lexer, "'expression', 'pattern', or 'rule'",
                             TokenType::Keyword);
 
-        if (tok.text == "expression")
+        if (keyword == "expression")
         {
             ExpressionNode node = Expression(lexer);
             file->expressions.push_back(node);
         }
-        else if (tok.text == "rule")
+        else if (keyword == "rule")
         {
             RuleNode node = Rule(lexer);
             file->rules.push_back(node);
         }
-        else if (tok.text == "pattern")
+        else if (keyword == "pattern")
         {
             PatternNode node = Pattern(lexer);
             file->patterns.push_back(node);
         }
         else
         {
-            Error(tok.line, "Unrecognized keyword " + tok.text);
+            Error(line, "Unrecognized keyword " + keyword);
         }
     }
 
@@ -143,20 +147,21 @@ FileNode File(Lexer& lexer)
 /// </returns>
 IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 {
-    Token indent = Require(lexer, "indent", TokenType::Indent);
+    size_t line = lexer.PeekLine();
+    std::string indent = Require(lexer, "indent", TokenType::Indent);
     if (!initial)
     {
         Require(lexer, "alternator", TokenType::Alternator);
     }
 
-    IdentifierSequenceNode sequence = NewIdentifierSequenceNode(indent.line);
-    Token identifier = Require(lexer, "identifier", TokenType::Text);
-    sequence->identifiers.push_back(identifier.text);
+    IdentifierSequenceNode sequence = NewIdentifierSequenceNode(line);
+    std::string identifier = Require(lexer, "identifier", TokenType::Text);
+    sequence->identifiers.push_back(identifier);
 
     while (lexer.PeekToken() == TokenType::Text)
     {
         identifier = Require(lexer, "identifier", TokenType::Text);
-        sequence->identifiers.push_back(identifier.text);
+        sequence->identifiers.push_back(identifier);
     }
 
     return sequence;
@@ -169,8 +174,9 @@ IdentifierSequenceNode IdentifierSequence(Lexer& lexer, bool initial)
 /// <returns>A PatternNode representing the parsed pattern.</returns>
 PatternNode Pattern(Lexer& lexer)
 {
-    Token name = Require(lexer, "identifier", TokenType::Text);
-    PatternNode node = NewPatternNode(name.line, name.text);
+    size_t line = lexer.PeekLine();
+    std::string name = Require(lexer, "identifier", TokenType::Text);
+    PatternNode node = NewPatternNode(line, name);
 
     IdentifierSequenceNode sequence = IdentifierSequence(lexer, true);
     node->sequences.push_back(sequence);
@@ -191,8 +197,9 @@ PatternNode Pattern(Lexer& lexer)
 /// <returns>A RuleNode representing the parsed rule.</returns>
 RuleNode Rule(Lexer& lexer)
 {
-    Token name = Require(lexer, "identifier", TokenType::Text);
-    RuleNode rule = NewRuleNode(name.line, name.text);
+    size_t line = lexer.PeekLine();
+    std::string name = Require(lexer, "identifier", TokenType::Text);
+    RuleNode rule = NewRuleNode(line, name);
 
     if (lexer.PeekToken() != TokenType::Indent)
     {
@@ -220,8 +227,8 @@ RuleNode Rule(Lexer& lexer)
 /// <param name="value">
 /// Token text expected. If empty, any text is allowed.
 /// </param>
-/// <returns>The token shifted.</returns>
-Token Require(Lexer& lexer,
+/// <returns>The text of the token shifted.</returns>
+std::string Require(Lexer& lexer,
               std::string name,
               TokenType type,
               std::string value /*= ""*/)
@@ -236,7 +243,7 @@ Token Require(Lexer& lexer,
         Error(name, lexer.PeekLine(), lexer.PeekToken(), lexer.PeekText());
     }
 
-    Token tok(lexer.PeekLine(), lexer.PeekToken(), lexer.PeekText());
+    std::string text = lexer.PeekText();
     lexer.Shift();
-    return tok;
+    return text;
 }

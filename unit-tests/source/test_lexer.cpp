@@ -4,7 +4,6 @@
 #include "doctest.h"
 
 #include <lexer/lexer.hpp>
-#include <lexer/token.hpp>
 
 #include "test_files.hpp"
 
@@ -18,8 +17,7 @@ TEST_CASE("Lexer: Test the lexer")
 
     while (lexer.PeekToken() != TokenType::Eof)
     {
-        Token tok(lexer.PeekLine(), lexer.PeekToken(), lexer.PeekText());
-        out << tok.ToString() << "\n";
+        out << ToString(lexer.PeekToken(), lexer.PeekText()) << "\n";
         lexer.Shift();
     }
 

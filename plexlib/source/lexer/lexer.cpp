@@ -10,6 +10,50 @@ std::string_view StripWhitespace(std::string_view line);
 bool IsBlank(std::string_view line);
 
 /// <summary>
+/// Get a human-readable string representation of a token.
+/// </summary>
+/// <param name="type">The token's type.</param>
+/// <param name="text">The token's text.</param>
+/// <returns>String representation of the token.</returns>
+std::string ToString(TokenType type, const std::string& text)
+{
+    std::string str;
+    switch (type)
+    {
+    case TokenType::Alternator:
+        str = "alternator";
+        break;
+    case TokenType::Eof:
+        str = "eof";
+        break;
+    case TokenType::Regex:
+        str = "expression";
+        break;
+    case TokenType::Indent:
+        str = "indent";
+        break;
+    case TokenType::Keyword:
+        str = "keyword";
+        break;
+    case TokenType::Text:
+        str = "text";
+        break;
+    case TokenType::Unknown:
+        str = "unknown";
+        break;
+    default:
+        throw std::exception("Unrecognized token type in Token::ToString()");
+    }
+
+    if (!text.empty())
+    {
+        str += " " + text;
+    }
+
+    return str;
+}
+
+/// <summary>
 /// Construct a lexer.
 /// </summary>
 /// <param name="data">The data to lex.</param>
@@ -25,7 +69,7 @@ Lexer::Lexer(std::string_view data)
 /// <returns>The current token's line number.</returns>
 size_t Lexer::PeekLine() const
 {
-    return m_buffer.front().line;
+    return m_LineNumberBuffer.front();
 }
 
 /// <summary>
@@ -34,7 +78,7 @@ size_t Lexer::PeekLine() const
 /// <returns>The current token's type.</returns>
 TokenType Lexer::PeekToken() const
 {
-    return m_buffer.front().type;
+    return m_TokenTypeBuffer.front();
 }
  
 /// <summary>
@@ -43,7 +87,7 @@ TokenType Lexer::PeekToken() const
 /// <returns>The current token's text.</returns>
 std::string Lexer::PeekText() const
 {
-    return m_buffer.front().text;
+    return m_TokenTextBuffer.front();
 }
 
 /// <summary>
@@ -51,7 +95,9 @@ std::string Lexer::PeekText() const
 /// </summary>
 void Lexer::Shift()
 {
-    m_buffer.pop();
+    m_LineNumberBuffer.pop();
+    m_TokenTypeBuffer.pop();
+    m_TokenTextBuffer.pop();
     FillBuffer();
 }
 
@@ -126,7 +172,10 @@ void Lexer::LexLine(std::string_view line)
 
     if (StartsWith(line, "    ") || StartsWith(line, "\t"))
     {
-        m_buffer.push(Token(m_lineNumber, TokenType::Indent));
+        m_LineNumberBuffer.push(m_lineNumber);
+        m_TokenTypeBuffer.push(TokenType::Indent);
+        m_TokenTextBuffer.push("");
+
         line = StripWhitespace(line);
 
         if (m_expectExpression)
@@ -136,8 +185,10 @@ void Lexer::LexLine(std::string_view line)
             {
                 line.remove_suffix(1);
             }
-            Token tok(m_lineNumber, TokenType::Regex, std::string(line));
-            m_buffer.push(tok);
+            m_LineNumberBuffer.push(m_lineNumber);
+            m_TokenTypeBuffer.push(TokenType::Regex);
+            m_TokenTextBuffer.push(std::string(line));
+
             return;
         }
 
@@ -146,13 +197,17 @@ void Lexer::LexLine(std::string_view line)
             line = StripWhitespace(line);
             if (line[0] == '|')
             {
-                m_buffer.push(Token(m_lineNumber, TokenType::Alternator, "|"));
+                m_LineNumberBuffer.push(m_lineNumber);
+                m_TokenTypeBuffer.push(TokenType::Alternator);
+                m_TokenTextBuffer.push("|");
                 line.remove_prefix(1);
             }
             else
             {
                 std::string text = LexToken(line);
-                m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+                m_LineNumberBuffer.push(m_lineNumber);
+                m_TokenTypeBuffer.push(TokenType::Text);
+                m_TokenTextBuffer.push(text);
             }
         }
     }
@@ -160,7 +215,9 @@ void Lexer::LexLine(std::string_view line)
     {
         line = StripWhitespace(line);
         std::string text = LexToken(line);
-        m_buffer.push(Token(m_lineNumber, TokenType::Keyword, text));
+        m_LineNumberBuffer.push(m_lineNumber);
+        m_TokenTypeBuffer.push(TokenType::Keyword);
+        m_TokenTextBuffer.push(text);
 
         if (text == "expression")
         {
@@ -171,7 +228,9 @@ void Lexer::LexLine(std::string_view line)
         {
             line = StripWhitespace(line);
             text = LexToken(line);
-            m_buffer.push(Token(m_lineNumber, TokenType::Text, text));
+            m_LineNumberBuffer.push(m_lineNumber);
+            m_TokenTypeBuffer.push(TokenType::Text);
+            m_TokenTextBuffer.push(text);
         }
     }
 }
@@ -181,15 +240,17 @@ void Lexer::LexLine(std::string_view line)
 /// </summary>
 void Lexer::FillBuffer()
 {
-    while (m_buffer.empty() && !m_data.empty())
+    while (m_LineNumberBuffer.empty() && !m_data.empty())
     {
         std::string_view line = GetLine();
         LexLine(line);
     }
 
-    if (m_buffer.empty())
+    if (m_LineNumberBuffer.empty())
     {
-        m_buffer.push(Token(m_lineNumber, TokenType::Eof));
+        m_LineNumberBuffer.push(m_lineNumber);
+        m_TokenTypeBuffer.push(TokenType::Eof);
+        m_TokenTextBuffer.push("");
     }
 }
 
