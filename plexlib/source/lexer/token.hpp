@@ -13,13 +13,4 @@ enum class TokenType
     Unknown,
 };
 
-class Token
-{
-public:
-    Token();
-    Token(size_t line, TokenType type, std::string text = "");
-    std::string ToString() const;
-    size_t line;
-    TokenType type;
-    std::string text;
-};
+std::string ToString(TokenType type, const std::string& text);

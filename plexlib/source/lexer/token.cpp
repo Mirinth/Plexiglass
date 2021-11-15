@@ -1,26 +1,12 @@
 #include <lexer/token.hpp>
 
 /// <summary>
-/// Construct an invalid token.
+/// Get a human-readable string representation of a token.
 /// </summary>
-Token::Token() : line(0), type(TokenType::Unknown), text("") {}
-
-/// <summary>
-/// Construct a token.
-/// </summary>
-/// <param name="line">The line number the token occurred on.</param>
 /// <param name="type">The token's type.</param>
 /// <param name="text">The token's text.</param>
-Token::Token(size_t line, TokenType type, std::string text /* = "" */)
-    : line(line), type(type), text(text)
-{
-}
-
-/// <summary>
-/// Get a human-readable string representation of the token.
-/// </summary>
 /// <returns>String representation of the token.</returns>
-std::string Token::ToString() const
+std::string ToString(TokenType type, const std::string& text)
 {
     std::string str;
     switch (type)
