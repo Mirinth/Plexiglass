@@ -69,9 +69,12 @@ void Error(size_t line, std::string message)
 /// Generate an error message and stop parsing.
 /// </summary>
 /// <param name="expected">What was expected.</param>
-/// <param name="tok">What was found.</param>
-void Error(std::string expected, const Token tok)
+/// <param name="line">Line number the problem occurred on.</param>
+/// <param name="type">TokenType actually found.</param>
+/// <param name="text">Text of token actually found.</param>
+void Error(std::string expected, size_t line, TokenType type, std::string text)
 {
+    Token tok(line, type, text);
     std::stringstream out;
     out << "Error on line " << tok.line << ": "
         << "Expected " << expected << " found " << tok.ToString();

@@ -16,9 +16,10 @@ TEST_CASE("Lexer: Test the lexer")
 
     Lexer lexer(input);
 
-    while (lexer.Peek().type != TokenType::Eof)
+    while (lexer.PeekToken() != TokenType::Eof)
     {
-        out << lexer.Peek().ToString() << "\n";
+        Token tok(lexer.PeekLine(), lexer.PeekToken(), lexer.PeekText());
+        out << tok.ToString() << "\n";
         lexer.Shift();
     }
 

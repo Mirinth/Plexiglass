@@ -20,21 +20,39 @@ Lexer::Lexer(std::string_view data)
 }
 
 /// <summary>
+/// Get the current token's line number.
+/// </summary>
+/// <returns>The current token's line number.</returns>
+size_t Lexer::PeekLine() const
+{
+    return m_buffer.front().line;
+}
+
+/// <summary>
+/// Get the current token's type.
+/// </summary>
+/// <returns>The current token's type.</returns>
+TokenType Lexer::PeekToken() const
+{
+    return m_buffer.front().type;
+}
+ 
+/// <summary>
+/// Get the curren token's text.
+/// </summary>
+/// <returns>The current token's text.</returns>
+std::string Lexer::PeekText() const
+{
+    return m_buffer.front().text;
+}
+
+/// <summary>
 /// Advance the lexer to the next token.
 /// </summary>
 void Lexer::Shift()
 {
     m_buffer.pop();
     FillBuffer();
-}
-
-/// <summary>
-/// Get the current token.
-/// </summary>
-/// <returns>The current token.</returns>
-const Token& Lexer::Peek() const
-{
-    return m_buffer.front();
 }
 
 /// <summary>
