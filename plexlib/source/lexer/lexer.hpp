@@ -22,7 +22,9 @@ private:
     void FillBuffer();
 
     std::string_view m_data;
-    std::queue<Token> m_buffer;
+    std::queue<size_t> m_LineNumberBuffer;
+    std::queue<TokenType> m_TokenTypeBuffer;
+    std::queue<std::string> m_TokenTextBuffer;
     size_t m_lineNumber;
     bool m_expectExpression;
 };
