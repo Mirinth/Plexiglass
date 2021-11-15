@@ -5,7 +5,6 @@
 
 #include <error.hpp>
 #include <lexer/lexer.hpp>
-#include <lexer/token.hpp>
 
 ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);

@@ -4,7 +4,6 @@
 #include "doctest.h"
 
 #include <lexer/lexer.hpp>
-#include <lexer/token.hpp>
 
 #include "test_files.hpp"
 

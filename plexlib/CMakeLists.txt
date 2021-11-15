@@ -5,7 +5,6 @@ target_sources(plexlib
     source/plexlib.hpp
     source/utils.hpp
     source/lexer/lexer.hpp
-    source/lexer/token.hpp
     source/parser/parser.hpp
     source/parser/tree.hpp
     source/analyzer/analyzer.hpp
@@ -16,7 +15,6 @@ target_sources(plexlib
     source/plexlib.cpp
     source/utils.cpp
     source/lexer/lexer.cpp
-    source/lexer/token.cpp
     source/parser/parser.cpp
     source/parser/tree.cpp
     source/analyzer/analyzer.cpp
