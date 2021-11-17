@@ -5,7 +5,6 @@
 
 #include <error.hpp>
 #include <lexer/lexer.hpp>
-#include <utils.hpp>
 
 ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
@@ -15,9 +14,9 @@ PatternNode Pattern(Lexer& lexer);
 RuleNode Rule(Lexer& lexer);
 
 std::string Require(Lexer& lexer,
-              std::string name,
-              TokenType type,
-              std::string value = "");
+                    std::string name,
+                    TokenType type,
+                    std::string value = "");
 
 /// <summary>
 /// Parse a block of data.
@@ -26,8 +25,7 @@ std::string Require(Lexer& lexer,
 /// <returns>A FileNode representing the file.</returns>
 FileNode Parse(const std::string& path)
 {
-    std::string data = ReadFile(path);
-    Lexer lexer(data);
+    Lexer lexer(path);
     return File(lexer);
 }
 
@@ -79,7 +77,8 @@ ExpressionNode Expression(Lexer& lexer)
     std::string name = Require(lexer, "identifier", TokenType::Text);
     size_t expressionLine = lexer.PeekLine();
     Require(lexer, "indent", TokenType::Indent);
-    std::string expression = Require(lexer, "regular expression", TokenType::Regex);
+    std::string expression =
+        Require(lexer, "regular expression", TokenType::Regex);
 
     try
     {
@@ -110,8 +109,8 @@ FileNode File(Lexer& lexer)
     while (lexer.PeekToken() != TokenType::Eof)
     {
         size_t line = lexer.PeekLine();
-        std::string keyword = Require(lexer, "'expression', 'pattern', or 'rule'",
-                            TokenType::Keyword);
+        std::string keyword = Require(
+            lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
 
         if (keyword == "expression")
         {
@@ -231,9 +230,9 @@ RuleNode Rule(Lexer& lexer)
 /// </param>
 /// <returns>The text of the token shifted.</returns>
 std::string Require(Lexer& lexer,
-              std::string name,
-              TokenType type,
-              std::string value /*= ""*/)
+                    std::string name,
+                    TokenType type,
+                    std::string value /*= ""*/)
 {
     if (lexer.PeekToken() != type)
     {

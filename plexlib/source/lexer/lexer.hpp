@@ -20,7 +20,7 @@ std::string ToString(TokenType type, const std::string& text);
 class Lexer
 {
 public:
-    Lexer(std::string_view data);
+    Lexer(const std::string& path);
     size_t PeekLine() const;
     TokenType PeekToken() const;
     std::string PeekText() const;
@@ -32,6 +32,7 @@ private:
     void LexLine(std::string_view line);
     void FillBuffer();
 
+    std::string m_fileContent;
     std::string_view m_data;
     std::queue<size_t> m_LineNumberBuffer;
     std::queue<TokenType> m_TokenTypeBuffer;
