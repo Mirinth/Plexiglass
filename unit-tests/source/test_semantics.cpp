@@ -4,10 +4,13 @@
 #include <error.hpp>
 #include <parser/parser.hpp>
 #include <parser/tree.hpp>
+#include <test_files.hpp>
 
 TEST_CASE("Semantics: Expression with duplicate name")
 {
-    FileNode file = Parse("semantics/expression-duplicate-name.txt");
+    std::string path =
+        GetTestRoot() + "semantics/expression-duplicate-name.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
                          "Error on line 5: 'name' already defined on line 2",
@@ -16,7 +19,8 @@ TEST_CASE("Semantics: Expression with duplicate name")
 
 TEST_CASE("Semantics: Pattern with duplicate name")
 {
-    FileNode file = Parse("semantics/pattern-duplicate-name.txt");
+    std::string path = GetTestRoot() + "semantics/pattern-duplicate-name.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
                          "Error on line 5: 'name' already defined on line 2",
@@ -25,7 +29,9 @@ TEST_CASE("Semantics: Pattern with duplicate name")
 
 TEST_CASE("Semantics: Pattern with name that duplicates an expression")
 {
-    FileNode file = Parse("semantics/pattern-expression-name-conflict.txt");
+    std::string path =
+        GetTestRoot() + "semantics/pattern-expression-name-conflict.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
                          "Error on line 5: 'name' already defined on line 2",
@@ -34,7 +40,9 @@ TEST_CASE("Semantics: Pattern with name that duplicates an expression")
 
 TEST_CASE("Semantics: Expression with name that duplicates a pattern")
 {
-    FileNode file = Parse("semantics/expression-pattern-name-conflict.txt");
+    std::string path =
+        GetTestRoot() + "semantics/expression-pattern-name-conflict.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
                          "Error on line 5: 'name' already defined on line 2",
@@ -43,7 +51,8 @@ TEST_CASE("Semantics: Expression with name that duplicates a pattern")
 
 TEST_CASE("Semantics: Rule that uses an undefined name")
 {
-    FileNode file = Parse("semantics/rule-name-undefined.txt");
+    std::string path = GetTestRoot() + "semantics/rule-name-undefined.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
                          "Error on line 2: Undefined name 'name'",
@@ -52,7 +61,8 @@ TEST_CASE("Semantics: Rule that uses an undefined name")
 
 TEST_CASE("Semantics: Pattern that uses an undefined name")
 {
-    FileNode file = Parse("semantics/pattern-name-undefined.txt");
+    std::string path = GetTestRoot() + "semantics/pattern-name-undefined.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file), "Error on line 3: Undefined name 'abc'",
                          PlexiException);
@@ -60,7 +70,9 @@ TEST_CASE("Semantics: Pattern that uses an undefined name")
 
 TEST_CASE("Semantics: Pattern that uses an undefined name far in")
 {
-    FileNode file = Parse("semantics/pattern-name-undefined-far-in.txt");
+    std::string path =
+        GetTestRoot() + "semantics/pattern-name-undefined-far-in.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
                          "Error on line 9: Undefined name 'missing'",
@@ -69,7 +81,8 @@ TEST_CASE("Semantics: Pattern that uses an undefined name far in")
 
 TEST_CASE("Semantics: Rule that uses rewind")
 {
-    FileNode file = Parse("semantics/rule-using-rewind.txt");
+    std::string path = GetTestRoot() + "semantics/rule-using-rewind.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
                          "Error on line 6: 'rewind' action not yet supported",
@@ -78,7 +91,8 @@ TEST_CASE("Semantics: Rule that uses rewind")
 
 TEST_CASE("Semantics: Rule that uses a transition")
 {
-    FileNode file = Parse("semantics/rule-using-transition.txt");
+    std::string path = GetTestRoot() + "semantics/rule-using-transition.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file), "Error on line 6: 'transition' action not yet supported",
@@ -87,7 +101,9 @@ TEST_CASE("Semantics: Rule that uses a transition")
 
 TEST_CASE("Semantics: Reject pattern statements")
 {
-    FileNode file = Parse("semantics/reject-pattern-statements.txt");
+    std::string path =
+        GetTestRoot() + "semantics/reject-pattern-statements.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file), "Error on line 5: 'pattern' statement not yet supported",
@@ -96,7 +112,9 @@ TEST_CASE("Semantics: Reject pattern statements")
 
 TEST_CASE("Semantics: Reject duplicate produce-nothing")
 {
-    FileNode file = Parse("semantics/rule-duplicate-produce-nothing.txt");
+    std::string path =
+        GetTestRoot() + "semantics/rule-duplicate-produce-nothing.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file),
@@ -106,7 +124,8 @@ TEST_CASE("Semantics: Reject duplicate produce-nothing")
 
 TEST_CASE("Semantics: Reject duplicate produce")
 {
-    FileNode file = Parse("semantics/rule-duplicate-produce.txt");
+    std::string path = GetTestRoot() + "semantics/rule-duplicate-produce.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file),
@@ -116,7 +135,8 @@ TEST_CASE("Semantics: Reject duplicate produce")
 
 TEST_CASE("Semantics: Reject duplicate rewind")
 {
-    FileNode file = Parse("semantics/rule-duplicate-rewind.txt");
+    std::string path = GetTestRoot() + "semantics/rule-duplicate-rewind.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file),
@@ -126,7 +146,9 @@ TEST_CASE("Semantics: Reject duplicate rewind")
 
 TEST_CASE("Semantics: Reject duplicate transition")
 {
-    FileNode file = Parse("semantics/rule-duplicate-transition.txt");
+    std::string path =
+        GetTestRoot() + "semantics/rule-duplicate-transition.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file),
@@ -136,7 +158,8 @@ TEST_CASE("Semantics: Reject duplicate transition")
 
 TEST_CASE("Semantics: Reject duplicate increment")
 {
-    FileNode file = Parse("semantics/rule-duplicate-increment.txt");
+    std::string path = GetTestRoot() + "semantics/rule-duplicate-increment.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file),
@@ -146,7 +169,9 @@ TEST_CASE("Semantics: Reject duplicate increment")
 
 TEST_CASE("Semantics: Reject mismatched duplicate increment")
 {
-    FileNode file = Parse("semantics/rule-duplicate-mismatched-increment.txt");
+    std::string path =
+        GetTestRoot() + "semantics/rule-duplicate-mismatched-increment.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file),
@@ -156,7 +181,8 @@ TEST_CASE("Semantics: Reject mismatched duplicate increment")
 
 TEST_CASE("Semantics: Reject duplicate decrement")
 {
-    FileNode file = Parse("semantics/rule-duplicate-decrement.txt");
+    std::string path = GetTestRoot() + "semantics/rule-duplicate-decrement.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file),
@@ -166,7 +192,9 @@ TEST_CASE("Semantics: Reject duplicate decrement")
 
 TEST_CASE("Semantics: Reject mismatched duplicate decrement")
 {
-    FileNode file = Parse("semantics/rule-duplicate-mismatched-decrement.txt");
+    std::string path =
+        GetTestRoot() + "semantics/rule-duplicate-mismatched-decrement.txt";
+    FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
         Analyze(file),

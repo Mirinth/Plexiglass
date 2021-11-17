@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <string>
 
+#include <test_files.hpp>
 #include <utils.hpp>
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
@@ -13,8 +14,7 @@
 /// <returns>Absolute path to test files folder.</returns>
 std::string GetTestRoot()
 {
-    auto root = std::filesystem::absolute("./");
-    return root.string();
+    return test_root;
 }
 
 /// <summary>

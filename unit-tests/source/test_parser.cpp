@@ -1,9 +1,11 @@
 #include <string>
 
+#include "doctest.h"
+
 #include <error.hpp>
 #include <parser/parser.hpp>
+#include <test_files.hpp>
 
-#include "doctest.h"
 
 // ============================================================================
 // Misc test cases
@@ -11,14 +13,16 @@
 
 TEST_CASE("Parser: Empty file")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/empty-file.txt"),
+    std::string path = GetTestRoot() + "parser/empty-file.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 1: Expected keyword found eof",
                          PlexiException);
 }
 
 TEST_CASE("Parser: No keyword at start")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/no-keyword-at-start.txt"),
+    std::string path = GetTestRoot() + "parser/no-keyword-at-start.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Unrecognized keyword junk",
                          PlexiException);
 }
@@ -29,27 +33,32 @@ TEST_CASE("Parser: No keyword at start")
 
 TEST_CASE("Parser: Expression with no identifier")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/expression-with-no-identifier.txt"),
+    std::string path =
+        GetTestRoot() + "parser/expression-with-no-identifier.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected identifier found eof",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Expression with no indent")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/expression-with-no-indent.txt"),
+    std::string path = GetTestRoot() + "parser/expression-with-no-indent.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected indent found eof",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Expression with invalid regex")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/expression-with-bad-regex.txt"),
-                         "Error on line 3: Malformed regex.", PlexiException);
+    std::string path = GetTestRoot() + "parser/expression-with-bad-regex.txt";
+    CHECK_THROWS_WITH_AS(Parse(path), "Error on line 3: Malformed regex.",
+                         PlexiException);
 }
 
 TEST_CASE("Parser: Expression with extra stuff on first line")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/expression-long-first-line.txt"),
+    std::string path = GetTestRoot() + "parser/expression-long-first-line.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected indent found text junk",
                          PlexiException);
 }
@@ -60,43 +69,51 @@ TEST_CASE("Parser: Expression with extra stuff on first line")
 
 TEST_CASE("Parser: Pattern with no name")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/pattern-with-no-name.txt"),
+    std::string path = GetTestRoot() + "parser/pattern-with-no-name.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected identifier found eof",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Empty pattern")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/pattern-empty.txt"),
+    std::string path = GetTestRoot() + "parser/pattern-empty.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected indent found eof",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Pattern with extra stuff on first line")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/pattern-long-line.txt"),
+    std::string path = GetTestRoot() + "parser/pattern-long-line.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected indent found text junk",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Pattern with alternator at start")
 {
+    std::string path =
+        GetTestRoot() + "parser/pattern-with-alternator-at-start.txt";
     CHECK_THROWS_WITH_AS(
-        Parse("parser/pattern-with-alternator-at-start.txt"),
-        "Error on line 3: Expected identifier found alternator |",
+        Parse(path), "Error on line 3: Expected identifier found alternator |",
         PlexiException);
 }
 
 TEST_CASE("Parser: Pattern with alternator at end")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/pattern-with-alternator-at-end.txt"),
+    std::string path =
+        GetTestRoot() + "parser/pattern-with-alternator-at-end.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 4: Expected identifier found eof",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Pattern with duplicate alternator")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/pattern-with-duplicate-alternator.txt"),
+    std::string path =
+        GetTestRoot() + "parser/pattern-with-duplicate-alternator.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 3: Expected 'expression', 'pattern', "
                          "or 'rule' found alternator |",
                          PlexiException);
@@ -108,60 +125,64 @@ TEST_CASE("Parser: Pattern with duplicate alternator")
 
 TEST_CASE("Parser: Rule with no identifier")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/rule-with-no-identifier.txt"),
+    std::string path = GetTestRoot() + "parser/rule-with-no-identifier.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected identifier found eof",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Rule with no action")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/rule-with-no-action.txt"),
+    std::string path = GetTestRoot() + "parser/rule-with-no-action.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected indent found eof",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Rule with extra stuff on first line")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/rule-long-first-line.txt"),
+    std::string path = GetTestRoot() + "parser/rule-long-first-line.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 2: Expected indent found text junk",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Rule with bad action")
 {
-    CHECK_THROWS_WITH_AS(Parse("parser/rule-with-bad-action.txt"),
+    std::string path = GetTestRoot() + "parser/rule-with-bad-action.txt";
+    CHECK_THROWS_WITH_AS(Parse(path),
                          "Error on line 3: Expected action found text junk",
                          PlexiException);
 }
 
 TEST_CASE("Parser: Rule with produce at end of file")
 {
+    std::string path = GetTestRoot() + "parser/rule-with-produce-at-eof.txt";
     CHECK_THROWS_WITH_AS(
-        Parse("parser/rule-with-produce-at-eof.txt"),
-        "Error on line 3: Expected identifier before end of line",
+        Parse(path), "Error on line 3: Expected identifier before end of line",
         PlexiException);
 }
 
 TEST_CASE("Parser: Rule with empty produce")
 {
+    std::string path = GetTestRoot() + "parser/rule-with-empty-produce.txt";
     CHECK_THROWS_WITH_AS(
-        Parse("parser/rule-with-empty-produce.txt"),
-        "Error on line 3: Expected identifier before end of line",
+        Parse(path), "Error on line 3: Expected identifier before end of line",
         PlexiException);
 }
 
 TEST_CASE("Parser: Rule with transition at eof")
 {
+    std::string path = GetTestRoot() + "parser/rule-with-transition-at-eof.txt";
     CHECK_THROWS_WITH_AS(
-        Parse("parser/rule-with-transition-at-eof.txt"),
-        "Error on line 3: Expected identifier before end of line",
+        Parse(path), "Error on line 3: Expected identifier before end of line",
         PlexiException);
 }
 
 TEST_CASE("Parser: Rule with empty transition")
 {
+    std::string path = GetTestRoot() + "parser/rule-with-empty-transition.txt";
     CHECK_THROWS_WITH_AS(
-        Parse("parser/rule-with-empty-transition.txt"),
-        "Error on line 3: Expected identifier before end of line",
+        Parse(path), "Error on line 3: Expected identifier before end of line",
         PlexiException);
 }
