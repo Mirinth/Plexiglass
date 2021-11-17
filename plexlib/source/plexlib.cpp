@@ -155,8 +155,7 @@ int PlexMain(std::vector<std::string>& args,
 
     try
     {
-        std::string data = ReadFile(source.string());
-        FileNode file = Parse(data);
+        FileNode file = Parse(source.string());
         Analyze(file);
         Template(file, lexerName, header.string(), code.string(), debug);
         return success;

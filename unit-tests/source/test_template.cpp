@@ -18,8 +18,7 @@ TEST_CASE("Template: Test template")
     std::string code = testDir + "template_test-out.cpp";
     std::string source = "template/template_test-in.txt";
 
-    std::string data = ReadTestFile(source);
-    FileNode file = Parse(data);
+    FileNode file = Parse(source);
     Analyze(file);
     Template(file, testName, header, code, false);
 
@@ -41,8 +40,7 @@ TEST_CASE("Template: Test template with debug driver")
     std::string code = testDir + "template_test_debug-out.cpp";
     std::string source = "template/template_test_debug-in.txt";
 
-    std::string data = ReadTestFile(source);
-    FileNode file = Parse(data);
+    FileNode file = Parse(source);
     Analyze(file);
     Template(file, testName, header, code, true);
 

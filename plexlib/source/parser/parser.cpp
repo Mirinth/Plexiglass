@@ -5,6 +5,7 @@
 
 #include <error.hpp>
 #include <lexer/lexer.hpp>
+#include <utils.hpp>
 
 ActionNode Action(Lexer& lexer);
 ExpressionNode Expression(Lexer& lexer);
@@ -21,10 +22,11 @@ std::string Require(Lexer& lexer,
 /// <summary>
 /// Parse a block of data.
 /// </summary>
-/// <param name="data">The data to parse.</param>
+/// <param name="path">The path to the file to parse.</param>
 /// <returns>A FileNode representing the file.</returns>
-FileNode Parse(std::string_view data)
+FileNode Parse(const std::string& path)
 {
+    std::string data = ReadFile(path);
     Lexer lexer(data);
     return File(lexer);
 }

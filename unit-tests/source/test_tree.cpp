@@ -14,8 +14,7 @@
 /// <returns>The parse tree, serialized to a string.</returns>
 std::string BuildTree(std::string path)
 {
-    std::string data = ReadTestFile(path);
-    FileNode file = Parse(data);
+    FileNode file = Parse(path);
     std::stringstream out;
     out << file;
     return out.str();
