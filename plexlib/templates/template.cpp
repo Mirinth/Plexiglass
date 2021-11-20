@@ -5,7 +5,7 @@
 #include <regex>
 #include <vector>
 
-std::string ReadFile(std::string path);
+std::string ReadFile(const std::filesystem::path& path);
 
 struct Rule
 {
@@ -61,7 +61,7 @@ std::string ToString(TokenType type)
 /// Construct $LEXER_NAME.
 /// </summary>
 /// <param name="path">Path to the file to lex.</param>
-$LEXER_NAME::$LEXER_NAME(std::string path)
+$LEXER_NAME::$LEXER_NAME(const std::filesystem::path& path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
@@ -184,7 +184,7 @@ bool $LEXER_NAME::ShiftHelper()
 /// </summary>
 /// <param name="path">Path to the file to read the contents of.</param>
 /// <returns>The contents of the file.</returns>
-std::string ReadFile(std::string path)
+std::string ReadFile(const std::filesystem::path& path)
 {
     std::ifstream in(path);
     std::string data;
