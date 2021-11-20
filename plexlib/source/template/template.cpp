@@ -227,11 +227,13 @@ void ReplaceToString(std::string& content,
     std::stringstream out;
     for (const std::string& name : tokenNames)
     {
-        out << "case " << name << ":\n            return \"" << name
-            << "\";\n        ";
+        out << "case " << name << ":\n"
+            << "        str = \"" << name << "\";\n"
+            << "        break;\n"
+            << "    ";
     }
 
-    out << "default:\n            throw std::exception(\"Unknown token\");";
+    out << "default:\n            throw std::exception(\"Unrecognized token type in ToString()\");";
 
     Replace(content, "$TOKEN_TO_STRING", out.str());
 }

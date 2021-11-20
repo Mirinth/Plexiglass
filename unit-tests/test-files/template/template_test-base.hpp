@@ -12,7 +12,7 @@ enum TokenType
     PLEXIGLASS_NO_MATCH_TOKEN,
 };
 
-std::string ToString(TokenType type);
+std::string ToString(TokenType type, const std::string& text);
 
 class template_test
 {

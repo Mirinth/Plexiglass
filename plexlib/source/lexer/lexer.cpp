@@ -44,7 +44,7 @@ std::string ToString(TokenType type, const std::string& text)
         str = "unknown";
         break;
     default:
-        throw std::exception("Unrecognized token type in Token::ToString()");
+        throw std::exception("Unrecognized token type in ToString()");
     }
 
     if (!text.empty())

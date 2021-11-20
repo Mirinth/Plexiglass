@@ -45,16 +45,25 @@ std::vector<Rule> GetRules()
 }
 
 /// <summary>
-/// Convert a TokenType to a string.
+/// Get a human-readable string representation of a token.
 /// </summary>
-/// <param name="type">TokenType to convert to a string.</param>
-/// <returns>A string representation of the TokenType.</returns>
-std::string ToString(TokenType type)
+/// <param name="type">The token's type..</param>
+/// <param name="text">The token's text.</param>
+/// <returns>String representation of the token.</returns>
+std::string ToString(TokenType type, const std::string& text)
 {
+    std::string str;
     switch (type)
     {
-        $TOKEN_TO_STRING
+    $TOKEN_TO_STRING
     }
+
+    if (!text.empty())
+    {
+        str += " " + text;
+    }
+
+    return str;
 }
 
 /// <summary>
@@ -217,11 +226,11 @@ void RunLexer(std::string inputPath, std::string outputPath)
 
     while (lex.PeekToken() != TokenType::PLEXIGLASS_EOF)
     {
-        out << ToString(lex.PeekToken()) << " " << lex.PeekText() << "\n";
+        out << ToString(lex.PeekToken(), lex.PeekText()) << "\n";
         lex.Shift();
     }
 
-    out << ToString(lex.PeekToken()) << lex.PeekText() << "\n";
+    out << ToString(lex.PeekToken(), lex.PeekText()) << "\n";
 }
 
 /// <summary>

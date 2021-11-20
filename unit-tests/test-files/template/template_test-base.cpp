@@ -47,25 +47,38 @@ std::vector<Rule> GetRules()
 }
 
 /// <summary>
-/// Convert a TokenType to a string.
+/// Get a human-readable string representation of a token.
 /// </summary>
-/// <param name="type">TokenType to convert to a string.</param>
-/// <returns>A string representation of the TokenType.</returns>
-std::string ToString(TokenType type)
+/// <param name="type">The token's type..</param>
+/// <param name="text">The token's text.</param>
+/// <returns>String representation of the token.</returns>
+std::string ToString(TokenType type, const std::string& text)
 {
+    std::string str;
     switch (type)
     {
-        case CatToken:
-            return "CatToken";
-        case DogToken:
-            return "DogToken";
-        case PLEXIGLASS_EOF:
-            return "PLEXIGLASS_EOF";
-        case PLEXIGLASS_NO_MATCH_TOKEN:
-            return "PLEXIGLASS_NO_MATCH_TOKEN";
-        default:
-            throw std::exception("Unknown token");
+    case CatToken:
+        str = "CatToken";
+        break;
+    case DogToken:
+        str = "DogToken";
+        break;
+    case PLEXIGLASS_EOF:
+        str = "PLEXIGLASS_EOF";
+        break;
+    case PLEXIGLASS_NO_MATCH_TOKEN:
+        str = "PLEXIGLASS_NO_MATCH_TOKEN";
+        break;
+    default:
+            throw std::exception("Unrecognized token type in ToString()");
     }
+
+    if (!text.empty())
+    {
+        str += " " + text;
+    }
+
+    return str;
 }
 
 /// <summary>
@@ -228,11 +241,11 @@ void RunLexer(std::string inputPath, std::string outputPath)
 
     while (lex.PeekToken() != TokenType::PLEXIGLASS_EOF)
     {
-        out << ToString(lex.PeekToken()) << " " << lex.PeekText() << "\n";
+        out << ToString(lex.PeekToken(), lex.PeekText()) << "\n";
         lex.Shift();
     }
 
-    out << ToString(lex.PeekToken()) << lex.PeekText() << "\n";
+    out << ToString(lex.PeekToken(), lex.PeekText()) << "\n";
 }
 
 /// <summary>
