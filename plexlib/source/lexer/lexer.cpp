@@ -62,7 +62,7 @@ std::vector<Rule> GetRules()
     rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 1, "\n",
                        LexerState::Initial);
     rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0,
-                       "#[^\n]*\n", LexerState::_);
+                       "#[^\n]*", LexerState::_);
     
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
                        "expression",
@@ -82,7 +82,7 @@ std::vector<Rule> GetRules()
                        "pattern",
                        LexerState::Initial);
 
-    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "\\s+",
+    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "[ \t]+",
                        LexerState::_);
     return rules;
 }
