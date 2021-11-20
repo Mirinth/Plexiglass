@@ -9,7 +9,7 @@ enum TokenType
     $TOKEN_NAMES
 };
 
-std::string ToString(TokenType type);
+std::string ToString(TokenType type, const std::string& text);
 
 class $LEXER_NAME
 {
