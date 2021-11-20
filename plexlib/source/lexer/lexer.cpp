@@ -50,6 +50,8 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
+    rules.emplace_back(TokenType::Unknown, false, 1, "\n");
+    rules.emplace_back(TokenType::Unknown, false, 0, "#[^\n]*\n");
     rules.emplace_back(TokenType::Keyword, true, 0, "expression");
     rules.emplace_back(TokenType::Keyword, true, 0, "rule");
     rules.emplace_back(TokenType::Keyword, true, 0, "pattern");
