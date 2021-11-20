@@ -16,6 +16,12 @@ enum class TokenType
     Unknown,
 };
 
+enum class LexerState
+{
+    Initial,
+
+};
+
 std::string ToString(TokenType type, const std::string& text);
 
 class Lexer
@@ -32,6 +38,7 @@ private:
 
     std::string m_fileContent;
     std::string_view m_view;
+    LexerState m_state;
     size_t m_line;
     TokenType m_token;
     std::string m_text;

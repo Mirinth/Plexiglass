@@ -20,13 +20,20 @@ struct Rule
     /// <param name="pattern">
     /// A regular expression describing what the rule matches.
     /// </param>
-    Rule(TokenType token, bool produce, int increment, const char* pattern)
-        : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
+    Rule(LexerState active, TokenType token, bool produce, int increment, const char* pattern, LexerState target)
+        : Active(active)
+        , Target(target)
+        , Token(token)
+        , Produce(produce)
+        , Increment(increment)
+        , Pattern(pattern)
     {
     }
 
     Rule(Rule&& other) noexcept
-        : Token(std::move(other.Token))
+        : Active(other.Active)
+        , Target(other.Target)
+        , Token(std::move(other.Token))
         , Produce(other.Produce)
         , Increment(other.Increment)
         , Pattern(std::move(other.Pattern))
@@ -36,6 +43,8 @@ struct Rule
     Rule(Rule& other) = delete;
     Rule& operator=(const Rule& other) = default;
 
+    LexerState Active;
+    LexerState Target;
     TokenType Token;
     bool Produce;
     int Increment;
@@ -50,11 +59,18 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    rules.emplace_back(TokenType::Unknown, false, 1, "\n");
-    rules.emplace_back(TokenType::Unknown, false, 0, "#[^\n]*\n");
-    rules.emplace_back(TokenType::Keyword, true, 0, "expression");
-    rules.emplace_back(TokenType::Keyword, true, 0, "rule");
-    rules.emplace_back(TokenType::Keyword, true, 0, "pattern");
+    rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 1, "\n",
+                       LexerState::Initial);
+    rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 0,
+                       "#[^\n]*\n", LexerState::Initial);
+    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
+                       "expression",
+                       LexerState::Initial);
+    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, "rule",
+                       LexerState::Initial);
+    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
+                       "pattern",
+                       LexerState::Initial);
 
     return rules;
 }
@@ -111,6 +127,7 @@ Lexer::Lexer(const std::filesystem::path& path)
 {
     m_fileContent = ReadFile(path);
     m_view = m_fileContent;
+    m_state = LexerState::Initial;
     m_line = 1;
     Shift();
 }
@@ -179,6 +196,12 @@ bool Lexer::ShiftHelper()
     for (size_t index = 0; index < rules.size(); index++)
     {
         Rule& rule = rules[index];
+
+        if (rule.Active != m_state)
+        {
+            continue;
+        }
+
         vmatch m;
         bool matched =
             std::regex_search(m_view.begin(), m_view.end(), m, rule.Pattern);
@@ -208,12 +231,14 @@ bool Lexer::ShiftHelper()
         m_text = m_view.substr(0, max_length);
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
+        m_state = rules[max_index].Target;
         return true;
     }
     else if (max_length > 0)
     {
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
+        m_state = rules[max_index].Target;
         return false;
     }
     else
