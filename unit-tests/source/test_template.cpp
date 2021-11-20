@@ -20,7 +20,7 @@ TEST_CASE("Template: Test template")
 
     FileNode file = Parse(source);
     Analyze(file);
-    Template(file, testName, header.string(), code.string(), false);
+    Template(file, testName, header, code, false);
 
     std::string base = ReadTestFile("template/template_test-base.hpp");
     std::string out = ReadTestFile("template/template_test-out.hpp");
@@ -42,7 +42,7 @@ TEST_CASE("Template: Test template with debug driver")
 
     FileNode file = Parse(source);
     Analyze(file);
-    Template(file, testName, header.string(), code.string(), true);
+    Template(file, testName, header, code, true);
 
     std::string base = ReadTestFile("template/template_test_debug-base.hpp");
     std::string out = ReadTestFile("template/template_test_debug-out.hpp");

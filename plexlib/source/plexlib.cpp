@@ -157,7 +157,7 @@ int PlexMain(std::vector<std::string>& args,
     {
         FileNode file = Parse(source);
         Analyze(file);
-        Template(file, lexerName, header.string(), code.string(), debug);
+        Template(file, lexerName, header, code, debug);
         return success;
     }
     catch (const PlexiException& exc)
