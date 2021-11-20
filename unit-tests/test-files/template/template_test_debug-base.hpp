@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <string_view>
 
@@ -16,7 +17,7 @@ std::string ToString(TokenType type);
 class template_test_debug
 {
 public:
-    template_test_debug(std::string path);
+    template_test_debug(const std::filesystem::path& path);
     size_t PeekLine() const;
     TokenType PeekToken() const;
     std::string PeekText() const;

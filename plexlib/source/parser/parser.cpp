@@ -14,18 +14,18 @@ PatternNode Pattern(Lexer& lexer);
 RuleNode Rule(Lexer& lexer);
 
 std::string Require(Lexer& lexer,
-              std::string name,
-              TokenType type,
-              std::string value = "");
+                    std::string name,
+                    TokenType type,
+                    std::string value = "");
 
 /// <summary>
 /// Parse a block of data.
 /// </summary>
-/// <param name="data">The data to parse.</param>
+/// <param name="path">The path to the file to parse.</param>
 /// <returns>A FileNode representing the file.</returns>
-FileNode Parse(std::string_view data)
+FileNode Parse(std::filesystem::path path)
 {
-    Lexer lexer(data);
+    Lexer lexer(path);
     return File(lexer);
 }
 
@@ -77,7 +77,8 @@ ExpressionNode Expression(Lexer& lexer)
     std::string name = Require(lexer, "identifier", TokenType::Text);
     size_t expressionLine = lexer.PeekLine();
     Require(lexer, "indent", TokenType::Indent);
-    std::string expression = Require(lexer, "regular expression", TokenType::Regex);
+    std::string expression =
+        Require(lexer, "regular expression", TokenType::Regex);
 
     try
     {
@@ -108,8 +109,8 @@ FileNode File(Lexer& lexer)
     while (lexer.PeekToken() != TokenType::Eof)
     {
         size_t line = lexer.PeekLine();
-        std::string keyword = Require(lexer, "'expression', 'pattern', or 'rule'",
-                            TokenType::Keyword);
+        std::string keyword = Require(
+            lexer, "'expression', 'pattern', or 'rule'", TokenType::Keyword);
 
         if (keyword == "expression")
         {
@@ -229,9 +230,9 @@ RuleNode Rule(Lexer& lexer)
 /// </param>
 /// <returns>The text of the token shifted.</returns>
 std::string Require(Lexer& lexer,
-              std::string name,
-              TokenType type,
-              std::string value /*= ""*/)
+                    std::string name,
+                    TokenType type,
+                    std::string value /*= ""*/)
 {
     if (lexer.PeekToken() != type)
     {

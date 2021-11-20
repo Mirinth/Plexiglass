@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <string_view>
 
@@ -13,7 +14,7 @@ std::string ToString(TokenType type);
 class $LEXER_NAME
 {
 public:
-    $LEXER_NAME(std::string path);
+    $LEXER_NAME(const std::filesystem::path& path);
     size_t PeekLine() const;
     TokenType PeekToken() const;
     std::string PeekText() const;

@@ -62,7 +62,7 @@ void GetRule(ActionNode node, Rule& rule)
 }
 
 /// <summary>
-/// Modify a Rule's members to match a rule. 
+/// Modify a Rule's members to match a rule.
 /// </summary>
 /// <param name="node"></param>
 /// <returns></returns>
@@ -252,7 +252,7 @@ void ReplaceDebug(std::string& content, bool debug)
 /// </summary>
 /// <param name="content">What to write.</param>
 /// <param name="path">Where to write it.</param>
-void SaveFile(const std::string& content, const std::string& path)
+void SaveFile(const std::string& content, const std::filesystem::path& path)
 {
     std::ofstream out(path);
     out << content;
@@ -268,9 +268,10 @@ void SaveFile(const std::string& content, const std::string& path)
 /// The name used for the end-of-file token and the name used for the error
 /// token.
 /// </returns>
-std::tuple<std::string, std::string> TemplateHeader(FileNode file,
-                                                    std::string header,
-                                                    std::string name)
+std::tuple<std::string, std::string> TemplateHeader(
+    FileNode file,
+    std::filesystem::path header,
+    std::string name)
 {
     std::string content = header_template;
 
@@ -294,7 +295,7 @@ std::tuple<std::string, std::string> TemplateHeader(FileNode file,
 void TemplateBody(FileNode file,
                   std::string eofName,
                   std::string errorName,
-                  std::string code,
+                  std::filesystem::path code,
                   std::string name,
                   bool debug)
 {
@@ -319,8 +320,8 @@ void TemplateBody(FileNode file,
 /// <param name="debug">Whether to generate a debug mode lexer.</param>
 void Template(FileNode file,
               std::string name,
-              std::string header,
-              std::string code,
+              std::filesystem::path header,
+              std::filesystem::path code,
               bool debug)
 {
     std::filesystem::remove(header);

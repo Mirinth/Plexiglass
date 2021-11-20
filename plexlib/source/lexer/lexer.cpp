@@ -2,6 +2,8 @@
 
 #include <map>
 
+#include <utils.hpp>
+
 constexpr char* whitespace = " \t\r\n";
 
 bool StartsWith(const std::string_view& toSearch, const std::string find);
@@ -56,9 +58,12 @@ std::string ToString(TokenType type, const std::string& text)
 /// <summary>
 /// Construct a lexer.
 /// </summary>
-/// <param name="data">The data to lex.</param>
-Lexer::Lexer(std::string_view data)
-    : m_data(data), m_lineNumber(0), m_expectExpression(false)
+/// <param name="data">The path to the file to lex.</param>
+Lexer::Lexer(const std::filesystem::path& path)
+    : m_fileContent(ReadFile(path))
+    , m_data(m_fileContent)
+    , m_lineNumber(0)
+    , m_expectExpression(false)
 {
     FillBuffer();
 }
@@ -80,7 +85,7 @@ TokenType Lexer::PeekToken() const
 {
     return m_TokenTypeBuffer.front();
 }
- 
+
 /// <summary>
 /// Get the curren token's text.
 /// </summary>

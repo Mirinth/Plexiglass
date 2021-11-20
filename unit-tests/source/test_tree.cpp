@@ -12,10 +12,10 @@
 /// </summary>
 /// <param name="path">Path to the file to parse.</param>
 /// <returns>The parse tree, serialized to a string.</returns>
-std::string BuildTree(std::string path)
+std::string BuildTree(std::filesystem::path path)
 {
-    std::string data = ReadTestFile(path);
-    FileNode file = Parse(data);
+    path = GetTestRoot() / path;
+    FileNode file = Parse(path);
     std::stringstream out;
     out << file;
     return out.str();
