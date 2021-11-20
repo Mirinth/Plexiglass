@@ -1,15 +1,46 @@
 #include "lexer.hpp"
 
 #include <map>
+#include <regex>
 
 #include <utils.hpp>
 
 constexpr char* whitespace = " \t\r\n";
 
-bool StartsWith(const std::string_view& toSearch, const std::string find);
-std::string_view StripComment(std::string_view line);
-std::string_view StripWhitespace(std::string_view line);
-bool IsBlank(std::string_view line);
+struct Rule
+{
+    /// <summary>
+    /// Construct a Rule.
+    /// </summary>
+    /// <param name="token">The TokenType produced.</param>
+    /// <param name="produce">Whether a token is produced at all.</param>
+    /// <param name="increment">
+    /// How much to change the current line number by.
+    /// </param>
+    /// <param name="pattern">
+    /// A regular expression describing what the rule matches.
+    /// </param>
+    Rule(TokenType token, bool produce, int increment, const char* pattern)
+        : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
+    {
+    }
+
+    TokenType Token;
+    bool Produce;
+    int Increment;
+    std::regex Pattern;
+};
+
+/// <summary>
+/// Get the rules to be used by the lexer.
+/// </summary>
+/// <returns>The rules to be used by the lexer.</returns>
+std::vector<Rule> GetRules()
+{
+    std::vector<Rule> rules;
+
+    return rules;
+}
 
 /// <summary>
 /// Get a human-readable string representation of a token.
@@ -60,12 +91,11 @@ std::string ToString(TokenType type, const std::string& text)
 /// </summary>
 /// <param name="data">The path to the file to lex.</param>
 Lexer::Lexer(const std::filesystem::path& path)
-    : m_fileContent(ReadFile(path))
-    , m_data(m_fileContent)
-    , m_lineNumber(0)
-    , m_expectExpression(false)
 {
-    FillBuffer();
+    m_fileContent = ReadFile(path);
+    m_view = m_fileContent;
+    m_line = 1;
+    Shift();
 }
 
 /// <summary>
@@ -74,7 +104,7 @@ Lexer::Lexer(const std::filesystem::path& path)
 /// <returns>The current token's line number.</returns>
 size_t Lexer::PeekLine() const
 {
-    return m_LineNumberBuffer.front();
+    return m_line;
 }
 
 /// <summary>
@@ -83,7 +113,7 @@ size_t Lexer::PeekLine() const
 /// <returns>The current token's type.</returns>
 TokenType Lexer::PeekToken() const
 {
-    return m_TokenTypeBuffer.front();
+    return m_token;
 }
 
 /// <summary>
@@ -92,7 +122,7 @@ TokenType Lexer::PeekToken() const
 /// <returns>The current token's text.</returns>
 std::string Lexer::PeekText() const
 {
-    return m_TokenTextBuffer.front();
+    return m_text;
 }
 
 /// <summary>
@@ -100,222 +130,80 @@ std::string Lexer::PeekText() const
 /// </summary>
 void Lexer::Shift()
 {
-    m_LineNumberBuffer.pop();
-    m_TokenTypeBuffer.pop();
-    m_TokenTextBuffer.pop();
-    FillBuffer();
+    bool success = false;
+    while (!success)
+    {
+        success = ShiftHelper();
+    }
 }
 
 /// <summary>
-/// Lex a single token's text out of a line. Assumes line has something to lex.
-/// </summary>
-/// <param name="line">Line to lex from. Token is stripped from line.</param>
-/// <returns>The lexed token's text.</returns>
-std::string Lexer::LexToken(std::string_view& line)
-{
-    size_t space = line.find_first_of(whitespace);
-    std::string text;
-    if (space == std::string_view::npos)
-    {
-        text = std::string(line);
-        line = std::string_view();
-    }
-    else
-    {
-        text = std::string(line.substr(0, space));
-        line.remove_prefix(space + 1); // Remove the space too
-    }
-
-    return text;
-}
-
-/// <summary>
-/// Get the first line in m_data. After returning, m_data will be modified
-/// to remove the returned line from its content.
+/// Helper function for $LEXER_NAME::Shift().
 /// </summary>
 /// <returns>
-/// The first line in m_data. All lines but the last will have a trailing
-/// newline. May be empty if m_data is empty.
+/// true if the found token should be used, false if it should be skipped.
 /// </returns>
-std::string_view Lexer::GetLine()
+bool Lexer::ShiftHelper()
 {
-    if (m_data.empty())
+    if (m_view.empty())
     {
-        return std::string_view();
+        m_token = TokenType::Eof;
+        m_text = "";
+        return true;
     }
 
-    m_lineNumber++;
+    using vmatch = std::match_results<std::string_view::const_iterator>;
+    static std::vector<Rule> rules = GetRules();
 
-    std::string_view line;
-    size_t size = m_data.find('\n');
-    if (size == std::string_view::npos)
+    size_t max_index = 0;
+    size_t max_length = 0;
+    std::string max_string;
+
+    for (size_t index = 0; index < rules.size(); index++)
     {
-        line = m_data;
-        m_data.remove_prefix(m_data.size());
+        Rule rule = rules[index];
+        vmatch m;
+        bool matched =
+            std::regex_search(m_view.begin(), m_view.end(), m, rule.Pattern);
+        if (!matched || m.position() != 0)
+        {
+            continue;
+        }
+
+        // Ensure following cast is safe
+        if (m.length() < 0)
+        {
+            throw std::exception("$LEXER_NAME::Shift(): Length was negative.");
+        }
+        size_t length = static_cast<size_t>(std::abs(m.length()));
+
+        if (length > max_length)
+        {
+            max_length = length;
+            max_index = index;
+            max_string = m.str();
+        }
+    }
+
+    if (max_length > 0 && rules[max_index].Produce)
+    {
+        m_token = rules[max_index].Token;
+        m_text = m_view.substr(0, max_length);
+        m_view.remove_prefix(max_length);
+        m_line += rules[max_index].Increment;
+        return true;
+    }
+    else if (max_length > 0)
+    {
+        m_view.remove_prefix(max_length);
+        m_line += rules[max_index].Increment;
+        return false;
     }
     else
     {
-        line = m_data.substr(0, size + 1); // include the newline
-        m_data.remove_prefix(size + 1);
+        m_token = TokenType::Unknown;
+        m_text = "";
+        m_view.remove_prefix(1);
+        return true;
     }
-
-    return line;
-}
-
-/// <summary>
-/// Break an entire line into tokens, pushing them all into m_buffer.
-/// m_buffer may still be empty after a call to LexLine if the line
-/// contained no tokens.
-/// </summary>
-void Lexer::LexLine(std::string_view line)
-{
-    line = StripComment(line);
-    if (IsBlank(line))
-    {
-        return;
-    }
-
-    if (StartsWith(line, "    ") || StartsWith(line, "\t"))
-    {
-        m_LineNumberBuffer.push(m_lineNumber);
-        m_TokenTypeBuffer.push(TokenType::Indent);
-        m_TokenTextBuffer.push("");
-
-        line = StripWhitespace(line);
-
-        if (m_expectExpression)
-        {
-            m_expectExpression = false;
-            if (line.back() == '\n')
-            {
-                line.remove_suffix(1);
-            }
-            m_LineNumberBuffer.push(m_lineNumber);
-            m_TokenTypeBuffer.push(TokenType::Regex);
-            m_TokenTextBuffer.push(std::string(line));
-
-            return;
-        }
-
-        while (!IsBlank(line))
-        {
-            line = StripWhitespace(line);
-            if (line[0] == '|')
-            {
-                m_LineNumberBuffer.push(m_lineNumber);
-                m_TokenTypeBuffer.push(TokenType::Alternator);
-                m_TokenTextBuffer.push("|");
-                line.remove_prefix(1);
-            }
-            else
-            {
-                std::string text = LexToken(line);
-                m_LineNumberBuffer.push(m_lineNumber);
-                m_TokenTypeBuffer.push(TokenType::Text);
-                m_TokenTextBuffer.push(text);
-            }
-        }
-    }
-    else
-    {
-        line = StripWhitespace(line);
-        std::string text = LexToken(line);
-        m_LineNumberBuffer.push(m_lineNumber);
-        m_TokenTypeBuffer.push(TokenType::Keyword);
-        m_TokenTextBuffer.push(text);
-
-        if (text == "expression")
-        {
-            m_expectExpression = true;
-        }
-
-        while (!IsBlank(line))
-        {
-            line = StripWhitespace(line);
-            text = LexToken(line);
-            m_LineNumberBuffer.push(m_lineNumber);
-            m_TokenTypeBuffer.push(TokenType::Text);
-            m_TokenTextBuffer.push(text);
-        }
-    }
-}
-
-/// <summary>
-/// Ensure there is at least one token in the buffer.
-/// </summary>
-void Lexer::FillBuffer()
-{
-    while (m_LineNumberBuffer.empty() && !m_data.empty())
-    {
-        std::string_view line = GetLine();
-        LexLine(line);
-    }
-
-    if (m_LineNumberBuffer.empty())
-    {
-        m_LineNumberBuffer.push(m_lineNumber);
-        m_TokenTypeBuffer.push(TokenType::Eof);
-        m_TokenTextBuffer.push("");
-    }
-}
-
-/// <summary>
-/// Determine whether toSearch starts with find.
-/// </summary>
-/// <param name="toSearch">What to search.</param>
-/// <param name="find">What to find.</param>
-/// <returns>Whether toSearch starts with find.</returns>
-bool StartsWith(const std::string_view& toSearch, const std::string find)
-{
-    for (size_t i = 0; i < toSearch.size() && i < find.size(); i++)
-    {
-        if (toSearch[i] != find[i])
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-/// <summary>
-/// Remove the comment from the end of a line, if any.
-/// </summary>
-/// <param name="line">Line to remove the comment from.</param>
-/// <returns>The line, with any comments removed.</returns>
-std::string_view StripComment(std::string_view line)
-{
-    size_t marker = line.find_first_of("#");
-    if (marker == std::string_view::npos)
-    {
-        return line;
-    }
-
-    return line.substr(0, marker);
-}
-
-/// <summary>
-/// Remove any leading whitespace in a line.
-/// </summary>
-/// <param name="line">The line to strip.</param>
-/// <returns>The stripped line.</returns>
-std::string_view StripWhitespace(std::string_view line)
-{
-    size_t start = line.find_first_not_of(whitespace);
-    if (start != std::string_view::npos)
-    {
-        return line.substr(start);
-    }
-
-    return line;
-}
-
-/// <summary>
-/// Check whether a line is empty or consists only of whitespace.
-/// </summary>
-/// <param name="line">The line to check.</param>
-/// <returns>Whether the line is blank.</returns>
-bool IsBlank(std::string_view line)
-{
-    return (line.empty()
-            || line.find_first_not_of(whitespace) == std::string_view::npos);
 }
