@@ -25,6 +25,17 @@ struct Rule
     {
     }
 
+    Rule(Rule&& other) noexcept
+        : Token(std::move(other.Token))
+        , Produce(other.Produce)
+        , Increment(other.Increment)
+        , Pattern(std::move(other.Pattern))
+    {
+    }
+
+    Rule(Rule& other) = delete;
+    Rule& operator=(const Rule& other) = default;
+
     TokenType Token;
     bool Produce;
     int Increment;
@@ -38,6 +49,8 @@ struct Rule
 std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
+
+    rules.emplace_back(TokenType::Keyword, true, 0, "expression");
 
     return rules;
 }
@@ -161,7 +174,7 @@ bool Lexer::ShiftHelper()
 
     for (size_t index = 0; index < rules.size(); index++)
     {
-        Rule rule = rules[index];
+        Rule& rule = rules[index];
         vmatch m;
         bool matched =
             std::regex_search(m_view.begin(), m_view.end(), m, rule.Pattern);
