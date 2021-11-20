@@ -61,8 +61,8 @@ std::vector<Rule> GetRules()
 
     rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 1, "\n",
                        LexerState::Initial);
-    rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 0,
-                       "#[^\n]*\n", LexerState::Initial);
+    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0,
+                       "#[^\n]*\n", LexerState::_);
     
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
                        "expression",
@@ -82,6 +82,8 @@ std::vector<Rule> GetRules()
                        "pattern",
                        LexerState::Initial);
 
+    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "\\s+",
+                       LexerState::_);
     return rules;
 }
 
@@ -207,7 +209,7 @@ bool Lexer::ShiftHelper()
     {
         Rule& rule = rules[index];
 
-        if (rule.Active != m_state)
+        if (rule.Active != m_state && rule.Active != LexerState::_)
         {
             continue;
         }
@@ -241,14 +243,20 @@ bool Lexer::ShiftHelper()
         m_text = m_view.substr(0, max_length);
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
-        m_state = rules[max_index].Target;
+        if (rules[max_index].Target != LexerState::_)
+        {
+            m_state = rules[max_index].Target;
+        }
         return true;
     }
     else if (max_length > 0)
     {
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
-        m_state = rules[max_index].Target;
+        if (rules[max_index].Target != LexerState::_)
+        {
+            m_state = rules[max_index].Target;
+        }
         return false;
     }
     else
