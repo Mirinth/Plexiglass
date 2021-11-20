@@ -215,7 +215,7 @@ bool Lexer::ShiftHelper()
     else
     {
         m_token = TokenType::Unknown;
-        m_text = "";
+        m_text = m_view.substr(0, 1);
         m_view.remove_prefix(1);
         return true;
     }
