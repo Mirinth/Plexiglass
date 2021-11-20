@@ -20,11 +20,17 @@ enum class LexerState
 {
     _,
     Initial,
+
     ExpressionKeyword,
     ExpressionName,
     ExpressionNewline,
     ExpressionIndent,
     ExpressionPattern,
+
+    PatternKeyword,
+    PatternName,
+    PatternNewline,
+    PatternIndent,
 };
 
 std::string ToString(TokenType type, const std::string& text);

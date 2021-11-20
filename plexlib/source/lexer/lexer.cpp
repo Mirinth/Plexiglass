@@ -68,7 +68,7 @@ std::vector<Rule> GetRules()
                        "expression",
                        LexerState::ExpressionKeyword);
     rules.emplace_back(LexerState::ExpressionKeyword, TokenType::Text, true, 0,
-                       "[^ \t\r\n]+", LexerState::ExpressionName);
+                       "[^# \t\r\n]+", LexerState::ExpressionName);
     rules.emplace_back(LexerState::ExpressionName, TokenType::Unknown, false, 1,
                        "\n", LexerState::ExpressionNewline);
     rules.emplace_back(LexerState::ExpressionNewline, TokenType::Indent, true,
@@ -76,13 +76,27 @@ std::vector<Rule> GetRules()
     rules.emplace_back(LexerState::ExpressionIndent, TokenType::Regex, true, 0,
                        "[^\n]+", LexerState::Initial);
 
+    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
+                       "pattern", LexerState::PatternKeyword);
+    rules.emplace_back(LexerState::PatternKeyword, TokenType::Text, true, 0,
+                       "[^# \t\r\n]+", LexerState::PatternName);
+    rules.emplace_back(LexerState::PatternName, TokenType::Unknown, false, 1,
+                       "\n", LexerState::PatternNewline);
+    rules.emplace_back(LexerState::PatternNewline, TokenType::Indent, true, 0,
+                       "\t|    ", LexerState::PatternIndent);
+    rules.emplace_back(LexerState::PatternIndent, TokenType::Alternator, true,
+                       0, "\\|", LexerState::PatternIndent);
+    rules.emplace_back(LexerState::PatternIndent, TokenType::Text, true, 0,
+                       "[^# \t\r\n]+", LexerState::PatternIndent);
+    rules.emplace_back(LexerState::PatternIndent, TokenType::Unknown, false, 1,
+                       "\n", LexerState::PatternNewline);
+    rules.emplace_back(LexerState::PatternIndent, TokenType::Unknown, false, 2,
+                       "\n\n", LexerState::Initial);
+
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, "rule",
                        LexerState::Initial);
-    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
-                       "pattern",
-                       LexerState::Initial);
-
-    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "[ \t]+",
+    
+    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "[ \t]",
                        LexerState::_);
     return rules;
 }
