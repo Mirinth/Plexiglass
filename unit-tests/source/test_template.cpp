@@ -11,16 +11,16 @@
 
 TEST_CASE("Template: Test template")
 {
-    std::string testDir = GetTestRoot() + "template/";
+    std::filesystem::path testDir = GetTestRoot() / "template/";
 
     std::string testName = "template_test";
-    std::string header = testDir + "template_test-out.hpp";
-    std::string code = testDir + "template_test-out.cpp";
-    std::filesystem::path source = testDir + "template_test-in.txt";
+    std::filesystem::path header = testDir / "template_test-out.hpp";
+    std::filesystem::path code = testDir / "template_test-out.cpp";
+    std::filesystem::path source = testDir / "template_test-in.txt";
 
     FileNode file = Parse(source);
     Analyze(file);
-    Template(file, testName, header, code, false);
+    Template(file, testName, header.string(), code.string(), false);
 
     std::string base = ReadTestFile("template/template_test-base.hpp");
     std::string out = ReadTestFile("template/template_test-out.hpp");
@@ -33,16 +33,16 @@ TEST_CASE("Template: Test template")
 
 TEST_CASE("Template: Test template with debug driver")
 {
-    std::string testDir = GetTestRoot() + "template/";
+    std::filesystem::path testDir = GetTestRoot() / "template/";
 
     std::string testName = "template_test_debug";
-    std::string header = testDir + "template_test_debug-out.hpp";
-    std::string code = testDir + "template_test_debug-out.cpp";
-    std::filesystem::path source = testDir + "template_test_debug-in.txt";
+    std::filesystem::path header = testDir / "template_test_debug-out.hpp";
+    std::filesystem::path code = testDir / "template_test_debug-out.cpp";
+    std::filesystem::path source = testDir / "template_test_debug-in.txt";
 
     FileNode file = Parse(source);
     Analyze(file);
-    Template(file, testName, header, code, true);
+    Template(file, testName, header.string(), code.string(), true);
 
     std::string base = ReadTestFile("template/template_test_debug-base.hpp");
     std::string out = ReadTestFile("template/template_test_debug-out.hpp");

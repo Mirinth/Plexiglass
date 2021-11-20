@@ -10,7 +10,7 @@
 TEST_CASE("Lexer: Test the lexer")
 {
     std::stringstream out;
-    std::string path = GetTestRoot() + "lexer/lexer-test-in.txt";
+    std::filesystem::path path = GetTestRoot() / "lexer/lexer-test-in.txt";
     std::string base = ReadTestFile("lexer/lexer-test-base.txt");
 
     Lexer lexer(path);

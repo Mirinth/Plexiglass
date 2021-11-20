@@ -12,7 +12,7 @@
 /// Assumes the current directory is where test files are located.
 /// </summary>
 /// <returns>Absolute path to test files folder.</returns>
-std::string GetTestRoot()
+std::filesystem::path GetTestRoot()
 {
     return test_root;
 }
@@ -26,6 +26,6 @@ std::string GetTestRoot()
 /// <returns>The contents of the test file.</returns>
 std::string ReadTestFile(std::string name)
 {
-    std::filesystem::path path = GetTestRoot() + name;
+    std::filesystem::path path = GetTestRoot() / name;
     return ReadFile(path);
 }

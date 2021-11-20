@@ -9,7 +9,7 @@
 TEST_CASE("Semantics: Expression with duplicate name")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/expression-duplicate-name.txt";
+        GetTestRoot() / "semantics/expression-duplicate-name.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
@@ -20,7 +20,7 @@ TEST_CASE("Semantics: Expression with duplicate name")
 TEST_CASE("Semantics: Pattern with duplicate name")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/pattern-duplicate-name.txt";
+        GetTestRoot() / "semantics/pattern-duplicate-name.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
@@ -31,7 +31,7 @@ TEST_CASE("Semantics: Pattern with duplicate name")
 TEST_CASE("Semantics: Pattern with name that duplicates an expression")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/pattern-expression-name-conflict.txt";
+        GetTestRoot() / "semantics/pattern-expression-name-conflict.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
@@ -42,7 +42,7 @@ TEST_CASE("Semantics: Pattern with name that duplicates an expression")
 TEST_CASE("Semantics: Expression with name that duplicates a pattern")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/expression-pattern-name-conflict.txt";
+        GetTestRoot() / "semantics/expression-pattern-name-conflict.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
@@ -53,7 +53,7 @@ TEST_CASE("Semantics: Expression with name that duplicates a pattern")
 TEST_CASE("Semantics: Rule that uses an undefined name")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-name-undefined.txt";
+        GetTestRoot() / "semantics/rule-name-undefined.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
@@ -64,7 +64,7 @@ TEST_CASE("Semantics: Rule that uses an undefined name")
 TEST_CASE("Semantics: Pattern that uses an undefined name")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/pattern-name-undefined.txt";
+        GetTestRoot() / "semantics/pattern-name-undefined.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file), "Error on line 3: Undefined name 'abc'",
@@ -74,7 +74,7 @@ TEST_CASE("Semantics: Pattern that uses an undefined name")
 TEST_CASE("Semantics: Pattern that uses an undefined name far in")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/pattern-name-undefined-far-in.txt";
+        GetTestRoot() / "semantics/pattern-name-undefined-far-in.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
@@ -85,7 +85,7 @@ TEST_CASE("Semantics: Pattern that uses an undefined name far in")
 TEST_CASE("Semantics: Rule that uses rewind")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-using-rewind.txt";
+        GetTestRoot() / "semantics/rule-using-rewind.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(Analyze(file),
@@ -96,7 +96,7 @@ TEST_CASE("Semantics: Rule that uses rewind")
 TEST_CASE("Semantics: Rule that uses a transition")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-using-transition.txt";
+        GetTestRoot() / "semantics/rule-using-transition.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -107,7 +107,7 @@ TEST_CASE("Semantics: Rule that uses a transition")
 TEST_CASE("Semantics: Reject pattern statements")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/reject-pattern-statements.txt";
+        GetTestRoot() / "semantics/reject-pattern-statements.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -118,7 +118,7 @@ TEST_CASE("Semantics: Reject pattern statements")
 TEST_CASE("Semantics: Reject duplicate produce-nothing")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-duplicate-produce-nothing.txt";
+        GetTestRoot() / "semantics/rule-duplicate-produce-nothing.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -130,7 +130,7 @@ TEST_CASE("Semantics: Reject duplicate produce-nothing")
 TEST_CASE("Semantics: Reject duplicate produce")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-duplicate-produce.txt";
+        GetTestRoot() / "semantics/rule-duplicate-produce.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -142,7 +142,7 @@ TEST_CASE("Semantics: Reject duplicate produce")
 TEST_CASE("Semantics: Reject duplicate rewind")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-duplicate-rewind.txt";
+        GetTestRoot() / "semantics/rule-duplicate-rewind.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -154,7 +154,7 @@ TEST_CASE("Semantics: Reject duplicate rewind")
 TEST_CASE("Semantics: Reject duplicate transition")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-duplicate-transition.txt";
+        GetTestRoot() / "semantics/rule-duplicate-transition.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -166,7 +166,7 @@ TEST_CASE("Semantics: Reject duplicate transition")
 TEST_CASE("Semantics: Reject duplicate increment")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-duplicate-increment.txt";
+        GetTestRoot() / "semantics/rule-duplicate-increment.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -178,7 +178,7 @@ TEST_CASE("Semantics: Reject duplicate increment")
 TEST_CASE("Semantics: Reject mismatched duplicate increment")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-duplicate-mismatched-increment.txt";
+        GetTestRoot() / "semantics/rule-duplicate-mismatched-increment.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -190,7 +190,7 @@ TEST_CASE("Semantics: Reject mismatched duplicate increment")
 TEST_CASE("Semantics: Reject duplicate decrement")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-duplicate-decrement.txt";
+        GetTestRoot() / "semantics/rule-duplicate-decrement.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
@@ -202,7 +202,7 @@ TEST_CASE("Semantics: Reject duplicate decrement")
 TEST_CASE("Semantics: Reject mismatched duplicate decrement")
 {
     std::filesystem::path path =
-        GetTestRoot() + "semantics/rule-duplicate-mismatched-decrement.txt";
+        GetTestRoot() / "semantics/rule-duplicate-mismatched-decrement.txt";
     FileNode file = Parse(path);
 
     CHECK_THROWS_WITH_AS(
