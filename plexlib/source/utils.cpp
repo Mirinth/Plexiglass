@@ -8,7 +8,7 @@
 /// </summary>
 /// <param name="path">Path to the file.</param>
 /// <returns>The file's contents.</returns>
-std::string ReadFile(std::string path)
+std::string ReadFile(std::filesystem::path path)
 {
     std::ifstream in(path);
     std::string data;

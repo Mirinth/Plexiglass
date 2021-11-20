@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <queue>
 #include <string>
 #include <string_view>
@@ -20,7 +21,7 @@ std::string ToString(TokenType type, const std::string& text);
 class Lexer
 {
 public:
-    Lexer(const std::string& path);
+    Lexer(const std::filesystem::path& path);
     size_t PeekLine() const;
     TokenType PeekToken() const;
     std::string PeekText() const;

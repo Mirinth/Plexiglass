@@ -26,6 +26,6 @@ std::string GetTestRoot()
 /// <returns>The contents of the test file.</returns>
 std::string ReadTestFile(std::string name)
 {
-    std::string path = GetTestRoot() + name;
+    std::filesystem::path path = GetTestRoot() + name;
     return ReadFile(path);
 }

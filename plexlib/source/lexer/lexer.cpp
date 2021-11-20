@@ -59,7 +59,7 @@ std::string ToString(TokenType type, const std::string& text)
 /// Construct a lexer.
 /// </summary>
 /// <param name="data">The path to the file to lex.</param>
-Lexer::Lexer(const std::string& path)
+Lexer::Lexer(const std::filesystem::path& path)
     : m_fileContent(ReadFile(path))
     , m_data(m_fileContent)
     , m_lineNumber(0)
