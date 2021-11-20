@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
+#include <filesystem>
 
 #include <parser/tree.hpp>
 
-FileNode Parse(const std::string& path);
+FileNode Parse(std::filesystem::path path);

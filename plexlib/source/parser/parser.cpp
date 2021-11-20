@@ -23,7 +23,7 @@ std::string Require(Lexer& lexer,
 /// </summary>
 /// <param name="path">The path to the file to parse.</param>
 /// <returns>A FileNode representing the file.</returns>
-FileNode Parse(const std::string& path)
+FileNode Parse(std::filesystem::path path)
 {
     Lexer lexer(path);
     return File(lexer);

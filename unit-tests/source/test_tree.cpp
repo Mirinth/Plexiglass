@@ -15,7 +15,7 @@
 std::string BuildTree(std::string path)
 {
     path = GetTestRoot() + path;
-    FileNode file = Parse(path);
+    FileNode file = Parse(std::filesystem::path(path));
     std::stringstream out;
     out << file;
     return out.str();
