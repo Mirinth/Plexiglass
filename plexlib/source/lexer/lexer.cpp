@@ -51,6 +51,8 @@ std::vector<Rule> GetRules()
     std::vector<Rule> rules;
 
     rules.emplace_back(TokenType::Keyword, true, 0, "expression");
+    rules.emplace_back(TokenType::Keyword, true, 0, "rule");
+    rules.emplace_back(TokenType::Keyword, true, 0, "pattern");
 
     return rules;
 }
