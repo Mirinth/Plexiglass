@@ -63,9 +63,19 @@ std::vector<Rule> GetRules()
                        LexerState::Initial);
     rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 0,
                        "#[^\n]*\n", LexerState::Initial);
+    
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
                        "expression",
-                       LexerState::Initial);
+                       LexerState::ExpressionKeyword);
+    rules.emplace_back(LexerState::ExpressionKeyword, TokenType::Text, true, 0,
+                       "[^ \t\r\n]+", LexerState::ExpressionName);
+    rules.emplace_back(LexerState::ExpressionName, TokenType::Unknown, false, 1,
+                       "\n", LexerState::ExpressionNewline);
+    rules.emplace_back(LexerState::ExpressionNewline, TokenType::Indent, true,
+                       0, "\t|    ", LexerState::ExpressionIndent);
+    rules.emplace_back(LexerState::ExpressionIndent, TokenType::Regex, true, 0,
+                       "[^\n]+", LexerState::Initial);
+
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, "rule",
                        LexerState::Initial);
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,

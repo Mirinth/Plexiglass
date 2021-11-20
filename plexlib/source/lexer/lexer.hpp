@@ -19,7 +19,11 @@ enum class TokenType
 enum class LexerState
 {
     Initial,
-
+    ExpressionKeyword,
+    ExpressionName,
+    ExpressionNewline,
+    ExpressionIndent,
+    ExpressionPattern,
 };
 
 std::string ToString(TokenType type, const std::string& text);
