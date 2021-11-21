@@ -133,6 +133,8 @@ std::vector<Rule> GetRules()
                        false, 1, "\n", LexerState::RuleNewline);
     rules.emplace_back(LexerState::RuleCompleteAction, TokenType::Unknown,
                        false, 2, "\n\n", LexerState::Initial);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "[^# \t\r\n]+", LexerState::RuleCompleteAction);
 
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
                        "[^# \t\r\n]+", LexerState::Initial);
