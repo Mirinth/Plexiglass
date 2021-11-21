@@ -94,7 +94,36 @@ std::vector<Rule> GetRules()
                        "\n\n", LexerState::Initial);
 
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, "rule",
-                       LexerState::Initial);
+                       LexerState::RuleKeyword);
+    rules.emplace_back(LexerState::RuleKeyword, TokenType::Text, true, 0,
+                       "[^# \t\r\n]+", LexerState::RuleName);
+    rules.emplace_back(LexerState::RuleName, TokenType::Unknown, false, 1,
+                       "\n", LexerState::RuleNewline);
+    rules.emplace_back(LexerState::RuleNewline, TokenType::Indent, true, 0,
+                       "\t|    ", LexerState::RuleIndent);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "produce-nothing", LexerState::RuleCompleteAction);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "rewind", LexerState::RuleCompleteAction);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "\\+\\+line", LexerState::RuleCompleteAction);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "line\\+\\+", LexerState::RuleCompleteAction);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "--line", LexerState::RuleCompleteAction);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "line--", LexerState::RuleCompleteAction);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "produce", LexerState::RulePartialAction);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
+                       "transition", LexerState::RulePartialAction);
+    rules.emplace_back(LexerState::RulePartialAction, TokenType::Text, true, 0,
+                       "[^# \t\r\n]+", LexerState::RuleCompleteAction);
+    rules.emplace_back(LexerState::RuleCompleteAction, TokenType::Unknown,
+                       false, 1, "\n", LexerState::RuleNewline);
+    rules.emplace_back(LexerState::RuleCompleteAction, TokenType::Unknown,
+                       false, 2, "\n\n", LexerState::Initial);
+
     
     rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "[ \t]",
                        LexerState::_);

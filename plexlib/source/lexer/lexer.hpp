@@ -31,6 +31,13 @@ enum class LexerState
     PatternName,
     PatternNewline,
     PatternIndent,
+
+    RuleKeyword,
+    RuleName,
+    RuleNewline,
+    RuleIndent,
+    RuleCompleteAction,
+    RulePartialAction,
 };
 
 std::string ToString(TokenType type, const std::string& text);
