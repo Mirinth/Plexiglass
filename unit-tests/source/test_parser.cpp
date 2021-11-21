@@ -15,7 +15,7 @@ TEST_CASE("Parser: Empty file")
 {
     std::filesystem::path path = GetTestRoot() / "parser/empty-file.txt";
     CHECK_THROWS_WITH_AS(Parse(path),
-                         "Error on line 1: Expected keyword found eof",
+                         "Error on line 2: Expected keyword found eof",
                          PlexiException);
 }
 
