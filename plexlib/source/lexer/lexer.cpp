@@ -20,7 +20,12 @@ struct Rule
     /// <param name="pattern">
     /// A regular expression describing what the rule matches.
     /// </param>
-    Rule(LexerState active, TokenType token, bool produce, int increment, const char* pattern, LexerState target)
+    Rule(LexerState active,
+         TokenType token,
+         bool produce,
+         int increment,
+         const char* pattern,
+         LexerState target)
         : Active(active)
         , Target(target)
         , Token(token)
@@ -61,12 +66,11 @@ std::vector<Rule> GetRules()
 
     rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 1, "\n",
                        LexerState::Initial);
-    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0,
-                       "#[^\n]*", LexerState::_);
-    
+    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "#[^\n]*",
+                       LexerState::_);
+
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0,
-                       "expression",
-                       LexerState::ExpressionKeyword);
+                       "expression", LexerState::ExpressionKeyword);
     rules.emplace_back(LexerState::ExpressionKeyword, TokenType::Text, true, 0,
                        "[^# \t\r\n]+", LexerState::ExpressionName);
     rules.emplace_back(LexerState::ExpressionName, TokenType::Unknown, false, 1,
@@ -97,8 +101,8 @@ std::vector<Rule> GetRules()
                        LexerState::RuleKeyword);
     rules.emplace_back(LexerState::RuleKeyword, TokenType::Text, true, 0,
                        "[^# \t\r\n]+", LexerState::RuleName);
-    rules.emplace_back(LexerState::RuleName, TokenType::Unknown, false, 1,
-                       "\n", LexerState::RuleNewline);
+    rules.emplace_back(LexerState::RuleName, TokenType::Unknown, false, 1, "\n",
+                       LexerState::RuleNewline);
     rules.emplace_back(LexerState::RuleNewline, TokenType::Indent, true, 0,
                        "\t|    ", LexerState::RuleIndent);
     rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0,
@@ -124,7 +128,7 @@ std::vector<Rule> GetRules()
     rules.emplace_back(LexerState::RuleCompleteAction, TokenType::Unknown,
                        false, 2, "\n\n", LexerState::Initial);
 
-    
+
     rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "[ \t]",
                        LexerState::_);
     return rules;
