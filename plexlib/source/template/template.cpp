@@ -10,6 +10,14 @@
 #include <template-holder.hpp>
 #include <utils.hpp>
 
+struct TemplateRule
+{
+    bool Produces;       // whether anything is produced
+    std::string Token;   // what gets produced (if anything)
+    int Increment;       // how much to increment the line number by
+    std::string Pattern; // regex to match
+};
+
 /// <summary>
 /// Get names defined by a lexer.
 /// </summary>
@@ -32,11 +40,11 @@ void GetTokenNames(FileNode node, std::set<std::string>& names)
 }
 
 /// <summary>
-/// Modify a Rule's members to match an action.
+/// Modify a TemplateRule's members to match an action.
 /// </summary>
 /// <param name="node">The action.</param>
 /// <param name="rule">The rule.</param>
-void GetRule(ActionNode node, Rule& rule)
+void GetRule(ActionNode node, TemplateRule& rule)
 {
     if (node->name == "produce-nothing")
     {
@@ -62,13 +70,13 @@ void GetRule(ActionNode node, Rule& rule)
 }
 
 /// <summary>
-/// Modify a Rule's members to match a rule.
+/// Get a TemplateRule for a RuleNode.
 /// </summary>
-/// <param name="node"></param>
-/// <returns></returns>
-Rule GetRule(RuleNode node)
+/// <param name="node">RuleNode to get the TemplateRule for.</param>
+/// <returns>TemplateRule for the RuleNode.</returns>
+TemplateRule GetRule(RuleNode node)
 {
-    Rule rule = { false, "", 0, node->name };
+    TemplateRule rule = { false, "", 0, node->name };
 
     for (const auto& action : node->actions)
     {
@@ -88,11 +96,11 @@ Rule GetRule(RuleNode node)
 /// <returns>The rule string.</returns>
 std::string GetRuleString(FileNode node, std::string illegalTokenName)
 {
-    std::vector<Rule> producedRules;
+    std::vector<TemplateRule> producedRules;
 
     for (auto& rule : node->rules)
     {
-        Rule producedRule = GetRule(rule);
+        TemplateRule producedRule = GetRule(rule);
 
         for (auto& expression : node->expressions)
         {
@@ -233,7 +241,8 @@ void ReplaceToString(std::string& content,
             << "    ";
     }
 
-    out << "default:\n            throw std::exception(\"Unrecognized token type in ToString()\");";
+    out << "default:\n            throw std::exception(\"Unrecognized token "
+           "type in ToString()\");";
 
     Replace(content, "$TOKEN_TO_STRING", out.str());
 }

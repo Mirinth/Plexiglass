@@ -34,15 +34,6 @@ ActionNode NewActionNode(size_t line,
                          std::string name,
                          std::string identifier = "");
 
-
-struct Rule
-{
-    bool Produces;       // whether anything is produced
-    std::string Token;   // what gets produced (if anything)
-    int Increment;       // how much to increment the line number by
-    std::string Pattern; // regex to match
-};
-
 struct _FileNode
 {
     std::vector<ExpressionNode> expressions;
