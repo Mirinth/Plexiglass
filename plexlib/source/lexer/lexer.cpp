@@ -5,8 +5,20 @@
 
 #include <utils.hpp>
 
+constexpr char* alternator = "\\|";
+constexpr char* comment = "#[^\n]*";
+constexpr char* full_action = "produce-nothing|rewind|\\+\\+line|line\\+\\+|--line|line--";
 constexpr char* identifier = "[^\\|# \t\r\n]+";
-constexpr char* whitespace = " \t\r\n";
+constexpr char* indent = "\t|    ";
+constexpr char* junk = "[^\\s][^\n]+";
+constexpr char* keyword_expression = "expression";
+constexpr char* keyword_pattern = "pattern";
+constexpr char* keyword_rule = "rule";
+constexpr char* line = "[^\n]+";
+constexpr char* newline = "\n";
+constexpr char* partial_action = "produce|transition";
+constexpr char* statement_end = "\n\n";
+constexpr char* whitespace = "[ \t]";
 
 struct Rule
 {
@@ -66,47 +78,41 @@ std::vector<Rule> GetRules()
     std::vector<Rule> rules;
 
     // clang-format off
-    rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 1, "\n", LexerState::Initial);
-    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "#[^\n]*", LexerState::_);
+    rules.emplace_back(LexerState::Initial, TokenType::Unknown, false, 1, newline, LexerState::Initial);
+    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, comment, LexerState::_);
 
-    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, "expression", LexerState::ExpressionKeyword);
+    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, keyword_expression, LexerState::ExpressionKeyword);
     rules.emplace_back(LexerState::ExpressionKeyword, TokenType::Text, true, 0, identifier, LexerState::ExpressionName);
-    rules.emplace_back(LexerState::ExpressionName, TokenType::Unknown, false, 1, "\n", LexerState::ExpressionNewline);
-    rules.emplace_back(LexerState::ExpressionName, TokenType::Text, true, 0, "[^\\s][^\n]+", LexerState::ExpressionName);
-    rules.emplace_back(LexerState::ExpressionNewline, TokenType::Indent, true, 0, "\t|    ", LexerState::ExpressionIndent);
-    rules.emplace_back(LexerState::ExpressionIndent, TokenType::Regex, true, 0, "[^\n]+", LexerState::Initial);
+    rules.emplace_back(LexerState::ExpressionName, TokenType::Unknown, false, 1, newline, LexerState::ExpressionNewline);
+    rules.emplace_back(LexerState::ExpressionName, TokenType::Text, true, 0, junk, LexerState::ExpressionName);
+    rules.emplace_back(LexerState::ExpressionNewline, TokenType::Indent, true, 0, indent, LexerState::ExpressionIndent);
+    rules.emplace_back(LexerState::ExpressionIndent, TokenType::Regex, true, 0, line, LexerState::Initial);
 
-    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, "pattern", LexerState::PatternKeyword);
+    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, keyword_pattern, LexerState::PatternKeyword);
     rules.emplace_back(LexerState::PatternKeyword, TokenType::Text, true, 0, identifier, LexerState::PatternName);
-    rules.emplace_back(LexerState::PatternName, TokenType::Unknown, false, 1, "\n", LexerState::PatternNewline);
-    rules.emplace_back(LexerState::PatternName, TokenType::Text, true, 0, "[^\\s][^\n]+", LexerState::PatternName);
-    rules.emplace_back(LexerState::PatternNewline, TokenType::Indent, true, 0, "\t|    ", LexerState::PatternIndent);
-    rules.emplace_back(LexerState::PatternIndent, TokenType::Alternator, true, 0, "\\|", LexerState::PatternIndent);
+    rules.emplace_back(LexerState::PatternName, TokenType::Unknown, false, 1, newline, LexerState::PatternNewline);
+    rules.emplace_back(LexerState::PatternName, TokenType::Text, true, 0, junk, LexerState::PatternName);
+    rules.emplace_back(LexerState::PatternNewline, TokenType::Indent, true, 0, indent, LexerState::PatternIndent);
+    rules.emplace_back(LexerState::PatternIndent, TokenType::Alternator, true, 0, alternator, LexerState::PatternIndent);
     rules.emplace_back(LexerState::PatternIndent, TokenType::Text, true, 0, identifier, LexerState::PatternIndent);
-    rules.emplace_back(LexerState::PatternIndent, TokenType::Unknown, false, 1, "\n", LexerState::PatternNewline);
-    rules.emplace_back(LexerState::PatternIndent, TokenType::Unknown, false, 2, "\n\n", LexerState::Initial);
+    rules.emplace_back(LexerState::PatternIndent, TokenType::Unknown, false, 1, newline, LexerState::PatternNewline);
+    rules.emplace_back(LexerState::PatternIndent, TokenType::Unknown, false, 2, statement_end, LexerState::Initial);
 
-    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, "rule", LexerState::RuleKeyword);
+    rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, keyword_rule, LexerState::RuleKeyword);
     rules.emplace_back(LexerState::RuleKeyword, TokenType::Text, true, 0, identifier, LexerState::RuleName);
-    rules.emplace_back(LexerState::RuleName, TokenType::Unknown, false, 1, "\n", LexerState::RuleNewline);
-    rules.emplace_back(LexerState::RuleName, TokenType::Text, true, 0, "[^\\s][^\n]+", LexerState::RuleName);
-    rules.emplace_back(LexerState::RuleNewline, TokenType::Indent, true, 0, "\t|    ", LexerState::RuleIndent);
-    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, "produce-nothing", LexerState::RuleCompleteAction);
-    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, "rewind", LexerState::RuleCompleteAction);
-    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, "\\+\\+line", LexerState::RuleCompleteAction);
-    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, "line\\+\\+", LexerState::RuleCompleteAction);
-    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, "--line", LexerState::RuleCompleteAction);
-    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, "line--", LexerState::RuleCompleteAction);
-    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, "produce", LexerState::RulePartialAction);
-    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, "transition", LexerState::RulePartialAction);
+    rules.emplace_back(LexerState::RuleName, TokenType::Unknown, false, 1, newline, LexerState::RuleNewline);
+    rules.emplace_back(LexerState::RuleName, TokenType::Text, true, 0, junk, LexerState::RuleName);
+    rules.emplace_back(LexerState::RuleNewline, TokenType::Indent, true, 0, indent, LexerState::RuleIndent);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, full_action, LexerState::RuleCompleteAction);
+    rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, partial_action, LexerState::RulePartialAction);
     rules.emplace_back(LexerState::RulePartialAction, TokenType::Text, true, 0, identifier, LexerState::RuleCompleteAction);
-    rules.emplace_back(LexerState::RuleCompleteAction, TokenType::Unknown, false, 1, "\n", LexerState::RuleNewline);
-    rules.emplace_back(LexerState::RuleCompleteAction, TokenType::Unknown, false, 2, "\n\n", LexerState::Initial);
+    rules.emplace_back(LexerState::RuleCompleteAction, TokenType::Unknown, false, 1, newline, LexerState::RuleNewline);
+    rules.emplace_back(LexerState::RuleCompleteAction, TokenType::Unknown, false, 2, statement_end, LexerState::Initial);
     rules.emplace_back(LexerState::RuleIndent, TokenType::Text, true, 0, identifier, LexerState::RuleCompleteAction);
 
     rules.emplace_back(LexerState::Initial, TokenType::Keyword, true, 0, identifier, LexerState::Initial);
 
-    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, "[ \t]", LexerState::_);
+    rules.emplace_back(LexerState::_, TokenType::Unknown, false, 0, whitespace, LexerState::_);
     // clang-format on
     return rules;
 }
