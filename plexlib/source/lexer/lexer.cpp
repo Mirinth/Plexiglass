@@ -5,20 +5,24 @@
 
 #include <utils.hpp>
 
-constexpr char* alternator = "\\|";
-constexpr char* comment = "#[^\n]*";
-constexpr char* full_action = "produce-nothing|rewind|\\+\\+line|line\\+\\+|--line|line--";
-constexpr char* identifier = "[^\\|# \t\r\n]+";
-constexpr char* indent = "\t|    ";
-constexpr char* junk = "[^\\s][^\n]+";
-constexpr char* keyword_expression = "expression";
-constexpr char* keyword_pattern = "pattern";
-constexpr char* keyword_rule = "rule";
-constexpr char* line = "[^\n]+";
-constexpr char* newline = "\n";
-constexpr char* partial_action = "produce|transition";
-constexpr char* statement_end = "\n\n";
-constexpr char* whitespace = "[ \t]";
+namespace expressions
+{
+    constexpr char* alternator = "\\|";
+    constexpr char* comment = "#[^\n]*";
+    constexpr char* full_action =
+        "produce-nothing|rewind|\\+\\+line|line\\+\\+|--line|line--";
+    constexpr char* identifier = "[^\\|# \t\r\n]+";
+    constexpr char* indent = "\t|    ";
+    constexpr char* junk = "[^\\s][^\n]+";
+    constexpr char* keyword_expression = "expression";
+    constexpr char* keyword_pattern = "pattern";
+    constexpr char* keyword_rule = "rule";
+    constexpr char* line = "[^\n]+";
+    constexpr char* newline = "\n";
+    constexpr char* partial_action = "produce|transition";
+    constexpr char* statement_end = "\n\n";
+    constexpr char* whitespace = "[ \t]";
+}
 
 struct Rule
 {
@@ -75,6 +79,7 @@ struct Rule
 /// <returns>The rules to be used by the lexer.</returns>
 std::vector<Rule> GetRules()
 {
+    using namespace expressions;
     std::vector<Rule> rules;
 
     // clang-format off
