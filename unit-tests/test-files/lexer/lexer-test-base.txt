@@ -1,44 +1,44 @@
 keyword expression
 text some-name
-indent
+indent 	
 expression ^[a-bA-Y09]lyoun(kkol)?
 keyword expression
 text another-name
-indent
+indent 	
 expression ^[a-z0-9]{3}
 keyword expression
 text third-name
-indent
+indent 	
 expression ^ expression with space
 keyword pattern
 text some-name
-indent
+indent 	
 text abcde
-indent
+indent 	
 alternator |
 text fghij
 text klmno
 text pqrs
-indent
+indent 	
 alternator |
 text wxyz
 keyword rule
 text what-to-match
-indent
+indent 	
 text produce-nothing
-indent
+indent 	
 text produce
 text token-name
-indent
+indent 	
 text rewind
-indent
+indent 	
 text transition
 text another-state
-indent
+indent 	
 text ++line
-indent
+indent 	
 text line++
-indent
+indent 	
 text --line
-indent
+indent 	
 text line--
