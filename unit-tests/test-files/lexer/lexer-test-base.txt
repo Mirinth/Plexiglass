@@ -1,44 +1,44 @@
-keyword expression
-text some-name
-indent 	
-expression ^[a-bA-Y09]lyoun(kkol)?
-keyword expression
-text another-name
-indent 	
-expression ^[a-z0-9]{3}
-keyword expression
-text third-name
-indent 	
-expression ^ expression with space
-keyword pattern
-text some-name
-indent 	
-text abcde
-indent 	
-alternator |
-text fghij
-text klmno
-text pqrs
-indent 	
-alternator |
-text wxyz
-keyword rule
-text what-to-match
-indent 	
-text produce-nothing
-indent 	
-text produce
-text token-name
-indent 	
-text rewind
-indent 	
-text transition
-text another-state
-indent 	
-text ++line
-indent 	
-text line++
-indent 	
-text --line
-indent 	
-text line--
+4: keyword expression
+4: text some-name
+5: indent 	
+5: expression ^[a-bA-Y09]lyoun(kkol)?
+7: keyword expression
+7: text another-name
+8: indent 	
+8: expression ^[a-z0-9]{3}
+10: keyword expression
+10: text third-name
+11: indent 	
+11: expression ^ expression with space
+13: keyword pattern
+13: text some-name
+14: indent 	
+14: text abcde
+15: indent 	
+15: alternator |
+15: text fghij
+15: text klmno
+15: text pqrs
+16: indent 	
+16: alternator |
+16: text wxyz
+18: keyword rule
+18: text what-to-match
+19: indent 	
+19: text produce-nothing
+20: indent 	
+20: text produce
+20: text token-name
+21: indent 	
+21: text rewind
+22: indent 	
+22: text transition
+22: text another-state
+23: indent 	
+23: text ++line
+24: indent 	
+24: text line++
+25: indent 	
+25: text --line
+26: indent 	
+26: text line--

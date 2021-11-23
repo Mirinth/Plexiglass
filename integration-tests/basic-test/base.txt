@@ -1,9 +1,9 @@
-CatToken cat
-DogToken dog
-CatToken cat
-DogToken dog
-DogToken dog
-CatToken cat
-DogToken dog
-CatToken cat
-PLEXIGLASS_EOF
+1: CatToken cat
+1: DogToken dog
+1: CatToken cat
+1: DogToken dog
+2: DogToken dog
+2: CatToken cat
+2: DogToken dog
+2: CatToken cat
+2: PLEXIGLASS_EOF

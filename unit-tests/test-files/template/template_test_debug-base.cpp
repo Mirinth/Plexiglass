@@ -241,11 +241,13 @@ void RunLexer(std::string inputPath, std::string outputPath)
 
     while (lex.PeekToken() != TokenType::PLEXIGLASS_EOF)
     {
-        out << ToString(lex.PeekToken(), lex.PeekText()) << "\n";
+        out << lex.PeekLine() << ": "
+            << ToString(lex.PeekToken(), lex.PeekText()) << "\n";
         lex.Shift();
     }
 
-    out << ToString(lex.PeekToken(), lex.PeekText()) << "\n";
+    out << lex.PeekLine() << ": " << ToString(lex.PeekToken(), lex.PeekText())
+        << "\n";
 }
 
 /// <summary>
