@@ -19,7 +19,7 @@ namespace expressions
     constexpr char* keyword_rule = "rule";
     constexpr char* line = "[^\n]+";
     constexpr char* newline = "\n";
-    constexpr char* partial_action = "produce|transition";
+    constexpr char* partial_action = "produce|state|transition";
     constexpr char* statement_end = "\n\n";
     constexpr char* whitespace = "[ \t]";
 }
