@@ -1,0 +1,10 @@
+# rule with transition to itself
+expression name
+	abc
+
+rule name
+	transition self
+
+rule name
+	state self
+	transition self

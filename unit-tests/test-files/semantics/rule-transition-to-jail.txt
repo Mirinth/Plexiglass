@@ -1,0 +1,6 @@
+# rule with transition to __jail__
+expression name
+	abc
+
+rule name
+	transition __jail__

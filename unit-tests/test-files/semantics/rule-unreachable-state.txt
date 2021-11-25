@@ -1,0 +1,10 @@
+# rule with unreachable state
+expression name
+	abc
+
+rule name
+	produce-nothing
+
+rule name
+	state unreachable
+	produce-nothing
