@@ -15,6 +15,7 @@ void CheckMissingNames(PatternNode node, std::set<std::string>& names);
 void CheckMissingNames(RuleNode node, std::set<std::string>& names);
 void CheckMissingNames(IdentifierSequenceNode node,
                        std::set<std::string>& names);
+void CheckSelfTransitions(FileNode node);
 
 bool ActionsEqual(const std::string& left, const std::string& right);
 
@@ -29,6 +30,7 @@ void Analyze(FileNode file)
     CheckMissingNames(file);
     CheckIllegalActions(file);
     CheckIllegalStatements(file);
+    CheckSelfTransitions(file);
 }
 
 /// <summary>
@@ -185,6 +187,40 @@ void CheckMissingNames(IdentifierSequenceNode node,
         if (names.count(identifier) == 0)
         {
             MissingNameError(node->line, identifier);
+        }
+    }
+}
+
+/// <summary>
+/// Check if a rule transitions to itself.
+/// </summary>
+/// <param name="node">The lexer.</param>
+void CheckSelfTransitions(FileNode node)
+{
+    for (const auto& rule : node->rules)
+    {
+        bool foundTarget = false;
+        std::string state = "__initial__";
+        std::string target = "__initial__";
+        size_t line = 0;
+
+        for (const auto& action : rule->actions)
+        {
+            if (action->name == "state")
+            {
+                state = action->identifier;
+            }
+            if (action->name == "transition")
+            {
+                foundTarget = true;
+                target = action->identifier;
+                line = action->line;
+            }
+        }
+
+        if (foundTarget && state == target)
+        {
+            Error(line, "Rule transitions to its own state.");
         }
     }
 }
