@@ -210,3 +210,68 @@ TEST_CASE("Semantics: Reject mismatched duplicate decrement")
         "Error on line 7: `line--` already used in rule on line 6",
         PlexiException);
 }
+
+TEST_CASE("Semantics: Reject rule with transition to self (initial state)")
+{
+    std::filesystem::path path =
+        GetTestRoot() / "semantics/rule-transition-to-self-initial.txt";
+    FileNode file = Parse(path);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 6: Rule transitions to its own state.",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Allow rule with transition to undefined state __jail__")
+{
+    std::filesystem::path path =
+        GetTestRoot() / "semantics/rule-transition-to-jail.txt";
+    FileNode file = Parse(path);
+
+    CHECK_NOTHROW(Analyze(file));
+}
+
+TEST_CASE("Semantics: Allow rule with transition to undefined state __initial__")
+{
+    std::filesystem::path path =
+        GetTestRoot() / "semantics/rule-transition-to-initial.txt";
+    FileNode file = Parse(path);
+
+    CHECK_NOTHROW(Analyze(file));
+}
+
+TEST_CASE("Semantics: Reject rule with transition to self (other state)")
+{
+    std::filesystem::path path =
+        GetTestRoot() / "semantics/rule-transition-to-self-other.txt";
+    FileNode file = Parse(path);
+
+    CHECK_THROWS_WITH_AS(Analyze(file),
+                         "Error on line 10: Rule transitions to its own state.",
+                         PlexiException);
+}
+
+TEST_CASE("Semantics: Reject rule with unreachable state")
+{
+    std::filesystem::path path =
+        GetTestRoot() / "semantics/rule-unreachable-state.txt";
+    FileNode file = Parse(path);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 9: No rule transitions to state `unreachable`",
+        PlexiException);
+}
+
+TEST_CASE("Semantics: Reject rule with transition to nowhere")
+{
+    std::filesystem::path path =
+        GetTestRoot() / "semantics/rule-transition-to-nowhere.txt";
+    FileNode file = Parse(path);
+
+    CHECK_THROWS_WITH_AS(
+        Analyze(file),
+        "Error on line 6: No rules for state `nowhere`",
+        PlexiException);
+}
