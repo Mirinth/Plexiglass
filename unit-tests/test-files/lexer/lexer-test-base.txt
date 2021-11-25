@@ -25,20 +25,23 @@
 18: keyword rule
 18: text what-to-match
 19: indent 	
-19: text produce-nothing
+19: text state
+19: text some-state
 20: indent 	
-20: text produce
-20: text token-name
+20: text produce-nothing
 21: indent 	
-21: text rewind
+21: text produce
+21: text token-name
 22: indent 	
-22: text transition
-22: text another-state
+22: text rewind
 23: indent 	
-23: text ++line
+23: text transition
+23: text another-state
 24: indent 	
-24: text line++
+24: text ++line
 25: indent 	
-25: text --line
+25: text line++
 26: indent 	
-26: text line--
+26: text --line
+27: indent 	
+27: text line--

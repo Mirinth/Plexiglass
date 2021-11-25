@@ -16,6 +16,7 @@ pattern some-name# comments are allowed at the end of the line
 	| wxyz
 
 rule what-to-match
+	state some-state
 	produce-nothing
 	produce token-name # a comment
 	rewind
