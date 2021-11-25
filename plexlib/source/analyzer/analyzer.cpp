@@ -9,8 +9,6 @@ void CheckDuplicateActions(FileNode node);
 void CheckDuplicateActions(RuleNode node);
 void CheckDuplicateNames(FileNode node);
 void CheckIllegalActions(FileNode node);
-void CheckIllegalActions(RuleNode node);
-void CheckIllegalActions(ActionNode node);
 void CheckIllegalStatements(FileNode node);
 void CheckMissingNames(FileNode node);
 void CheckMissingNames(PatternNode node, std::set<std::string>& names);
@@ -218,10 +216,6 @@ void CheckIllegalActions(FileNode node)
             if (action->name == "rewind")
             {
                 Error(action->line, "'rewind' action not yet supported");
-            }
-            if (action->name == "transition")
-            {
-                Error(action->line, "'transition' action not yet supported");
             }
         }
     }

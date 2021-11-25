@@ -93,17 +93,6 @@ TEST_CASE("Semantics: Rule that uses rewind")
                          PlexiException);
 }
 
-TEST_CASE("Semantics: Rule that uses a transition")
-{
-    std::filesystem::path path =
-        GetTestRoot() / "semantics/rule-using-transition.txt";
-    FileNode file = Parse(path);
-
-    CHECK_THROWS_WITH_AS(
-        Analyze(file), "Error on line 6: 'transition' action not yet supported",
-        PlexiException);
-}
-
 TEST_CASE("Semantics: Reject pattern statements")
 {
     std::filesystem::path path =
