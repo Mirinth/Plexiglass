@@ -39,7 +39,8 @@ ActionNode Action(Lexer& lexer)
     static std::set<std::string> unitActions = { "produce-nothing", "rewind",
                                                  "++line",          "line++",
                                                  "--line",          "line--" };
-    static std::set<std::string> compositeActions = { "produce", "transition" };
+    static std::set<std::string> compositeActions = { "produce", "state",
+                                                      "transition" };
 
     Require(lexer, "indent", TokenType::Indent);
     size_t line = lexer.PeekLine();
