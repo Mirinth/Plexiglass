@@ -1,0 +1,4 @@
+# rule with empty state
+rule name
+	state
+	rewind

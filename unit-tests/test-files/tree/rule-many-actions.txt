@@ -1,5 +1,6 @@
 # A rule with several actions
 rule name
+	state some-state
 	produce-nothing
 	produce token
 	rewind

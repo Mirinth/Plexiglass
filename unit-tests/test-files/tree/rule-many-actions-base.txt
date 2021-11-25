@@ -2,4 +2,4 @@ File:
 	Expressions:
 	Patterns:
 	Rules:
-		name : produce-nothing, produce token, rewind, transition state, ++line, line++
+		name : state some-state, produce-nothing, produce token, rewind, transition state, ++line, line++
