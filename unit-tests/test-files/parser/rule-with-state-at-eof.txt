@@ -1,0 +1,3 @@
+# rule with state at eof
+rule name
+	state
