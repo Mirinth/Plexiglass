@@ -199,3 +199,21 @@ TEST_CASE("Parser: Rule with empty transition")
         Parse(path), "Error on line 3: Expected identifier before end of line",
         PlexiException);
 }
+
+TEST_CASE("Parser: Rule with state at eof")
+{
+    std::filesystem::path path =
+        GetTestRoot() / "parser/rule-with-state-at-eof.txt";
+    CHECK_THROWS_WITH_AS(
+        Parse(path), "Error on line 3: Expected identifier before end of line",
+        PlexiException);
+}
+
+TEST_CASE("Parser: Rule with empty state")
+{
+    std::filesystem::path path =
+        GetTestRoot() / "parser/rule-with-empty-state.txt";
+    CHECK_THROWS_WITH_AS(
+        Parse(path), "Error on line 3: Expected identifier before end of line",
+        PlexiException);
+}
