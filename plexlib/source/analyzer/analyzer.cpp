@@ -16,6 +16,7 @@ void CheckMissingNames(RuleNode node, std::set<std::string>& names);
 void CheckMissingNames(IdentifierSequenceNode node,
                        std::set<std::string>& names);
 void CheckSelfTransitions(FileNode node);
+void CheckTransitions(FileNode lexer);
 
 bool ActionsEqual(const std::string& left, const std::string& right);
 
@@ -31,6 +32,7 @@ void Analyze(FileNode file)
     CheckIllegalActions(file);
     CheckIllegalStatements(file);
     CheckSelfTransitions(file);
+    CheckTransitions(file);
 }
 
 /// <summary>
@@ -221,6 +223,51 @@ void CheckSelfTransitions(FileNode node)
         if (foundTarget && state == target)
         {
             Error(line, "Rule transitions to its own state.");
+        }
+    }
+}
+
+/// <summary>
+/// Check that non-self transitions make sense.
+/// </summary>
+/// <param name="lexer">Lexer to check.</param>
+void CheckTransitions(FileNode lexer)
+{
+    std::map<std::string, size_t> statesDeclared;
+    std::map<std::string, size_t> statesUsed;
+
+    for (const auto& rule : lexer->rules)
+    {
+        for (const auto& action : rule->actions)
+        {
+            if (action->name == "state")
+            {
+                if (statesDeclared.count(action->identifier) == 0)
+                {
+                    statesDeclared[action->identifier] = action->line;
+                }
+            }
+            if (action->name == "transition")
+            {
+                if (statesUsed.count(action->identifier) == 0)
+                {
+                    statesUsed[action->identifier] = action->line;
+                }
+            }
+        }
+    }
+
+    while (!statesDeclared.empty())
+    {
+        std::string state = (*statesDeclared.begin()).first;
+        if (statesUsed.count(state) == 0)
+        {
+            UnreachableStateError(statesDeclared[state], state);
+        }
+        else
+        {
+            statesDeclared.erase(state);
+            statesUsed.erase(state);
         }
     }
 }
