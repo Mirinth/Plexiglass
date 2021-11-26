@@ -260,21 +260,29 @@ void CheckTransitions(FileNode lexer)
     while (!statesDeclared.empty())
     {
         std::string state = (*statesDeclared.begin()).first;
-        if (statesUsed.count(state) == 0)
-        {
-            UnreachableStateError(statesDeclared[state], state);
-        }
-        else
+        if (statesUsed.count(state) > 0 || state == "__jail__"
+            || state == "__initial__")
         {
             statesDeclared.erase(state);
             statesUsed.erase(state);
         }
+        else
+        {
+            UnreachableStateError(statesDeclared[state], state);
+        }
     }
 
-    if (!statesUsed.empty())
+    while (!statesUsed.empty())
     {
         std::string state = (*statesUsed.begin()).first;
-        MissingStateError(statesUsed[state], state);
+        if (state == "__jail__" || state == "__initial__")
+        {
+            statesUsed.erase(state);
+        }
+        else
+        {
+            MissingStateError(statesUsed[state], state);
+        }
     }
 }
 
