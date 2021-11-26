@@ -270,6 +270,12 @@ void CheckTransitions(FileNode lexer)
             statesUsed.erase(state);
         }
     }
+
+    if (!statesUsed.empty())
+    {
+        std::string state = (*statesUsed.begin()).first;
+        MissingStateError(statesUsed[state], state);
+    }
 }
 
 /// <summary>
