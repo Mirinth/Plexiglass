@@ -9,14 +9,14 @@ void CheckDuplicateActions(FileNode node);
 void CheckDuplicateActions(RuleNode node);
 void CheckDuplicateNames(FileNode node);
 void CheckIllegalActions(FileNode node);
-void CheckIllegalActions(RuleNode node);
-void CheckIllegalActions(ActionNode node);
 void CheckIllegalStatements(FileNode node);
 void CheckMissingNames(FileNode node);
 void CheckMissingNames(PatternNode node, std::set<std::string>& names);
 void CheckMissingNames(RuleNode node, std::set<std::string>& names);
 void CheckMissingNames(IdentifierSequenceNode node,
                        std::set<std::string>& names);
+void CheckSelfTransitions(FileNode node);
+void CheckTransitions(FileNode lexer);
 
 bool ActionsEqual(const std::string& left, const std::string& right);
 
@@ -31,6 +31,8 @@ void Analyze(FileNode file)
     CheckMissingNames(file);
     CheckIllegalActions(file);
     CheckIllegalStatements(file);
+    CheckSelfTransitions(file);
+    CheckTransitions(file);
 }
 
 /// <summary>
@@ -192,6 +194,99 @@ void CheckMissingNames(IdentifierSequenceNode node,
 }
 
 /// <summary>
+/// Check if a rule transitions to itself.
+/// </summary>
+/// <param name="node">The lexer.</param>
+void CheckSelfTransitions(FileNode node)
+{
+    for (const auto& rule : node->rules)
+    {
+        bool foundTarget = false;
+        std::string state = "__initial__";
+        std::string target = "__initial__";
+        size_t line = 0;
+
+        for (const auto& action : rule->actions)
+        {
+            if (action->name == "state")
+            {
+                state = action->identifier;
+            }
+            if (action->name == "transition")
+            {
+                foundTarget = true;
+                target = action->identifier;
+                line = action->line;
+            }
+        }
+
+        if (foundTarget && state == target)
+        {
+            Error(line, "Rule transitions to its own state.");
+        }
+    }
+}
+
+/// <summary>
+/// Check that non-self transitions make sense.
+/// </summary>
+/// <param name="lexer">Lexer to check.</param>
+void CheckTransitions(FileNode lexer)
+{
+    std::map<std::string, size_t> statesDeclared;
+    std::map<std::string, size_t> statesUsed;
+
+    for (const auto& rule : lexer->rules)
+    {
+        for (const auto& action : rule->actions)
+        {
+            if (action->name == "state")
+            {
+                if (statesDeclared.count(action->identifier) == 0)
+                {
+                    statesDeclared[action->identifier] = action->line;
+                }
+            }
+            if (action->name == "transition")
+            {
+                if (statesUsed.count(action->identifier) == 0)
+                {
+                    statesUsed[action->identifier] = action->line;
+                }
+            }
+        }
+    }
+
+    while (!statesDeclared.empty())
+    {
+        std::string state = (*statesDeclared.begin()).first;
+        if (statesUsed.count(state) > 0 || state == "__jail__"
+            || state == "__initial__")
+        {
+            statesDeclared.erase(state);
+            statesUsed.erase(state);
+        }
+        else
+        {
+            UnreachableStateError(statesDeclared[state], state);
+        }
+    }
+
+    while (!statesUsed.empty())
+    {
+        std::string state = (*statesUsed.begin()).first;
+        if (state == "__jail__" || state == "__initial__")
+        {
+            statesUsed.erase(state);
+        }
+        else
+        {
+            MissingStateError(statesUsed[state], state);
+        }
+    }
+}
+
+/// <summary>
 /// Check if a rule refers to an undefined name.
 /// </summary>
 /// <param name="node">The rule.</param>
@@ -218,10 +313,6 @@ void CheckIllegalActions(FileNode node)
             if (action->name == "rewind")
             {
                 Error(action->line, "'rewind' action not yet supported");
-            }
-            if (action->name == "transition")
-            {
-                Error(action->line, "'transition' action not yet supported");
             }
         }
     }

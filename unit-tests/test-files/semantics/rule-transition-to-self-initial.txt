@@ -1,0 +1,6 @@
+# rule with transition to itself
+expression name
+	abc
+
+rule name
+	transition __initial__

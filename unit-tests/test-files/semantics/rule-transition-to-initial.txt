@@ -1,0 +1,10 @@
+# rule with transition to initial
+expression name
+	abc
+
+rule name
+	transition elsewhere
+
+rule name
+	state elsewhere
+	transition __initial__

@@ -54,6 +54,32 @@ void MissingNameError(size_t line, std::string name)
 }
 
 /// <summary>
+/// Generate an unreachable state error message.
+/// </summary>
+/// <param name="line">Line the state was referenced on.</param>
+/// <param name="name">Name that was unreachable.</param>
+void UnreachableStateError(size_t line, std::string name) 
+{
+    std::stringstream out;
+    out << "Error on line " << line << ": "
+        << "No rule transitions to state `" << name << "`";
+    throw PlexiException(out.str().c_str());
+}
+
+/// <summary>
+/// Generate a missing state error message.
+/// </summary>
+/// <param name="line">Line the state was referenced on.</param>
+/// <param name="name">Name that was unreachable.</param>
+void MissingStateError(size_t line, std::string name)
+{
+    std::stringstream out;
+    out << "Error on line " << line << ": "
+        << "No rules for state `" << name << "`";
+    throw PlexiException(out.str().c_str());
+}
+
+/// <summary>
 /// Generate an error message and stop parsing.
 /// </summary>
 /// <param name="line">The line the error occurred on.</param>

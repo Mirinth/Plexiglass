@@ -1,0 +1,6 @@
+# rule with a transition to nowhere
+expression name
+	abc
+
+rule name
+	transition nowhere
