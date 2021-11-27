@@ -18,23 +18,37 @@ struct Rule
     /// <summary>
     /// Construct a Rule.
     /// </summary>
+    /// <param name="active">The state the rule is active in.</param>
+    /// <param name="pattern">
+    /// A regular expression describing what the rule matches.
+    /// </param>
+    /// <param name="transition">The state the rule transitions to.</param>
     /// <param name="token">The TokenType produced.</param>
     /// <param name="produce">Whether a token is produced at all.</param>
     /// <param name="increment">
     /// How much to change the current line number by.
     /// </param>
-    /// <param name="pattern">
-    /// A regular expression describing what the rule matches.
-    /// </param>
-    Rule(TokenType token, bool produce, int increment, const char* pattern)
-        : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
+    Rule(LexerState active,
+         const char* pattern,
+         LexerState transition,
+         TokenType token,
+         bool produce,
+         int increment)
+        : Active(active)
+        , Pattern(pattern)
+        , Transition(transition)
+        , Token(token)
+        , Produce(produce)
+        , Increment(increment)
     {
     }
 
+    LexerState Active;
+    std::regex Pattern;
+    LexerState Transition;
     TokenType Token;
     bool Produce;
     int Increment;
-    std::regex Pattern;
 };
 
 /// <summary>
