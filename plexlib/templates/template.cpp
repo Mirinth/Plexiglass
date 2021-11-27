@@ -211,8 +211,6 @@ std::string ReadFile(const std::filesystem::path& path)
 #include <fstream>
 #include <iostream>
 
-#include <path.hpp>
-
 /// <summary>
 /// Runs the lexer, writing all the tokens it generates to an output file.
 /// </summary>
