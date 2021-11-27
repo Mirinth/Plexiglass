@@ -21,6 +21,8 @@ endif()
 add_subdirectory(plexlib)
 add_subdirectory(plexi)
 
+set(BUILD_TESTING false CACHE STRING "Build testing")
+
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
     include(CTest)
     
