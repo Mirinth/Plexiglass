@@ -159,6 +159,39 @@ void ReplaceErrorName(std::string& content, const std::string& name)
 }
 
 /// <summary>
+/// Replace $LEXER_STATES
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="lexer">Lexer with state names.</param>
+void ReplaceLexerStates(std::string& content, const FileNode lexer)
+{
+    std::set<std::string> states;
+
+    for (const auto& rule : lexer->rules)
+    {
+        for (const auto& action : rule->actions)
+        {
+            if (action->name == "state")
+            {
+                states.insert(action->identifier);
+            }
+        }
+    }
+
+    std::stringstream names;
+    names << "__initial__,\n    ";
+
+    for (const auto& state : states)
+    {
+        names << state << ",\n    ";
+    }
+
+    names << "__jail__,";
+
+    Replace(content, "$LEXER_STATES", names.str());
+}
+
+/// <summary>
 /// Replace $LEXER_NAME.
 /// </summary>
 /// <param name="content">String to replace in.</param>
@@ -315,6 +348,7 @@ void TemplateBody(FileNode file,
     ReplaceErrorName(content, errorName);
     ReplaceEofName(content, eofName);
     ReplaceName(content, name);
+    ReplaceLexerStates(content, file);
     ReplaceRules(content, file, eofName);
     ReplaceToString(content, file, eofName, errorName);
     ReplaceDebug(content, debug);

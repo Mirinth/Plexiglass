@@ -7,6 +7,11 @@
 
 std::string ReadFile(const std::filesystem::path& path);
 
+enum class LexerState
+{
+    $LEXER_STATES
+};
+
 struct Rule
 {
     /// <summary>

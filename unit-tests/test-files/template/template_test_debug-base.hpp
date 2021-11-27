@@ -4,6 +4,8 @@
 #include <string>
 #include <string_view>
 
+enum class LexerState;
+
 enum class TokenType
 {
     CatToken,
