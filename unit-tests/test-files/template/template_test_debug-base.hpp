@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 
-enum TokenType
+enum class TokenType
 {
     CatToken,
     DogToken,

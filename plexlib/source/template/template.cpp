@@ -128,7 +128,7 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
         {
             producedRule.Token = illegalTokenName;
         }
-        out << "\n    rules.emplace_back(" << producedRule.Token << ", "
+        out << "\n    rules.emplace_back(TokenType::" << producedRule.Token << ", "
             << (producedRule.Produces ? "true" : "false") << ", "
             << producedRule.Increment << ", " << producedRule.Pattern << ");";
     }
@@ -145,7 +145,7 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
 /// <param name="name">What to replace with.</param>
 void ReplaceEofName(std::string& content, const std::string& name)
 {
-    Replace(content, "$EOF_TOKEN", name);
+    Replace(content, "$EOF_TOKEN", "TokenType::" + name);
 }
 
 /// <summary>
@@ -155,7 +155,7 @@ void ReplaceEofName(std::string& content, const std::string& name)
 /// <param name="name">What to replace with.</param>
 void ReplaceErrorName(std::string& content, const std::string& name)
 {
-    Replace(content, "$INVALID_TOKEN", name);
+    Replace(content, "$INVALID_TOKEN", "TokenType::" + name);
 }
 
 /// <summary>
@@ -235,7 +235,7 @@ void ReplaceToString(std::string& content,
     std::stringstream out;
     for (const std::string& name : tokenNames)
     {
-        out << "case " << name << ":\n"
+        out << "case TokenType::" << name << ":\n"
             << "        str = \"" << name << "\";\n"
             << "        break;\n"
             << "    ";

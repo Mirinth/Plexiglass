@@ -47,7 +47,7 @@ std::vector<Rule> GetRules()
 /// <summary>
 /// Get a human-readable string representation of a token.
 /// </summary>
-/// <param name="type">The token's type..</param>
+/// <param name="type">The token's type.</param>
 /// <param name="text">The token's text.</param>
 /// <returns>String representation of the token.</returns>
 std::string ToString(TokenType type, const std::string& text)

@@ -39,9 +39,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    rules.emplace_back(CatToken, true, 0, "cat");
-    rules.emplace_back(DogToken, true, 0, "dog");
-    rules.emplace_back(PLEXIGLASS_EOF, false, 0, "\\s+");
+    rules.emplace_back(TokenType::CatToken, true, 0, "cat");
+    rules.emplace_back(TokenType::DogToken, true, 0, "dog");
+    rules.emplace_back(TokenType::PLEXIGLASS_EOF, false, 0, "\\s+");
 
     return rules;
 }
@@ -49,7 +49,7 @@ std::vector<Rule> GetRules()
 /// <summary>
 /// Get a human-readable string representation of a token.
 /// </summary>
-/// <param name="type">The token's type..</param>
+/// <param name="type">The token's type.</param>
 /// <param name="text">The token's text.</param>
 /// <returns>String representation of the token.</returns>
 std::string ToString(TokenType type, const std::string& text)
@@ -57,16 +57,16 @@ std::string ToString(TokenType type, const std::string& text)
     std::string str;
     switch (type)
     {
-    case CatToken:
+    case TokenType::CatToken:
         str = "CatToken";
         break;
-    case DogToken:
+    case TokenType::DogToken:
         str = "DogToken";
         break;
-    case PLEXIGLASS_EOF:
+    case TokenType::PLEXIGLASS_EOF:
         str = "PLEXIGLASS_EOF";
         break;
-    case PLEXIGLASS_NO_MATCH_TOKEN:
+    case TokenType::PLEXIGLASS_NO_MATCH_TOKEN:
         str = "PLEXIGLASS_NO_MATCH_TOKEN";
         break;
     default:
@@ -142,7 +142,7 @@ bool template_test_debug::ShiftHelper()
 {
     if (m_data.empty())
     {
-        m_type = PLEXIGLASS_EOF;
+        m_type = TokenType::PLEXIGLASS_EOF;
         m_text = "";
         return true;
     }
@@ -196,7 +196,7 @@ bool template_test_debug::ShiftHelper()
     }
     else
     {
-        m_type = PLEXIGLASS_NO_MATCH_TOKEN;
+        m_type = TokenType::PLEXIGLASS_NO_MATCH_TOKEN;
         m_text = "";
         m_data.remove_prefix(1);
         return true;
