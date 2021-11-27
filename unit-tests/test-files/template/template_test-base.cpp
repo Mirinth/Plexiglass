@@ -59,9 +59,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    rules.emplace_back(TokenType::CatToken, true, 0, "cat");
-    rules.emplace_back(TokenType::DogToken, true, 0, "dog");
-    rules.emplace_back(TokenType::PLEXIGLASS_EOF, false, 0, "\\s+");
+    rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, true, 0);
+    rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, true, 0);
+    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::PLEXIGLASS_EOF, false, 0);
 
     return rules;
 }
