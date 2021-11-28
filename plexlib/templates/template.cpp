@@ -184,10 +184,10 @@ void $LEXER_NAME::ShiftHelper()
         }
     }
 
-    if (max_length > 0 && rules[max_index].Token == TokenType::$NOTHING_TOKEN)
+    if (max_length > 0)
     {
         m_type = rules[max_index].Token;
-        if (rules[max_index].Token == TokenType::$NOTHING_TOKEN)
+        if (rules[max_index].Token != TokenType::$NOTHING_TOKEN)
         {
             m_text = m_view.substr(0, max_length);
         }
