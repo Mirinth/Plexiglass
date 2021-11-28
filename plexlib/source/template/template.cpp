@@ -12,10 +12,12 @@
 
 struct TemplateRule
 {
-    bool Produces;       // whether anything is produced
-    std::string Token;   // what gets produced (if anything)
-    int Increment;       // how much to increment the line number by
-    std::string Pattern; // regex to match
+    std::string Active;     // state this rule is active in
+    std::string Pattern;    // regex to match
+    std::string Transition; // state this rule transitions to
+    bool Produces;          // whether anything is produced
+    std::string Token;      // what gets produced (if anything)
+    int Increment;          // how much to increment the line number by
 };
 
 /// <summary>
@@ -63,6 +65,14 @@ void GetRule(ActionNode node, TemplateRule& rule)
     {
         rule.Increment = -1;
     }
+    else if (node->name == "transition")
+    {
+        rule.Transition = node->identifier;
+    }
+    else if (node->name == "state")
+    {
+        rule.Active = node->identifier;
+    }
     else
     {
         throw std::exception("Illegal action name");
@@ -76,7 +86,7 @@ void GetRule(ActionNode node, TemplateRule& rule)
 /// <returns>TemplateRule for the RuleNode.</returns>
 TemplateRule GetRule(RuleNode node)
 {
-    TemplateRule rule = { false, "", 0, node->name };
+    TemplateRule rule = { "", node->name, "", false, "", 0 };
 
     for (const auto& action : node->actions)
     {
@@ -128,9 +138,20 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
         {
             producedRule.Token = illegalTokenName;
         }
-        out << "\n    rules.emplace_back(" << producedRule.Token << ", "
+        if (producedRule.Active == "")
+        {
+            producedRule.Active = "__initial__";
+        }
+        if (producedRule.Transition == "")
+        {
+            producedRule.Transition = producedRule.Active;
+        }
+        out << "\n    rules.emplace_back(LexerState::" << producedRule.Active
+            << ", " << producedRule.Pattern
+            << ", LexerState::" << producedRule.Transition
+            << ", TokenType::" << producedRule.Token << ", "
             << (producedRule.Produces ? "true" : "false") << ", "
-            << producedRule.Increment << ", " << producedRule.Pattern << ");";
+            << producedRule.Increment << ");";
     }
 
     std::string outStr = out.str();
@@ -145,7 +166,7 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
 /// <param name="name">What to replace with.</param>
 void ReplaceEofName(std::string& content, const std::string& name)
 {
-    Replace(content, "$EOF_TOKEN", name);
+    Replace(content, "$EOF_TOKEN", "TokenType::" + name);
 }
 
 /// <summary>
@@ -155,7 +176,40 @@ void ReplaceEofName(std::string& content, const std::string& name)
 /// <param name="name">What to replace with.</param>
 void ReplaceErrorName(std::string& content, const std::string& name)
 {
-    Replace(content, "$INVALID_TOKEN", name);
+    Replace(content, "$INVALID_TOKEN", "TokenType::" + name);
+}
+
+/// <summary>
+/// Replace $LEXER_STATES
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="lexer">Lexer with state names.</param>
+void ReplaceLexerStates(std::string& content, const FileNode lexer)
+{
+    std::set<std::string> states;
+
+    for (const auto& rule : lexer->rules)
+    {
+        for (const auto& action : rule->actions)
+        {
+            if (action->name == "state")
+            {
+                states.insert(action->identifier);
+            }
+        }
+    }
+
+    std::stringstream names;
+    names << "__initial__,\n    ";
+
+    for (const auto& state : states)
+    {
+        names << state << ",\n    ";
+    }
+
+    names << "__jail__,";
+
+    Replace(content, "$LEXER_STATES", names.str());
 }
 
 /// <summary>
@@ -235,7 +289,7 @@ void ReplaceToString(std::string& content,
     std::stringstream out;
     for (const std::string& name : tokenNames)
     {
-        out << "case " << name << ":\n"
+        out << "case TokenType::" << name << ":\n"
             << "        str = \"" << name << "\";\n"
             << "        break;\n"
             << "    ";
@@ -315,6 +369,7 @@ void TemplateBody(FileNode file,
     ReplaceErrorName(content, errorName);
     ReplaceEofName(content, eofName);
     ReplaceName(content, name);
+    ReplaceLexerStates(content, file);
     ReplaceRules(content, file, eofName);
     ReplaceToString(content, file, eofName, errorName);
     ReplaceDebug(content, debug);

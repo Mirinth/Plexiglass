@@ -15,6 +15,7 @@ add_custom_command(
 	MAIN_DEPENDENCY basic-test/lexer.txt
 	DEPENDS plexiglass basic-test/lexer.txt
 	VERBATIM
+	COMMENT "Generating basic-test lexer."
 )
 
 set(LEXER_FILE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/basic-test")

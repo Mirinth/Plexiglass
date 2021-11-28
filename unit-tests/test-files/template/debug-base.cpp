@@ -1,4 +1,4 @@
-#include "template_test.hpp"
+#include "debug.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -7,28 +7,48 @@
 
 std::string ReadFile(const std::filesystem::path& path);
 
+enum class LexerState
+{
+    __initial__,
+    __jail__,
+};
+
 struct Rule
 {
     /// <summary>
     /// Construct a Rule.
     /// </summary>
+    /// <param name="active">The state the rule is active in.</param>
+    /// <param name="pattern">
+    /// A regular expression describing what the rule matches.
+    /// </param>
+    /// <param name="transition">The state the rule transitions to.</param>
     /// <param name="token">The TokenType produced.</param>
     /// <param name="produce">Whether a token is produced at all.</param>
     /// <param name="increment">
     /// How much to change the current line number by.
     /// </param>
-    /// <param name="pattern">
-    /// A regular expression describing what the rule matches.
-    /// </param>
-    Rule(TokenType token, bool produce, int increment, const char* pattern)
-        : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
+    Rule(LexerState active,
+         const char* pattern,
+         LexerState transition,
+         TokenType token,
+         bool produce,
+         int increment)
+        : Active(active)
+        , Pattern(pattern)
+        , Transition(transition)
+        , Token(token)
+        , Produce(produce)
+        , Increment(increment)
     {
     }
 
+    LexerState Active;
+    std::regex Pattern;
+    LexerState Transition;
     TokenType Token;
     bool Produce;
     int Increment;
-    std::regex Pattern;
 };
 
 /// <summary>
@@ -39,9 +59,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    rules.emplace_back(CatToken, true, 0, "cat");
-    rules.emplace_back(DogToken, true, 0, "dog");
-    rules.emplace_back(PLEXIGLASS_EOF, false, 0, "\\s+");
+    rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, true, 0);
+    rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, true, 0);
+    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::PLEXIGLASS_EOF, false, 0);
 
     return rules;
 }
@@ -49,7 +69,7 @@ std::vector<Rule> GetRules()
 /// <summary>
 /// Get a human-readable string representation of a token.
 /// </summary>
-/// <param name="type">The token's type..</param>
+/// <param name="type">The token's type.</param>
 /// <param name="text">The token's text.</param>
 /// <returns>String representation of the token.</returns>
 std::string ToString(TokenType type, const std::string& text)
@@ -57,16 +77,16 @@ std::string ToString(TokenType type, const std::string& text)
     std::string str;
     switch (type)
     {
-    case CatToken:
+    case TokenType::CatToken:
         str = "CatToken";
         break;
-    case DogToken:
+    case TokenType::DogToken:
         str = "DogToken";
         break;
-    case PLEXIGLASS_EOF:
+    case TokenType::PLEXIGLASS_EOF:
         str = "PLEXIGLASS_EOF";
         break;
-    case PLEXIGLASS_NO_MATCH_TOKEN:
+    case TokenType::PLEXIGLASS_NO_MATCH_TOKEN:
         str = "PLEXIGLASS_NO_MATCH_TOKEN";
         break;
     default:
@@ -82,10 +102,10 @@ std::string ToString(TokenType type, const std::string& text)
 }
 
 /// <summary>
-/// Construct template_test.
+/// Construct debug.
 /// </summary>
 /// <param name="path">Path to the file to lex.</param>
-template_test::template_test(const std::filesystem::path& path)
+debug::debug(const std::filesystem::path& path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
@@ -97,7 +117,7 @@ template_test::template_test(const std::filesystem::path& path)
 /// Retrieve the line the next token starts on.
 /// </summary>
 /// <returns>The line the next token starts on.</returns>
-size_t template_test::PeekLine() const
+size_t debug::PeekLine() const
 {
     return m_line;
 }
@@ -106,7 +126,7 @@ size_t template_test::PeekLine() const
 /// Retrieve the next TokenType without removing it.
 /// </summary>
 /// <returns>The next TokenType.</returns>
-TokenType template_test::PeekToken() const
+TokenType debug::PeekToken() const
 {
     return m_type;
 }
@@ -115,7 +135,7 @@ TokenType template_test::PeekToken() const
 /// Retrieve the next token's text without removing it.
 /// </summary>
 /// <returns>The next token's text.</returns>
-std::string template_test::PeekText() const
+std::string debug::PeekText() const
 {
     return m_text;
 }
@@ -123,7 +143,7 @@ std::string template_test::PeekText() const
 /// <summary>
 /// Advance the lexer to the next token.
 /// </summary>
-void template_test::Shift()
+void debug::Shift()
 {
     bool success = false;
     while (!success)
@@ -133,16 +153,16 @@ void template_test::Shift()
 }
 
 /// <summary>
-/// Helper function for template_test::Shift().
+/// Helper function for debug::Shift().
 /// </summary>
 /// <returns>
 /// true if the found token should be used, false if it should be skipped.
 /// </returns>
-bool template_test::ShiftHelper()
+bool debug::ShiftHelper()
 {
     if (m_data.empty())
     {
-        m_type = PLEXIGLASS_EOF;
+        m_type = TokenType::PLEXIGLASS_EOF;
         m_text = "";
         return true;
     }
@@ -168,7 +188,7 @@ bool template_test::ShiftHelper()
         // Ensure following cast is safe
         if (m.length() < 0)
         {
-            throw std::exception("template_test::Shift(): Length was negative.");
+            throw std::exception("debug::Shift(): Length was negative.");
         }
         size_t length = static_cast<size_t>(std::abs(m.length()));
 
@@ -196,7 +216,7 @@ bool template_test::ShiftHelper()
     }
     else
     {
-        m_type = PLEXIGLASS_NO_MATCH_TOKEN;
+        m_type = TokenType::PLEXIGLASS_NO_MATCH_TOKEN;
         m_text = "";
         m_data.remove_prefix(1);
         return true;
@@ -221,12 +241,10 @@ std::string ReadFile(const std::filesystem::path& path)
     return data;
 }
 
-#if 0 // Used to include/exclude driver code. Filled in by templater.
+#if 1 // Used to include/exclude driver code. Filled in by templater.
 
 #include <fstream>
 #include <iostream>
-
-#include <path.hpp>
 
 /// <summary>
 /// Runs the lexer, writing all the tokens it generates to an output file.

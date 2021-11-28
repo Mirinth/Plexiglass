@@ -1,4 +1,4 @@
-#include "template_test_debug.hpp"
+#include "full.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -7,28 +7,49 @@
 
 std::string ReadFile(const std::filesystem::path& path);
 
+enum class LexerState
+{
+    __initial__,
+    other_state,
+    __jail__,
+};
+
 struct Rule
 {
     /// <summary>
     /// Construct a Rule.
     /// </summary>
+    /// <param name="active">The state the rule is active in.</param>
+    /// <param name="pattern">
+    /// A regular expression describing what the rule matches.
+    /// </param>
+    /// <param name="transition">The state the rule transitions to.</param>
     /// <param name="token">The TokenType produced.</param>
     /// <param name="produce">Whether a token is produced at all.</param>
     /// <param name="increment">
     /// How much to change the current line number by.
     /// </param>
-    /// <param name="pattern">
-    /// A regular expression describing what the rule matches.
-    /// </param>
-    Rule(TokenType token, bool produce, int increment, const char* pattern)
-        : Token(token), Produce(produce), Increment(increment), Pattern(pattern)
+    Rule(LexerState active,
+         const char* pattern,
+         LexerState transition,
+         TokenType token,
+         bool produce,
+         int increment)
+        : Active(active)
+        , Pattern(pattern)
+        , Transition(transition)
+        , Token(token)
+        , Produce(produce)
+        , Increment(increment)
     {
     }
 
+    LexerState Active;
+    std::regex Pattern;
+    LexerState Transition;
     TokenType Token;
     bool Produce;
     int Increment;
-    std::regex Pattern;
 };
 
 /// <summary>
@@ -39,9 +60,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    rules.emplace_back(CatToken, true, 0, "cat");
-    rules.emplace_back(DogToken, true, 0, "dog");
-    rules.emplace_back(PLEXIGLASS_EOF, false, 0, "\\s+");
+    rules.emplace_back(LexerState::__initial__, "1st", LexerState::__initial__, TokenType::PLEXIGLASS_EOF, false, 1);
+    rules.emplace_back(LexerState::__initial__, "2nd", LexerState::other_state, TokenType::secondToken, true, -1);
+    rules.emplace_back(LexerState::other_state, "3rd", LexerState::__initial__, TokenType::PLEXIGLASS_EOF, false, 0);
 
     return rules;
 }
@@ -49,7 +70,7 @@ std::vector<Rule> GetRules()
 /// <summary>
 /// Get a human-readable string representation of a token.
 /// </summary>
-/// <param name="type">The token's type..</param>
+/// <param name="type">The token's type.</param>
 /// <param name="text">The token's text.</param>
 /// <returns>String representation of the token.</returns>
 std::string ToString(TokenType type, const std::string& text)
@@ -57,17 +78,14 @@ std::string ToString(TokenType type, const std::string& text)
     std::string str;
     switch (type)
     {
-    case CatToken:
-        str = "CatToken";
-        break;
-    case DogToken:
-        str = "DogToken";
-        break;
-    case PLEXIGLASS_EOF:
+    case TokenType::PLEXIGLASS_EOF:
         str = "PLEXIGLASS_EOF";
         break;
-    case PLEXIGLASS_NO_MATCH_TOKEN:
+    case TokenType::PLEXIGLASS_NO_MATCH_TOKEN:
         str = "PLEXIGLASS_NO_MATCH_TOKEN";
+        break;
+    case TokenType::secondToken:
+        str = "secondToken";
         break;
     default:
             throw std::exception("Unrecognized token type in ToString()");
@@ -82,10 +100,10 @@ std::string ToString(TokenType type, const std::string& text)
 }
 
 /// <summary>
-/// Construct template_test_debug.
+/// Construct full.
 /// </summary>
 /// <param name="path">Path to the file to lex.</param>
-template_test_debug::template_test_debug(const std::filesystem::path& path)
+full::full(const std::filesystem::path& path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
@@ -97,7 +115,7 @@ template_test_debug::template_test_debug(const std::filesystem::path& path)
 /// Retrieve the line the next token starts on.
 /// </summary>
 /// <returns>The line the next token starts on.</returns>
-size_t template_test_debug::PeekLine() const
+size_t full::PeekLine() const
 {
     return m_line;
 }
@@ -106,7 +124,7 @@ size_t template_test_debug::PeekLine() const
 /// Retrieve the next TokenType without removing it.
 /// </summary>
 /// <returns>The next TokenType.</returns>
-TokenType template_test_debug::PeekToken() const
+TokenType full::PeekToken() const
 {
     return m_type;
 }
@@ -115,7 +133,7 @@ TokenType template_test_debug::PeekToken() const
 /// Retrieve the next token's text without removing it.
 /// </summary>
 /// <returns>The next token's text.</returns>
-std::string template_test_debug::PeekText() const
+std::string full::PeekText() const
 {
     return m_text;
 }
@@ -123,7 +141,7 @@ std::string template_test_debug::PeekText() const
 /// <summary>
 /// Advance the lexer to the next token.
 /// </summary>
-void template_test_debug::Shift()
+void full::Shift()
 {
     bool success = false;
     while (!success)
@@ -133,16 +151,16 @@ void template_test_debug::Shift()
 }
 
 /// <summary>
-/// Helper function for template_test_debug::Shift().
+/// Helper function for full::Shift().
 /// </summary>
 /// <returns>
 /// true if the found token should be used, false if it should be skipped.
 /// </returns>
-bool template_test_debug::ShiftHelper()
+bool full::ShiftHelper()
 {
     if (m_data.empty())
     {
-        m_type = PLEXIGLASS_EOF;
+        m_type = TokenType::PLEXIGLASS_EOF;
         m_text = "";
         return true;
     }
@@ -168,7 +186,7 @@ bool template_test_debug::ShiftHelper()
         // Ensure following cast is safe
         if (m.length() < 0)
         {
-            throw std::exception("template_test_debug::Shift(): Length was negative.");
+            throw std::exception("full::Shift(): Length was negative.");
         }
         size_t length = static_cast<size_t>(std::abs(m.length()));
 
@@ -196,7 +214,7 @@ bool template_test_debug::ShiftHelper()
     }
     else
     {
-        m_type = PLEXIGLASS_NO_MATCH_TOKEN;
+        m_type = TokenType::PLEXIGLASS_NO_MATCH_TOKEN;
         m_text = "";
         m_data.remove_prefix(1);
         return true;
@@ -225,8 +243,6 @@ std::string ReadFile(const std::filesystem::path& path)
 
 #include <fstream>
 #include <iostream>
-
-#include <path.hpp>
 
 /// <summary>
 /// Runs the lexer, writing all the tokens it generates to an output file.

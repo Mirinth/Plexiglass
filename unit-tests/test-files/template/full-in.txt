@@ -1,0 +1,22 @@
+
+expression first
+	1st
+
+expression second
+	2nd
+
+expression third
+	3rd
+
+rule first
+	produce-nothing
+	line++
+
+rule second
+	produce secondToken
+	transition other_state
+	line--
+
+rule third
+	state other_state
+	transition __initial__

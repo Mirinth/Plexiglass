@@ -8,15 +8,17 @@ enum class LexerState;
 
 enum class TokenType
 {
-    $TOKEN_NAMES
+    PLEXIGLASS_EOF,
+    PLEXIGLASS_NO_MATCH_TOKEN,
+    secondToken,
 };
 
 std::string ToString(TokenType type, const std::string& text);
 
-class $LEXER_NAME
+class full
 {
 public:
-    $LEXER_NAME(const std::filesystem::path& path);
+    full(const std::filesystem::path& path);
     size_t PeekLine() const;
     TokenType PeekToken() const;
     std::string PeekText() const;

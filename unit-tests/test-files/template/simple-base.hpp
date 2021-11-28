@@ -4,7 +4,9 @@
 #include <string>
 #include <string_view>
 
-enum TokenType
+enum class LexerState;
+
+enum class TokenType
 {
     CatToken,
     DogToken,
@@ -14,10 +16,10 @@ enum TokenType
 
 std::string ToString(TokenType type, const std::string& text);
 
-class template_test_debug
+class simple
 {
 public:
-    template_test_debug(const std::filesystem::path& path);
+    simple(const std::filesystem::path& path);
     size_t PeekLine() const;
     TokenType PeekToken() const;
     std::string PeekText() const;

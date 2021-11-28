@@ -1,4 +1,4 @@
-#include "$LEXER_NAME.hpp"
+#include "simple.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -9,7 +9,8 @@ std::string ReadFile(const std::filesystem::path& path);
 
 enum class LexerState
 {
-    $LEXER_STATES
+    __initial__,
+    __jail__,
 };
 
 struct Rule
@@ -58,7 +59,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    $LEXER_RULES
+    rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, true, 0);
+    rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, true, 0);
+    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::PLEXIGLASS_EOF, false, 0);
 
     return rules;
 }
@@ -74,7 +77,20 @@ std::string ToString(TokenType type, const std::string& text)
     std::string str;
     switch (type)
     {
-    $TOKEN_TO_STRING
+    case TokenType::CatToken:
+        str = "CatToken";
+        break;
+    case TokenType::DogToken:
+        str = "DogToken";
+        break;
+    case TokenType::PLEXIGLASS_EOF:
+        str = "PLEXIGLASS_EOF";
+        break;
+    case TokenType::PLEXIGLASS_NO_MATCH_TOKEN:
+        str = "PLEXIGLASS_NO_MATCH_TOKEN";
+        break;
+    default:
+            throw std::exception("Unrecognized token type in ToString()");
     }
 
     if (!text.empty())
@@ -86,10 +102,10 @@ std::string ToString(TokenType type, const std::string& text)
 }
 
 /// <summary>
-/// Construct $LEXER_NAME.
+/// Construct simple.
 /// </summary>
 /// <param name="path">Path to the file to lex.</param>
-$LEXER_NAME::$LEXER_NAME(const std::filesystem::path& path)
+simple::simple(const std::filesystem::path& path)
 {
     m_input = ReadFile(path);
     m_data = m_input;
@@ -101,7 +117,7 @@ $LEXER_NAME::$LEXER_NAME(const std::filesystem::path& path)
 /// Retrieve the line the next token starts on.
 /// </summary>
 /// <returns>The line the next token starts on.</returns>
-size_t $LEXER_NAME::PeekLine() const
+size_t simple::PeekLine() const
 {
     return m_line;
 }
@@ -110,7 +126,7 @@ size_t $LEXER_NAME::PeekLine() const
 /// Retrieve the next TokenType without removing it.
 /// </summary>
 /// <returns>The next TokenType.</returns>
-TokenType $LEXER_NAME::PeekToken() const
+TokenType simple::PeekToken() const
 {
     return m_type;
 }
@@ -119,7 +135,7 @@ TokenType $LEXER_NAME::PeekToken() const
 /// Retrieve the next token's text without removing it.
 /// </summary>
 /// <returns>The next token's text.</returns>
-std::string $LEXER_NAME::PeekText() const
+std::string simple::PeekText() const
 {
     return m_text;
 }
@@ -127,7 +143,7 @@ std::string $LEXER_NAME::PeekText() const
 /// <summary>
 /// Advance the lexer to the next token.
 /// </summary>
-void $LEXER_NAME::Shift()
+void simple::Shift()
 {
     bool success = false;
     while (!success)
@@ -137,16 +153,16 @@ void $LEXER_NAME::Shift()
 }
 
 /// <summary>
-/// Helper function for $LEXER_NAME::Shift().
+/// Helper function for simple::Shift().
 /// </summary>
 /// <returns>
 /// true if the found token should be used, false if it should be skipped.
 /// </returns>
-bool $LEXER_NAME::ShiftHelper()
+bool simple::ShiftHelper()
 {
     if (m_data.empty())
     {
-        m_type = $EOF_TOKEN;
+        m_type = TokenType::PLEXIGLASS_EOF;
         m_text = "";
         return true;
     }
@@ -172,7 +188,7 @@ bool $LEXER_NAME::ShiftHelper()
         // Ensure following cast is safe
         if (m.length() < 0)
         {
-            throw std::exception("$LEXER_NAME::Shift(): Length was negative.");
+            throw std::exception("simple::Shift(): Length was negative.");
         }
         size_t length = static_cast<size_t>(std::abs(m.length()));
 
@@ -200,7 +216,7 @@ bool $LEXER_NAME::ShiftHelper()
     }
     else
     {
-        m_type = $INVALID_TOKEN;
+        m_type = TokenType::PLEXIGLASS_NO_MATCH_TOKEN;
         m_text = "";
         m_data.remove_prefix(1);
         return true;
@@ -225,7 +241,7 @@ std::string ReadFile(const std::filesystem::path& path)
     return data;
 }
 
-#if $DEBUG_MODE // Used to include/exclude driver code. Filled in by templater.
+#if 0 // Used to include/exclude driver code. Filled in by templater.
 
 #include <fstream>
 #include <iostream>
