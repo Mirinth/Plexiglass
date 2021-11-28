@@ -298,8 +298,9 @@ void TemplateBody(FileNode file,
 {
     std::string content = code_template;
 
-    Replace(content, "$INVALID_TOKEN", jam_token);
     Replace(content, "$EOF_TOKEN", eof_token);
+    Replace(content, "$INVALID_TOKEN", jam_token);
+    Replace(content, "$NOTHING_TOKEN", nothing_token);
     Replace(content, "$LEXER_NAME", name);
     ReplaceLexerStates(content, file);
     ReplaceRules(content, file);
