@@ -17,7 +17,7 @@ void RunLexer(std::string inputPath, std::string outputPath)
 
     std::ofstream out(outputPath);
 
-    while (lex.PeekToken() != TokenType::PLEXIGLASS_EOF)
+    while (lex.PeekToken() != TokenType::__eof__)
     {
         out << lex.PeekLine() << ": "
             << ToString(lex.PeekToken(), lex.PeekText()) << "\n";
