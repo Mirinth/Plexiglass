@@ -1,17 +1,232 @@
-expression cat
-	cat
+expression nickel
+	nickel
 
-expression dog
-	dog
+expression dime
+	dime
 
-expression white
-	\s+
+expression quarter
+	quarter
 
-rule cat
-	produce CatToken
+expression newline
+	\n
 
-rule dog
-	produce DogToken
+expression comment_start
+	;
 
-rule white
+expression comment_end
+	\n
+
+expression not_comment_end
+	[^\n]+
+
+
+# initial state
+rule comment_start
 	produce-nothing
+	transition comment
+
+rule newline
+	produce-nothing
+	line++
+
+rule nickel
+	produce-nothing
+	transition five
+
+rule dime
+	produce-nothing
+	transition ten
+
+rule quarter
+	produce-nothing
+	transition twenty_five
+
+# five state
+rule nickel
+	state five
+	produce-nothing
+	transition ten
+
+rule dime
+	state five
+	produce-nothing
+	transition fifteen
+
+rule quarter
+	state five
+	produce-nothing
+	transition thirty
+
+rule newline
+	state five
+	produce FiveToken
+	transition __initial__
+	line++
+
+# ten state
+rule nickel
+	state ten
+	produce-nothing
+	transition fifteen
+
+rule dime
+	state ten
+	produce-nothing
+	transition twenty
+
+rule quarter
+	state ten
+	produce-nothing
+	transition thirty_five
+
+rule newline
+	state ten
+	produce TenToken
+	transition __initial__
+	line++
+
+# fifteen state
+rule nickel
+	state fifteen
+	produce-nothing
+	transition twenty
+
+rule dime
+	state fifteen
+	produce-nothing
+	transition twenty_five
+
+rule quarter
+	state fifteen
+	produce-nothing
+	transition forty
+
+rule newline
+	state fifteen
+	produce FifteenToken
+	transition __initial__
+	line++
+
+# twenty state
+rule nickel
+	state twenty
+	produce-nothing
+	transition twenty_five
+
+rule dime
+	state twenty
+	produce-nothing
+	transition thirty
+
+rule quarter
+	state twenty
+	produce-nothing
+	transition forty_five
+
+rule newline
+	state twenty
+	produce TwentyToken
+	transition __initial__
+	line++
+
+# twenty_five state
+rule nickel
+	state twenty_five
+	produce-nothing
+	transition thirty
+
+rule dime
+	state twenty_five
+	produce-nothing
+	transition thirty_five
+
+rule quarter
+	state twenty_five
+	produce-nothing
+	transition fifty
+
+rule newline
+	state twenty_five
+	produce TwentyFiveToken
+	transition __initial__
+	line++
+
+# thirty state
+rule nickel
+	state thirty
+	produce-nothing
+	transition thirty_five
+
+rule dime
+	state thirty
+	produce-nothing
+	transition forty
+
+rule newline
+	state thirty
+	produce ThirtyToken
+	transition __initial__
+	line++
+
+# thirty_five state
+rule nickel
+	state thirty_five
+	produce-nothing
+	transition forty
+
+rule dime
+	state thirty_five
+	produce-nothing
+	transition forty_five
+
+rule newline
+	state thirty_five
+	produce ThirtyFiveToken
+	transition __initial__
+	line++
+
+# forty state
+rule nickel
+	state forty
+	produce-nothing
+	transition forty_five
+
+rule dime
+	state forty
+	produce-nothing
+	transition fifty
+
+rule newline
+	state forty
+	produce FortyToken
+	transition __initial__
+	line++
+
+# forty_five state
+rule nickel
+	state forty_five
+	produce-nothing
+	transition fifty
+
+rule newline
+	state forty_five
+	produce FortyFiveToken
+	transition __initial__
+	line++
+
+# fifty state
+rule newline
+	state fifty
+	produce FiftyToken
+	transition __initial__
+	line++
+
+# comment state
+rule not_comment_end
+	state comment
+	produce-nothing
+
+rule comment_end
+	state comment
+	produce-nothing
+	line++
