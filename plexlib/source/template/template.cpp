@@ -10,12 +10,18 @@
 #include <template-holder.hpp>
 #include <utils.hpp>
 
+constexpr char* eof_token = "__eof__";
+constexpr char* jam_token = "__jam__";
+constexpr char* nothing_token = "__nothing__";
+
+constexpr char* initial_state = "__initial__";
+constexpr char* jail_state = "__jail__";
+
 struct TemplateRule
 {
     std::string Active;     // state this rule is active in
     std::string Pattern;    // regex to match
     std::string Transition; // state this rule transitions to
-    bool Produces;          // whether anything is produced
     std::string Token;      // what gets produced (if anything)
     int Increment;          // how much to increment the line number by
 };
@@ -39,6 +45,10 @@ void GetTokenNames(FileNode node, std::set<std::string>& names)
             }
         }
     }
+
+    names.insert(eof_token);
+    names.insert(jam_token);
+    names.insert(nothing_token);
 }
 
 /// <summary>
@@ -50,11 +60,10 @@ void GetRule(ActionNode node, TemplateRule& rule)
 {
     if (node->name == "produce-nothing")
     {
-        rule.Produces = false;
+        rule.Token = nothing_token;
     }
     else if (node->name == "produce")
     {
-        rule.Produces = true;
         rule.Token = node->identifier;
     }
     else if (node->name == "++line" || node->name == "line++")
@@ -86,7 +95,7 @@ void GetRule(ActionNode node, TemplateRule& rule)
 /// <returns>TemplateRule for the RuleNode.</returns>
 TemplateRule GetRule(RuleNode node)
 {
-    TemplateRule rule = { "", node->name, "", false, "", 0 };
+    TemplateRule rule = { "", node->name, "", "", 0 };
 
     for (const auto& action : node->actions)
     {
@@ -100,11 +109,8 @@ TemplateRule GetRule(RuleNode node)
 /// Get the string to be substituted into the template's rule location.
 /// </summary>
 /// <param name="node">The lexer.</param>
-/// <param name="illegalTokenName">
-/// Name to use for the token generated when no other token is.
-/// </param>
 /// <returns>The rule string.</returns>
-std::string GetRuleString(FileNode node, std::string illegalTokenName)
+std::string GetRuleString(FileNode node)
 {
     std::vector<TemplateRule> producedRules;
 
@@ -136,11 +142,11 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
     {
         if (producedRule.Token == "")
         {
-            producedRule.Token = illegalTokenName;
+            producedRule.Token = nothing_token;
         }
         if (producedRule.Active == "")
         {
-            producedRule.Active = "__initial__";
+            producedRule.Active = initial_state;
         }
         if (producedRule.Transition == "")
         {
@@ -150,33 +156,12 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
             << ", " << producedRule.Pattern
             << ", LexerState::" << producedRule.Transition
             << ", TokenType::" << producedRule.Token << ", "
-            << (producedRule.Produces ? "true" : "false") << ", "
             << producedRule.Increment << ");";
     }
 
     std::string outStr = out.str();
     outStr.erase(0, 5); // Erase leading "\n    "
     return outStr;
-}
-
-/// <summary>
-/// Replace $EOF_TOKEN.
-/// </summary>
-/// <param name="content">String to replace in.</param>
-/// <param name="name">What to replace with.</param>
-void ReplaceEofName(std::string& content, const std::string& name)
-{
-    Replace(content, "$EOF_TOKEN", "TokenType::" + name);
-}
-
-/// <summary>
-/// Replace $INVALID_TOKEN.
-/// </summary>
-/// <param name="content">String to replace in.</param>
-/// <param name="name">What to replace with.</param>
-void ReplaceErrorName(std::string& content, const std::string& name)
-{
-    Replace(content, "$INVALID_TOKEN", "TokenType::" + name);
 }
 
 /// <summary>
@@ -200,26 +185,16 @@ void ReplaceLexerStates(std::string& content, const FileNode lexer)
     }
 
     std::stringstream names;
-    names << "__initial__,\n    ";
+    names << initial_state << ",\n    ";
 
     for (const auto& state : states)
     {
         names << state << ",\n    ";
     }
 
-    names << "__jail__,";
+    names << jail_state << ",";
 
     Replace(content, "$LEXER_STATES", names.str());
-}
-
-/// <summary>
-/// Replace $LEXER_NAME.
-/// </summary>
-/// <param name="content">String to replace in.</param>
-/// <param name="name">What to replace with.</param>
-void ReplaceName(std::string& content, const std::string& name)
-{
-    Replace(content, "$LEXER_NAME", name);
 }
 
 /// <summary>
@@ -227,21 +202,10 @@ void ReplaceName(std::string& content, const std::string& name)
 /// </summary>
 /// <param name="content">String to replace in.</param>
 /// <param name="file">Lexer to extract token names from.</param>
-/// <returns>
-/// The name used for the end-of-file token and the name used for the error
-/// token.
-/// </returns>
-std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
-                                                   FileNode file)
+void ReplaceTokens(std::string& content, FileNode file)
 {
     std::set<std::string> tokenNames;
     GetTokenNames(file, tokenNames);
-
-    std::string errorName = "__jam__";
-    tokenNames.insert(errorName);
-
-    std::string eofName = "__eof__";
-    tokenNames.insert(eofName);
 
     std::stringstream names;
     for (auto& tokenName : tokenNames)
@@ -253,8 +217,6 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
     namesStr.erase(0, 5); // Erase the leading "\n    "
 
     Replace(content, "$TOKEN_NAMES", namesStr);
-
-    return std::make_tuple(eofName, errorName);
 }
 
 /// <summary>
@@ -262,10 +224,9 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
 /// </summary>
 /// <param name="content">String to replace in.</param>
 /// <param name="file">The lexer to generate rules from.</param>
-/// <param name="errorName">Name to use for error token.</param>
-void ReplaceRules(std::string& content, FileNode file, std::string errorName)
+void ReplaceRules(std::string& content, FileNode file)
 {
-    std::string ruleString = GetRuleString(file, errorName);
+    std::string ruleString = GetRuleString(file);
     Replace(content, "$LEXER_RULES", ruleString);
 }
 
@@ -274,17 +235,10 @@ void ReplaceRules(std::string& content, FileNode file, std::string errorName)
 /// </summary>
 /// <param name="content">String to replace in.</param>
 /// <param name="file">The lexer to generate from.</param>
-/// <param name="eofName">Name to use for end-of-file token.</param>
-/// <param name="errorName">Name to use for error token.</param>
-void ReplaceToString(std::string& content,
-                     FileNode file,
-                     std::string eofName,
-                     std::string errorName)
+void ReplaceToString(std::string& content, FileNode file)
 {
     std::set<std::string> tokenNames;
     GetTokenNames(file, tokenNames);
-    tokenNames.insert(eofName);
-    tokenNames.insert(errorName);
 
     std::stringstream out;
     for (const std::string& name : tokenNames)
@@ -299,17 +253,6 @@ void ReplaceToString(std::string& content,
            "type in ToString()\");";
 
     Replace(content, "$TOKEN_TO_STRING", out.str());
-}
-
-/// <summary>
-/// Replace $DEBUG_MODE.
-/// </summary>
-/// <param name="content">String to replace in.</param>
-/// <param name="debug">Whether debug mode is enabled.</param>
-void ReplaceDebug(std::string& content, bool debug)
-{
-    std::string replacement = (debug ? "1" : "0");
-    Replace(content, "$DEBUG_MODE", replacement);
 }
 
 /// <summary>
@@ -329,50 +272,40 @@ void SaveFile(const std::string& content, const std::filesystem::path& path)
 /// <param name="file">The lexer to generate from.</param>
 /// <param name="header">Path to the output header.</param>
 /// <param name="name">Name of the lexer.</param>
-/// <returns>
-/// The name used for the end-of-file token and the name used for the error
-/// token.
-/// </returns>
-std::tuple<std::string, std::string> TemplateHeader(
-    FileNode file,
-    std::filesystem::path header,
-    std::string name)
+void TemplateHeader(FileNode file,
+                    std::filesystem::path header,
+                    std::string name)
 {
     std::string content = header_template;
 
-    ReplaceName(content, name);
-    auto names = ReplaceTokens(content, file);
+    Replace(content, "$LEXER_NAME", name);
+    ReplaceTokens(content, file);
 
     SaveFile(content, header);
-
-    return names;
 }
 
 /// <summary>
 /// Generate a code file from the template.
 /// </summary>
 /// <param name="file">The lexer to generate from.</param>
-/// <param name="eofName">Name to use for end-of-file token.</param>
-/// <param name="errorName">Name to use for error token.</param>
 /// <param name="code">Path to the output code file.</param>
 /// <param name="name">Name of the lexer.</param>
 /// <param name="debug">Whether to generate a debug mode lexer.</param>
 void TemplateBody(FileNode file,
-                  std::string eofName,
-                  std::string errorName,
                   std::filesystem::path code,
                   std::string name,
                   bool debug)
 {
     std::string content = code_template;
 
-    ReplaceErrorName(content, errorName);
-    ReplaceEofName(content, eofName);
-    ReplaceName(content, name);
+    Replace(content, "$EOF_TOKEN", eof_token);
+    Replace(content, "$INVALID_TOKEN", jam_token);
+    Replace(content, "$NOTHING_TOKEN", nothing_token);
+    Replace(content, "$LEXER_NAME", name);
     ReplaceLexerStates(content, file);
-    ReplaceRules(content, file, eofName);
-    ReplaceToString(content, file, eofName, errorName);
-    ReplaceDebug(content, debug);
+    ReplaceRules(content, file);
+    ReplaceToString(content, file);
+    Replace(content, "$DEBUG_MODE", (debug ? "1" : "0"));
     SaveFile(content, code);
 }
 
@@ -392,6 +325,6 @@ void Template(FileNode file,
 {
     std::filesystem::remove(header);
     std::filesystem::remove(code);
-    auto [eofName, errorName] = TemplateHeader(file, header, name);
-    TemplateBody(file, eofName, errorName, code, name, debug);
+    TemplateHeader(file, header, name);
+    TemplateBody(file, code, name, debug);
 }

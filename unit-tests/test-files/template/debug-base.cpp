@@ -24,7 +24,6 @@ struct Rule
     /// </param>
     /// <param name="transition">The state the rule transitions to.</param>
     /// <param name="token">The TokenType produced.</param>
-    /// <param name="produce">Whether a token is produced at all.</param>
     /// <param name="increment">
     /// How much to change the current line number by.
     /// </param>
@@ -32,13 +31,11 @@ struct Rule
          const char* pattern,
          LexerState transition,
          TokenType token,
-         bool produce,
          int increment)
         : Active(active)
         , Pattern(pattern)
         , Transition(transition)
         , Token(token)
-        , Produce(produce)
         , Increment(increment)
     {
     }
@@ -47,7 +44,6 @@ struct Rule
     std::regex Pattern;
     LexerState Transition;
     TokenType Token;
-    bool Produce;
     int Increment;
 };
 
@@ -59,9 +55,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, true, 0);
-    rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, true, 0);
-    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::__eof__, false, 0);
+    rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, 0);
+    rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, 0);
+    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::__nothing__, 0);
 
     return rules;
 }
@@ -88,6 +84,9 @@ std::string ToString(TokenType type, const std::string& text)
         break;
     case TokenType::__jam__:
         str = "__jam__";
+        break;
+    case TokenType::__nothing__:
+        str = "__nothing__";
         break;
     default:
             throw std::exception("Unrecognized token type in ToString()");
@@ -146,26 +145,23 @@ std::string debug::PeekText() const
 /// </summary>
 void debug::Shift()
 {
-    bool success = false;
-    while (!success)
+    m_type = TokenType::__nothing__;
+    while (m_type == TokenType::__nothing__)
     {
-        success = ShiftHelper();
+        ShiftHelper();
     }
 }
 
 /// <summary>
 /// Helper function for debug::Shift().
 /// </summary>
-/// <returns>
-/// true if the found token should be used, false if it should be skipped.
-/// </returns>
-bool debug::ShiftHelper()
+void debug::ShiftHelper()
 {
     if (m_view.empty())
     {
         m_type = TokenType::__eof__;
         m_text = "";
-        return true;
+        return;
     }
 
     using vmatch = std::match_results<std::string_view::const_iterator>;
@@ -207,28 +203,24 @@ bool debug::ShiftHelper()
         }
     }
 
-    if (max_length > 0 && rules[max_index].Produce)
+    if (max_length > 0)
     {
         m_type = rules[max_index].Token;
-        m_text = m_view.substr(0, max_length);
+        if (rules[max_index].Token != TokenType::__nothing__)
+        {
+            m_text = m_view.substr(0, max_length);
+        }
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
         m_state = rules[max_index].Transition;
-        return true;
-    }
-    else if (max_length > 0)
-    {
-        m_view.remove_prefix(max_length);
-        m_line += rules[max_index].Increment;
-        m_state = rules[max_index].Transition;
-        return false;
+        return;
     }
     else
     {
         m_type = TokenType::__jam__;
         m_text = std::string(1, m_view[0]);
         m_view.remove_prefix(1);
-        return true;
+        return;
     }
 }
 

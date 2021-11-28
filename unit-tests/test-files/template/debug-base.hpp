@@ -12,6 +12,7 @@ enum class TokenType
     DogToken,
     __eof__,
     __jam__,
+    __nothing__,
 };
 
 std::string ToString(TokenType type, const std::string& text);
@@ -33,5 +34,5 @@ private:
     TokenType m_type;
     std::string m_text;
 
-    bool ShiftHelper();
+    void ShiftHelper();
 };
