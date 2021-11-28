@@ -147,7 +147,7 @@ bool $LEXER_NAME::ShiftHelper()
 {
     if (m_view.empty())
     {
-        m_type = $EOF_TOKEN;
+        m_type = TokenType::$EOF_TOKEN;
         m_text = "";
         return true;
     }
@@ -209,7 +209,7 @@ bool $LEXER_NAME::ShiftHelper()
     }
     else
     {
-        m_type = $INVALID_TOKEN;
+        m_type = TokenType::$INVALID_TOKEN;
         m_text = std::string(1, m_view[0]);
         m_view.remove_prefix(1);
         return true;
