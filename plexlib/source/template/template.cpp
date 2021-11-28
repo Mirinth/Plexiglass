@@ -142,7 +142,7 @@ std::string GetRuleString(FileNode node)
     {
         if (producedRule.Token == "")
         {
-            producedRule.Token = jam_token;
+            producedRule.Token = nothing_token;
         }
         if (producedRule.Active == "")
         {
