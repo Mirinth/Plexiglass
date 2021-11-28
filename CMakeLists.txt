@@ -33,6 +33,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
 
     add_subdirectory(integration-tests)
     add_test(NAME "integration-tests"
-             COMMAND basic-integration-test input.txt out.txt
+             COMMAND basic-integration-test input.txt out.txt base.txt
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/integration-tests/basic-test)
 endif()

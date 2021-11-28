@@ -1,6 +1,7 @@
 add_executable(basic-integration-test
     basic-test/lexer.hpp
 	basic-test/lexer.cpp
+	main.cpp
 )
 target_include_directories(basic-integration-test
 	PRIVATE basic-test
