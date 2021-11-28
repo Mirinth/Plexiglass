@@ -10,6 +10,7 @@ enum class TokenType
 {
     __eof__,
     __jam__,
+    __nothing__,
     secondToken,
 };
 
@@ -32,5 +33,5 @@ private:
     TokenType m_type;
     std::string m_text;
 
-    bool ShiftHelper();
+    void ShiftHelper();
 };

@@ -24,7 +24,6 @@ struct Rule
     /// </param>
     /// <param name="transition">The state the rule transitions to.</param>
     /// <param name="token">The TokenType produced.</param>
-    /// <param name="produce">Whether a token is produced at all.</param>
     /// <param name="increment">
     /// How much to change the current line number by.
     /// </param>
@@ -32,13 +31,11 @@ struct Rule
          const char* pattern,
          LexerState transition,
          TokenType token,
-         bool produce,
          int increment)
         : Active(active)
         , Pattern(pattern)
         , Transition(transition)
         , Token(token)
-        , Produce(produce)
         , Increment(increment)
     {
     }
@@ -148,7 +145,7 @@ std::string simple::PeekText() const
 /// </summary>
 void simple::Shift()
 {
-	m_type = TokenType::__nothing__;
+    m_type = TokenType::__nothing__;
     while (m_type == TokenType::__nothing__)
     {
         ShiftHelper();
@@ -206,21 +203,16 @@ void simple::ShiftHelper()
         }
     }
 
-    if (max_length > 0 && rules[max_index].Produce)
+    if (max_length > 0)
     {
         m_type = rules[max_index].Token;
-        m_text = m_view.substr(0, max_length);
+        if (rules[max_index].Token != TokenType::__nothing__)
+        {
+            m_text = m_view.substr(0, max_length);
+        }
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
         m_state = rules[max_index].Transition;
-        return;
-    }
-    else if (max_length > 0)
-    {
-        m_view.remove_prefix(max_length);
-        m_line += rules[max_index].Increment;
-        m_state = rules[max_index].Transition;
-        m_type = TokenType::__nothing__;
         return;
     }
     else
