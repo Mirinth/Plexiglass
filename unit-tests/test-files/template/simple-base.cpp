@@ -61,7 +61,7 @@ std::vector<Rule> GetRules()
 
     rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, true, 0);
     rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, true, 0);
-    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::__eof__, false, 0);
+    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::__jam__, false, 0);
 
     return rules;
 }

@@ -60,9 +60,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    rules.emplace_back(LexerState::__initial__, "1st", LexerState::__initial__, TokenType::__eof__, false, 1);
+    rules.emplace_back(LexerState::__initial__, "1st", LexerState::__initial__, TokenType::__jam__, false, 1);
     rules.emplace_back(LexerState::__initial__, "2nd", LexerState::other_state, TokenType::secondToken, true, -1);
-    rules.emplace_back(LexerState::other_state, "3rd", LexerState::__initial__, TokenType::__eof__, false, 0);
+    rules.emplace_back(LexerState::other_state, "3rd", LexerState::__initial__, TokenType::__jam__, false, 0);
 
     return rules;
 }
