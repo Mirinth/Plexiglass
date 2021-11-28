@@ -65,6 +65,14 @@ void GetRule(ActionNode node, TemplateRule& rule)
     {
         rule.Increment = -1;
     }
+    else if (node->name == "transition")
+    {
+        rule.Transition = node->identifier;
+    }
+    else if (node->name == "state")
+    {
+        rule.Active = node->identifier;
+    }
     else
     {
         throw std::exception("Illegal action name");
