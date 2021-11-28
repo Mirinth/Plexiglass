@@ -10,8 +10,8 @@ enum class TokenType
 {
     CatToken,
     DogToken,
-    PLEXIGLASS_EOF,
-    PLEXIGLASS_NO_MATCH_TOKEN,
+    __eof__,
+    __jam__,
 };
 
 std::string ToString(TokenType type, const std::string& text);

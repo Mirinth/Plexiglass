@@ -12,4 +12,4 @@
 
 9: FiftyToken 
 
-9: PLEXIGLASS_EOF
+9: __eof__

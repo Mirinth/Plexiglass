@@ -237,10 +237,10 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
     std::set<std::string> tokenNames;
     GetTokenNames(file, tokenNames);
 
-    std::string errorName = "PLEXIGLASS_NO_MATCH_TOKEN";
+    std::string errorName = "__jam__";
     tokenNames.insert(errorName);
 
-    std::string eofName = "PLEXIGLASS_EOF";
+    std::string eofName = "__eof__";
     tokenNames.insert(eofName);
 
     std::stringstream names;

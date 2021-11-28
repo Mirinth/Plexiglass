@@ -61,7 +61,7 @@ std::vector<Rule> GetRules()
 
     rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, true, 0);
     rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, true, 0);
-    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::PLEXIGLASS_EOF, false, 0);
+    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::__eof__, false, 0);
 
     return rules;
 }
@@ -83,11 +83,11 @@ std::string ToString(TokenType type, const std::string& text)
     case TokenType::DogToken:
         str = "DogToken";
         break;
-    case TokenType::PLEXIGLASS_EOF:
-        str = "PLEXIGLASS_EOF";
+    case TokenType::__eof__:
+        str = "__eof__";
         break;
-    case TokenType::PLEXIGLASS_NO_MATCH_TOKEN:
-        str = "PLEXIGLASS_NO_MATCH_TOKEN";
+    case TokenType::__jam__:
+        str = "__jam__";
         break;
     default:
             throw std::exception("Unrecognized token type in ToString()");
@@ -163,7 +163,7 @@ bool debug::ShiftHelper()
 {
     if (m_view.empty())
     {
-        m_type = TokenType::PLEXIGLASS_EOF;
+        m_type = TokenType::__eof__;
         m_text = "";
         return true;
     }
@@ -225,7 +225,7 @@ bool debug::ShiftHelper()
     }
     else
     {
-        m_type = TokenType::PLEXIGLASS_NO_MATCH_TOKEN;
+        m_type = TokenType::__jam__;
         m_text = std::string(1, m_view[0]);
         m_view.remove_prefix(1);
         return true;
