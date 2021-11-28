@@ -12,6 +12,7 @@
 
 constexpr char* eof_token = "__eof__";
 constexpr char* jam_token = "__jam__";
+constexpr char* nothing_token = "__nothing__";
 
 constexpr char* initial_state = "__initial__";
 constexpr char* jail_state = "__jail__";
@@ -21,7 +22,6 @@ struct TemplateRule
     std::string Active;     // state this rule is active in
     std::string Pattern;    // regex to match
     std::string Transition; // state this rule transitions to
-    bool Produces;          // whether anything is produced
     std::string Token;      // what gets produced (if anything)
     int Increment;          // how much to increment the line number by
 };
@@ -56,11 +56,10 @@ void GetRule(ActionNode node, TemplateRule& rule)
 {
     if (node->name == "produce-nothing")
     {
-        rule.Produces = false;
+        rule.Token = nothing_token;
     }
     else if (node->name == "produce")
     {
-        rule.Produces = true;
         rule.Token = node->identifier;
     }
     else if (node->name == "++line" || node->name == "line++")
@@ -92,7 +91,7 @@ void GetRule(ActionNode node, TemplateRule& rule)
 /// <returns>TemplateRule for the RuleNode.</returns>
 TemplateRule GetRule(RuleNode node)
 {
-    TemplateRule rule = { "", node->name, "", false, "", 0 };
+    TemplateRule rule = { "", node->name, "", "", 0 };
 
     for (const auto& action : node->actions)
     {
@@ -153,7 +152,6 @@ std::string GetRuleString(FileNode node)
             << ", " << producedRule.Pattern
             << ", LexerState::" << producedRule.Transition
             << ", TokenType::" << producedRule.Token << ", "
-            << (producedRule.Produces ? "true" : "false") << ", "
             << producedRule.Increment << ");";
     }
 
