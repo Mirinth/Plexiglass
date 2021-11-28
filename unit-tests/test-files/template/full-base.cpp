@@ -105,8 +105,8 @@ std::string ToString(TokenType type, const std::string& text)
 /// <param name="path">Path to the file to lex.</param>
 full::full(const std::filesystem::path& path)
 {
-    m_input = ReadFile(path);
-    m_data = m_input;
+    m_reference = ReadFile(path);
+    m_view = m_reference;
     m_line = 1;
     Shift();
 }
@@ -158,7 +158,7 @@ void full::Shift()
 /// </returns>
 bool full::ShiftHelper()
 {
-    if (m_data.empty())
+    if (m_view.empty())
     {
         m_type = TokenType::PLEXIGLASS_EOF;
         m_text = "";
@@ -177,7 +177,7 @@ bool full::ShiftHelper()
         Rule rule = rules[index];
         vmatch m;
         bool matched =
-            std::regex_search(m_data.begin(), m_data.end(), m, rule.Pattern);
+            std::regex_search(m_view.begin(), m_view.end(), m, rule.Pattern);
         if (!matched || m.position() != 0)
         {
             continue;
@@ -201,14 +201,14 @@ bool full::ShiftHelper()
     if (max_length > 0 && rules[max_index].Produce)
     {
         m_type = rules[max_index].Token;
-        m_text = m_data.substr(0, max_length);
-        m_data.remove_prefix(max_length);
+        m_text = m_view.substr(0, max_length);
+        m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
         return true;
     }
     else if (max_length > 0)
     {
-        m_data.remove_prefix(max_length);
+        m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
         return false;
     }
@@ -216,7 +216,7 @@ bool full::ShiftHelper()
     {
         m_type = TokenType::PLEXIGLASS_NO_MATCH_TOKEN;
         m_text = "";
-        m_data.remove_prefix(1);
+        m_view.remove_prefix(1);
         return true;
     }
 }
