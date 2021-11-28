@@ -45,6 +45,10 @@ void GetTokenNames(FileNode node, std::set<std::string>& names)
             }
         }
     }
+
+    names.insert(eof_token);
+    names.insert(jam_token);
+    names.insert(nothing_token);
 }
 
 /// <summary>
@@ -203,9 +207,6 @@ void ReplaceTokens(std::string& content, FileNode file)
     std::set<std::string> tokenNames;
     GetTokenNames(file, tokenNames);
 
-    tokenNames.insert(jam_token);
-    tokenNames.insert(eof_token);
-
     std::stringstream names;
     for (auto& tokenName : tokenNames)
     {
@@ -238,8 +239,6 @@ void ReplaceToString(std::string& content, FileNode file)
 {
     std::set<std::string> tokenNames;
     GetTokenNames(file, tokenNames);
-    tokenNames.insert(eof_token);
-    tokenNames.insert(jam_token);
 
     std::stringstream out;
     for (const std::string& name : tokenNames)
