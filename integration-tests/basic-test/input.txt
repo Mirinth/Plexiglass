@@ -2,3 +2,7 @@
 nickel
 dime
 quarter
+nickel nickel nickel
+dime dime dime
+nickel quarter dime
+quarter quarter
