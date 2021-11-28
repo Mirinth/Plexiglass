@@ -40,3 +40,8 @@ TEST_CASE("Template: Test template with debug driver")
 {
     TemplateTest("debug", true);
 }
+
+TEST_CASE("Template: Test template with all features")
+{
+    TemplateTest("full", true);
+}
