@@ -203,21 +203,13 @@ void ReplaceLexerStates(std::string& content, const FileNode lexer)
 /// </summary>
 /// <param name="content">String to replace in.</param>
 /// <param name="file">Lexer to extract token names from.</param>
-/// <returns>
-/// The name used for the end-of-file token and the name used for the error
-/// token.
-/// </returns>
-std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
-                                                   FileNode file)
+void ReplaceTokens(std::string& content, FileNode file)
 {
     std::set<std::string> tokenNames;
     GetTokenNames(file, tokenNames);
 
-    std::string errorName = jam_token;
-    tokenNames.insert(errorName);
-
-    std::string eofName = eof_token;
-    tokenNames.insert(eofName);
+    tokenNames.insert(jam_token);
+    tokenNames.insert(eof_token);
 
     std::stringstream names;
     for (auto& tokenName : tokenNames)
@@ -229,8 +221,6 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
     namesStr.erase(0, 5); // Erase the leading "\n    "
 
     Replace(content, "$TOKEN_NAMES", namesStr);
-
-    return std::make_tuple(eofName, errorName);
 }
 
 /// <summary>
@@ -294,23 +284,16 @@ void SaveFile(const std::string& content, const std::filesystem::path& path)
 /// <param name="file">The lexer to generate from.</param>
 /// <param name="header">Path to the output header.</param>
 /// <param name="name">Name of the lexer.</param>
-/// <returns>
-/// The name used for the end-of-file token and the name used for the error
-/// token.
-/// </returns>
-std::tuple<std::string, std::string> TemplateHeader(
-    FileNode file,
-    std::filesystem::path header,
-    std::string name)
+void TemplateHeader(FileNode file,
+                    std::filesystem::path header,
+                    std::string name)
 {
     std::string content = header_template;
 
     Replace(content, "$LEXER_NAME", name);
-    auto names = ReplaceTokens(content, file);
+    ReplaceTokens(content, file);
 
     SaveFile(content, header);
-
-    return names;
 }
 
 /// <summary>
@@ -357,6 +340,6 @@ void Template(FileNode file,
 {
     std::filesystem::remove(header);
     std::filesystem::remove(code);
-    auto [eofName, errorName] = TemplateHeader(file, header, name);
-    TemplateBody(file, eofName, errorName, code, name, debug);
+    TemplateHeader(file, header, name);
+    TemplateBody(file, eof_token, jam_token, code, name, debug);
 }
