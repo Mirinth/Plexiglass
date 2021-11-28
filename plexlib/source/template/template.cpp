@@ -10,6 +10,12 @@
 #include <template-holder.hpp>
 #include <utils.hpp>
 
+constexpr char* eof_token = "__eof__";
+constexpr char* jam_token = "__jam__";
+
+constexpr char* initial_state = "__initial__";
+constexpr char* jail_state = "__jail__";
+
 struct TemplateRule
 {
     std::string Active;     // state this rule is active in
@@ -140,7 +146,7 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
         }
         if (producedRule.Active == "")
         {
-            producedRule.Active = "__initial__";
+            producedRule.Active = initial_state;
         }
         if (producedRule.Transition == "")
         {
@@ -180,14 +186,14 @@ void ReplaceLexerStates(std::string& content, const FileNode lexer)
     }
 
     std::stringstream names;
-    names << "__initial__,\n    ";
+    names << initial_state << ",\n    ";
 
     for (const auto& state : states)
     {
         names << state << ",\n    ";
     }
 
-    names << "__jail__,";
+    names << jail_state << ",";
 
     Replace(content, "$LEXER_STATES", names.str());
 }
@@ -207,10 +213,10 @@ std::tuple<std::string, std::string> ReplaceTokens(std::string& content,
     std::set<std::string> tokenNames;
     GetTokenNames(file, tokenNames);
 
-    std::string errorName = "__jam__";
+    std::string errorName = jam_token;
     tokenNames.insert(errorName);
 
-    std::string eofName = "__eof__";
+    std::string eofName = eof_token;
     tokenNames.insert(eofName);
 
     std::stringstream names;
