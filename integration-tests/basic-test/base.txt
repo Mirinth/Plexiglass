@@ -1,4 +1,7 @@
-2: FiveToken
-3: TenToken
-4: TwentyFiveToken
+3: FiveToken 
+
+4: TenToken 
+
+5: TwentyFiveToken 
+
 5: PLEXIGLASS_EOF
