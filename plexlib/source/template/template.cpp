@@ -160,26 +160,6 @@ std::string GetRuleString(FileNode node, std::string illegalTokenName)
 }
 
 /// <summary>
-/// Replace $EOF_TOKEN.
-/// </summary>
-/// <param name="content">String to replace in.</param>
-/// <param name="name">What to replace with.</param>
-void ReplaceEofName(std::string& content, const std::string& name)
-{
-    Replace(content, "$EOF_TOKEN", "TokenType::" + name);
-}
-
-/// <summary>
-/// Replace $INVALID_TOKEN.
-/// </summary>
-/// <param name="content">String to replace in.</param>
-/// <param name="name">What to replace with.</param>
-void ReplaceErrorName(std::string& content, const std::string& name)
-{
-    Replace(content, "$INVALID_TOKEN", "TokenType::" + name);
-}
-
-/// <summary>
 /// Replace $LEXER_STATES
 /// </summary>
 /// <param name="content">String to replace in.</param>
@@ -210,16 +190,6 @@ void ReplaceLexerStates(std::string& content, const FileNode lexer)
     names << "__jail__,";
 
     Replace(content, "$LEXER_STATES", names.str());
-}
-
-/// <summary>
-/// Replace $LEXER_NAME.
-/// </summary>
-/// <param name="content">String to replace in.</param>
-/// <param name="name">What to replace with.</param>
-void ReplaceName(std::string& content, const std::string& name)
-{
-    Replace(content, "$LEXER_NAME", name);
 }
 
 /// <summary>
@@ -302,17 +272,6 @@ void ReplaceToString(std::string& content,
 }
 
 /// <summary>
-/// Replace $DEBUG_MODE.
-/// </summary>
-/// <param name="content">String to replace in.</param>
-/// <param name="debug">Whether debug mode is enabled.</param>
-void ReplaceDebug(std::string& content, bool debug)
-{
-    std::string replacement = (debug ? "1" : "0");
-    Replace(content, "$DEBUG_MODE", replacement);
-}
-
-/// <summary>
 /// Save a file.
 /// </summary>
 /// <param name="content">What to write.</param>
@@ -340,7 +299,7 @@ std::tuple<std::string, std::string> TemplateHeader(
 {
     std::string content = header_template;
 
-    ReplaceName(content, name);
+    Replace(content, "$LEXER_NAME", name);
     auto names = ReplaceTokens(content, file);
 
     SaveFile(content, header);
@@ -366,13 +325,13 @@ void TemplateBody(FileNode file,
 {
     std::string content = code_template;
 
-    ReplaceErrorName(content, errorName);
-    ReplaceEofName(content, eofName);
-    ReplaceName(content, name);
+    Replace(content, "$INVALID_TOKEN", "TokenType::" + errorName);
+    Replace(content, "$EOF_TOKEN", "TokenType::" + eofName);
+    Replace(content, "$LEXER_NAME", name);
     ReplaceLexerStates(content, file);
     ReplaceRules(content, file, eofName);
     ReplaceToString(content, file, eofName, errorName);
-    ReplaceDebug(content, debug);
+    Replace(content, "$DEBUG_MODE", (debug ? "1" : "0"));
     SaveFile(content, code);
 }
 
