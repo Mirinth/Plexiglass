@@ -30,5 +30,5 @@ private:
     TokenType m_type;
     std::string m_text;
 
-    bool ShiftHelper();
+    void ShiftHelper();
 };

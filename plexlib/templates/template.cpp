@@ -23,7 +23,6 @@ struct Rule
     /// </param>
     /// <param name="transition">The state the rule transitions to.</param>
     /// <param name="token">The TokenType produced.</param>
-    /// <param name="produce">Whether a token is produced at all.</param>
     /// <param name="increment">
     /// How much to change the current line number by.
     /// </param>
@@ -31,13 +30,11 @@ struct Rule
          const char* pattern,
          LexerState transition,
          TokenType token,
-         bool produce,
          int increment)
         : Active(active)
         , Pattern(pattern)
         , Transition(transition)
         , Token(token)
-        , Produce(produce)
         , Increment(increment)
     {
     }
@@ -46,7 +43,6 @@ struct Rule
     std::regex Pattern;
     LexerState Transition;
     TokenType Token;
-    bool Produce;
     int Increment;
 };
 
@@ -130,20 +126,17 @@ std::string $LEXER_NAME::PeekText() const
 /// </summary>
 void $LEXER_NAME::Shift()
 {
-    bool success = false;
-    while (!success)
+    m_type = TokenType::$NOTHING_TOKEN;
+    while (m_type == TokenType::$NOTHING_TOKEN)
     {
-        success = ShiftHelper();
+        ShiftHelper();
     }
 }
 
 /// <summary>
 /// Helper function for $LEXER_NAME::Shift().
 /// </summary>
-/// <returns>
-/// true if the found token should be used, false if it should be skipped.
-/// </returns>
-bool $LEXER_NAME::ShiftHelper()
+void $LEXER_NAME::ShiftHelper()
 {
     if (m_view.empty())
     {
@@ -191,28 +184,24 @@ bool $LEXER_NAME::ShiftHelper()
         }
     }
 
-    if (max_length > 0 && rules[max_index].Produce)
+    if (max_length > 0 && rules[max_index].Token == TokenType::$NOTHING_TOKEN)
     {
         m_type = rules[max_index].Token;
-        m_text = m_view.substr(0, max_length);
+        if (rules[max_index].Token == TokenType::$NOTHING_TOKEN)
+        {
+            m_text = m_view.substr(0, max_length);
+        }
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
         m_state = rules[max_index].Transition;
-        return true;
-    }
-    else if (max_length > 0)
-    {
-        m_view.remove_prefix(max_length);
-        m_line += rules[max_index].Increment;
-        m_state = rules[max_index].Transition;
-        return false;
+        return;
     }
     else
     {
         m_type = TokenType::$INVALID_TOKEN;
         m_text = std::string(1, m_view[0]);
         m_view.remove_prefix(1);
-        return true;
+        return;
     }
 }
 
