@@ -16,10 +16,10 @@ enum class TokenType
 
 std::string ToString(TokenType type, const std::string& text);
 
-class template_test_debug
+class debug
 {
 public:
-    template_test_debug(const std::filesystem::path& path);
+    debug(const std::filesystem::path& path);
     size_t PeekLine() const;
     TokenType PeekToken() const;
     std::string PeekText() const;
