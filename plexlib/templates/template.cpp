@@ -142,7 +142,7 @@ void $LEXER_NAME::ShiftHelper()
     {
         m_type = TokenType::$EOF_TOKEN;
         m_text = "";
-        return true;
+        return;
     }
 
     using vmatch = std::match_results<std::string_view::const_iterator>;
