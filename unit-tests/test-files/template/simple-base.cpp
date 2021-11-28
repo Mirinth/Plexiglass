@@ -47,7 +47,6 @@ struct Rule
     std::regex Pattern;
     LexerState Transition;
     TokenType Token;
-    bool Produce;
     int Increment;
 };
 
@@ -59,9 +58,9 @@ std::vector<Rule> GetRules()
 {
     std::vector<Rule> rules;
 
-    rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, true, 0);
-    rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, true, 0);
-    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::__jam__, false, 0);
+    rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, 0);
+    rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, 0);
+    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::__nothing__, 0);
 
     return rules;
 }
@@ -88,6 +87,9 @@ std::string ToString(TokenType type, const std::string& text)
         break;
     case TokenType::__jam__:
         str = "__jam__";
+        break;
+    case TokenType::__nothing__:
+        str = "__nothing__";
         break;
     default:
             throw std::exception("Unrecognized token type in ToString()");
@@ -146,26 +148,23 @@ std::string simple::PeekText() const
 /// </summary>
 void simple::Shift()
 {
-    bool success = false;
-    while (!success)
+	m_type = TokenType::__nothing__;
+    while (m_type == TokenType::__nothing__)
     {
-        success = ShiftHelper();
+        ShiftHelper();
     }
 }
 
 /// <summary>
 /// Helper function for simple::Shift().
 /// </summary>
-/// <returns>
-/// true if the found token should be used, false if it should be skipped.
-/// </returns>
-bool simple::ShiftHelper()
+void simple::ShiftHelper()
 {
     if (m_view.empty())
     {
         m_type = TokenType::__eof__;
         m_text = "";
-        return true;
+        return;
     }
 
     using vmatch = std::match_results<std::string_view::const_iterator>;
@@ -214,21 +213,22 @@ bool simple::ShiftHelper()
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
         m_state = rules[max_index].Transition;
-        return true;
+        return;
     }
     else if (max_length > 0)
     {
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
         m_state = rules[max_index].Transition;
-        return false;
+        m_type = TokenType::__nothing__;
+        return;
     }
     else
     {
         m_type = TokenType::__jam__;
         m_text = std::string(1, m_view[0]);
         m_view.remove_prefix(1);
-        return true;
+        return;
     }
 }
 

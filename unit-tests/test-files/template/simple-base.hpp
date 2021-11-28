@@ -12,6 +12,7 @@ enum class TokenType
     DogToken,
     __eof__,
     __jam__,
+    __nothing__,
 };
 
 std::string ToString(TokenType type, const std::string& text);
