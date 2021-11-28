@@ -1,4 +1,8 @@
-# This is a comment
-5
-10
-25
+; This is a comment
+nickel
+dime
+quarter
+nickel nickel nickel
+dime dime dime
+nickel quarter dime
+quarter quarter

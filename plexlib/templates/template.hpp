@@ -23,8 +23,9 @@ public:
     void Shift();
 
 private:
-    std::string m_input;
-    std::string_view m_data;
+    std::string m_reference;
+    std::string_view m_view;
+    LexerState m_state;
     size_t m_line;
     TokenType m_type;
     std::string m_text;

@@ -19,6 +19,8 @@ expression comment_end
 expression not_comment_end
 	[^\n]+
 
+expression white
+	[ \t]+
 
 # initial state
 rule comment_start
@@ -28,6 +30,9 @@ rule comment_start
 rule newline
 	produce-nothing
 	line++
+
+rule white
+	produce-nothing
 
 rule nickel
 	produce-nothing
@@ -57,6 +62,10 @@ rule quarter
 	produce-nothing
 	transition thirty
 
+rule white
+	state five
+	produce-nothing
+
 rule newline
 	state five
 	produce FiveToken
@@ -78,6 +87,10 @@ rule quarter
 	state ten
 	produce-nothing
 	transition thirty_five
+
+rule white
+	state ten
+	produce-nothing
 
 rule newline
 	state ten
@@ -101,6 +114,10 @@ rule quarter
 	produce-nothing
 	transition forty
 
+rule white
+	state fifteen
+	produce-nothing
+
 rule newline
 	state fifteen
 	produce FifteenToken
@@ -122,6 +139,10 @@ rule quarter
 	state twenty
 	produce-nothing
 	transition forty_five
+
+rule white
+	state twenty
+	produce-nothing
 
 rule newline
 	state twenty
@@ -145,6 +166,10 @@ rule quarter
 	produce-nothing
 	transition fifty
 
+rule white
+	state twenty_five
+	produce-nothing
+
 rule newline
 	state twenty_five
 	produce TwentyFiveToken
@@ -161,6 +186,10 @@ rule dime
 	state thirty
 	produce-nothing
 	transition forty
+
+rule white
+	state thirty
+	produce-nothing
 
 rule newline
 	state thirty
@@ -179,6 +208,10 @@ rule dime
 	produce-nothing
 	transition forty_five
 
+rule white
+	state thirty_five
+	produce-nothing
+
 rule newline
 	state thirty_five
 	produce ThirtyFiveToken
@@ -196,6 +229,10 @@ rule dime
 	produce-nothing
 	transition fifty
 
+rule white
+	state forty
+	produce-nothing
+
 rule newline
 	state forty
 	produce FortyToken
@@ -208,6 +245,10 @@ rule nickel
 	produce-nothing
 	transition fifty
 
+rule white
+	state forty_five
+	produce-nothing
+
 rule newline
 	state forty_five
 	produce FortyFiveToken
@@ -215,6 +256,10 @@ rule newline
 	line++
 
 # fifty state
+rule white
+	state fifty
+	produce-nothing
+
 rule newline
 	state fifty
 	produce FiftyToken
@@ -230,3 +275,4 @@ rule comment_end
 	state comment
 	produce-nothing
 	line++
+	transition __initial__
