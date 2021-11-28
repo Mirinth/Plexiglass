@@ -110,6 +110,7 @@ simple::simple(const std::filesystem::path& path)
     m_reference = ReadFile(path);
     m_view = m_reference;
     m_line = 1;
+    m_state = LexerState::__initial__;
     Shift();
 }
 
@@ -177,6 +178,12 @@ bool simple::ShiftHelper()
     for (size_t index = 0; index < rules.size(); index++)
     {
         Rule rule = rules[index];
+
+        if (rule.Active != m_state)
+        {
+            continue;
+        }
+
         vmatch m;
         bool matched =
             std::regex_search(m_view.begin(), m_view.end(), m, rule.Pattern);
@@ -206,18 +213,20 @@ bool simple::ShiftHelper()
         m_text = m_view.substr(0, max_length);
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
+        m_state = rules[max_index].Transition;
         return true;
     }
     else if (max_length > 0)
     {
         m_view.remove_prefix(max_length);
         m_line += rules[max_index].Increment;
+        m_state = rules[max_index].Transition;
         return false;
     }
     else
     {
         m_type = TokenType::PLEXIGLASS_NO_MATCH_TOKEN;
-        m_text = "";
+        m_text = std::string(1, m_view[0]);
         m_view.remove_prefix(1);
         return true;
     }
