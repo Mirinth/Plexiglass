@@ -8,8 +8,8 @@ enum class LexerState;
 
 enum class TokenType
 {
-    PLEXIGLASS_EOF,
-    PLEXIGLASS_NO_MATCH_TOKEN,
+    __eof__,
+    __jam__,
     secondToken,
 };
 
