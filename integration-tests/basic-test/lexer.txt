@@ -230,3 +230,4 @@ rule comment_end
 	state comment
 	produce-nothing
 	line++
+	transition __initial__
