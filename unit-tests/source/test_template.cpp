@@ -5,11 +5,11 @@
 #include <analyzer/analyzer.hpp>
 #include <parser/parser.hpp>
 #include <parser/tree.hpp>
-#include <template/template.hpp>
+#include <templater/templater.hpp>
 
 #include "test_files.hpp"
 
-void TemplateTest(std::string name, bool debug)
+void TemplaterTest(std::string name, bool debug)
 {
     std::filesystem::path testDir = GetTestRoot() / "template/";
 
@@ -31,17 +31,17 @@ void TemplateTest(std::string name, bool debug)
     CHECK(base == out);
 }
 
-TEST_CASE("Template: Test template")
+TEST_CASE("Templater: Test template")
 {
-    TemplateTest("simple", false);
+    TemplaterTest("simple", false);
 }
 
-TEST_CASE("Template: Test template with debug driver")
+TEST_CASE("Templater: Test template with debug driver")
 {
-    TemplateTest("debug", true);
+    TemplaterTest("debug", true);
 }
 
-TEST_CASE("Template: Test template with all features")
+TEST_CASE("Templater: Test template with all features")
 {
-    TemplateTest("full", true);
+    TemplaterTest("full", true);
 }
