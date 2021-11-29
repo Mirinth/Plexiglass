@@ -54,13 +54,18 @@ struct Rule
 /// <returns>The rules to be used by the lexer.</returns>
 std::vector<Rule> GetRules()
 {
-    std::vector<Rule> rules;
+    constexpr char* first = "1st";
+    constexpr char* second = "2nd";
+    constexpr char* third = "3rd";
 
-    rules.emplace_back(LexerState::__initial__, "1st", LexerState::__initial__, TokenType::__nothing__, 1);
-    rules.emplace_back(LexerState::__initial__, "2nd", LexerState::other_state, TokenType::secondToken, -1);
-    rules.emplace_back(LexerState::other_state, "3rd", LexerState::__initial__, TokenType::__nothing__, 0);
+    // __rules__ used to avoid conflicts with state names.
+    std::vector<Rule> __rules__;
 
-    return rules;
+    __rules__.emplace_back(LexerState::__initial__, first, LexerState::__initial__, TokenType::__nothing__, 1);
+    __rules__.emplace_back(LexerState::__initial__, second, LexerState::other_state, TokenType::secondToken, -1);
+    __rules__.emplace_back(LexerState::other_state, third, LexerState::__initial__, TokenType::__nothing__, 0);
+
+    return __rules__;
 }
 
 /// <summary>

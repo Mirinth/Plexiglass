@@ -53,13 +53,18 @@ struct Rule
 /// <returns>The rules to be used by the lexer.</returns>
 std::vector<Rule> GetRules()
 {
-    std::vector<Rule> rules;
+    constexpr char* cat = "cat";
+    constexpr char* dog = "dog";
+    constexpr char* white = "\\s+";
 
-    rules.emplace_back(LexerState::__initial__, "cat", LexerState::__initial__, TokenType::CatToken, 0);
-    rules.emplace_back(LexerState::__initial__, "dog", LexerState::__initial__, TokenType::DogToken, 0);
-    rules.emplace_back(LexerState::__initial__, "\\s+", LexerState::__initial__, TokenType::__nothing__, 0);
+    // __rules__ used to avoid conflicts with state names.
+    std::vector<Rule> __rules__;
 
-    return rules;
+    __rules__.emplace_back(LexerState::__initial__, cat, LexerState::__initial__, TokenType::CatToken, 0);
+    __rules__.emplace_back(LexerState::__initial__, dog, LexerState::__initial__, TokenType::DogToken, 0);
+    __rules__.emplace_back(LexerState::__initial__, white, LexerState::__initial__, TokenType::__nothing__, 0);
+
+    return __rules__;
 }
 
 /// <summary>
