@@ -117,23 +117,6 @@ std::string GetRuleString(FileNode node)
     for (auto& rule : node->rules)
     {
         TemplateRule producedRule = GetRule(rule);
-
-        for (auto& expression : node->expressions)
-        {
-            if (expression->name == producedRule.Pattern)
-            {
-                producedRule.Pattern = expression->expression;
-
-                // Needs to come first so \ inserted by next one aren't escaped
-                Replace(producedRule.Pattern, "\\",
-                        "\\\\"); // Escape backslaches
-                Replace(producedRule.Pattern, "\"",
-                        "\\\""); // Escape double quotes
-
-                producedRule.Pattern = "\"" + producedRule.Pattern + "\"";
-            }
-        }
-
         producedRules.push_back(producedRule);
     }
 
@@ -152,8 +135,8 @@ std::string GetRuleString(FileNode node)
         {
             producedRule.Transition = producedRule.Active;
         }
-        out << "\n    rules.emplace_back(LexerState::" << producedRule.Active
-            << ", " << producedRule.Pattern
+        out << "\n    __rules__.emplace_back(LexerState::"
+            << producedRule.Active << ", " << producedRule.Pattern
             << ", LexerState::" << producedRule.Transition
             << ", TokenType::" << producedRule.Token << ", "
             << producedRule.Increment << ");";
@@ -217,6 +200,34 @@ void ReplaceTokens(std::string& content, FileNode file)
     namesStr.erase(0, 5); // Erase the leading "\n    "
 
     Replace(content, "$TOKEN_NAMES", namesStr);
+}
+
+/// <summary>
+/// Replace $EXPRESSIONS
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="lexer">The lexer to generate rules from.</param>
+void ReplaceExpressions(std::string& content, FileNode lexer)
+{
+    std::stringstream out;
+
+    for (const auto& expressionNode : lexer->expressions)
+    {
+        const std::string name = expressionNode->name;
+        std::string expression = expressionNode->expression;
+        
+        // Needs to come first so \ inserted by next one aren't escaped
+        Replace(expression, "\\", "\\\\"); // Escape backslaches
+        Replace(expression, "\"", "\\\""); // Escape double quotes
+
+        out << "constexpr char* " << name << " = \"" << expression
+            << "\";\n    ";
+    }
+
+    std::string outStr = out.str();
+    outStr.erase(outStr.size() - 5, 5);
+
+    Replace(content, "$EXPRESSIONS", outStr);
 }
 
 /// <summary>
@@ -303,6 +314,7 @@ void TemplateBody(FileNode file,
     Replace(content, "$NOTHING_TOKEN", nothing_token);
     Replace(content, "$LEXER_NAME", name);
     ReplaceLexerStates(content, file);
+    ReplaceExpressions(content, file);
     ReplaceRules(content, file);
     ReplaceToString(content, file);
     Replace(content, "$DEBUG_MODE", (debug ? "1" : "0"));
