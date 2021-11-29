@@ -117,23 +117,6 @@ std::string GetRuleString(FileNode node)
     for (auto& rule : node->rules)
     {
         TemplateRule producedRule = GetRule(rule);
-
-        for (auto& expression : node->expressions)
-        {
-            if (expression->name == producedRule.Pattern)
-            {
-                producedRule.Pattern = expression->expression;
-
-                // Needs to come first so \ inserted by next one aren't escaped
-                Replace(producedRule.Pattern, "\\",
-                        "\\\\"); // Escape backslaches
-                Replace(producedRule.Pattern, "\"",
-                        "\\\""); // Escape double quotes
-
-                producedRule.Pattern = "\"" + producedRule.Pattern + "\"";
-            }
-        }
-
         producedRules.push_back(producedRule);
     }
 
