@@ -54,11 +54,13 @@ std::vector<Rule> GetRules()
 {
     $EXPRESSIONS
 
-    std::vector<Rule> rules;
+    // This name was chosen to avoid conflicts with the expression names above.
+    // __names__ are reserved by the lexer for internal use.
+    std::vector<Rule> __rules__;
 
     $LEXER_RULES
 
-    return rules;
+    return __rules__;
 }
 
 /// <summary>
