@@ -57,7 +57,8 @@ std::vector<Rule> GetRules()
     constexpr char* dog = "dog";
     constexpr char* white = "\\s+";
 
-    // __rules__ used to avoid conflicts with state names.
+    // This name was chosen to avoid conflicts with the expression names above.
+    // __names__ are reserved by the lexer for internal use.
     std::vector<Rule> __rules__;
 
     __rules__.emplace_back(LexerState::__initial__, cat, LexerState::__initial__, TokenType::CatToken, 0);
