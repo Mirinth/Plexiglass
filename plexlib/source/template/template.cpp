@@ -152,8 +152,8 @@ std::string GetRuleString(FileNode node)
         {
             producedRule.Transition = producedRule.Active;
         }
-        out << "\n    rules.emplace_back(LexerState::" << producedRule.Active
-            << ", " << producedRule.Pattern
+        out << "\n    __rules__.emplace_back(LexerState::"
+            << producedRule.Active << ", " << producedRule.Pattern
             << ", LexerState::" << producedRule.Transition
             << ", TokenType::" << producedRule.Token << ", "
             << producedRule.Increment << ");";
