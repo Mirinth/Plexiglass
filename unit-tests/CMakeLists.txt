@@ -7,7 +7,7 @@ add_executable(plextest
     source/test_parameters.cpp
     source/test_parser.cpp
     source/test_semantics.cpp
-    source/test_template.cpp
+    source/test_templater.cpp
     source/test_tree.cpp
 )
 target_link_libraries(plextest PUBLIC plexlib)
