@@ -220,6 +220,34 @@ void ReplaceTokens(std::string& content, FileNode file)
 }
 
 /// <summary>
+/// Replace $EXPRESSIONS
+/// </summary>
+/// <param name="content">String to replace in.</param>
+/// <param name="lexer">The lexer to generate rules from.</param>
+void ReplaceExpressions(std::string& content, FileNode lexer)
+{
+    std::stringstream out;
+
+    for (const auto& expressionNode : lexer->expressions)
+    {
+        const std::string name = expressionNode->name;
+        std::string expression = expressionNode->expression;
+        
+        // Needs to come first so \ inserted by next one aren't escaped
+        Replace(expression, "\\", "\\\\"); // Escape backslaches
+        Replace(expression, "\"", "\\\""); // Escape double quotes
+
+        out << "constexpr char* " << name << " = \"" << expression
+            << "\";\n    ";
+    }
+
+    std::string outStr = out.str();
+    outStr.erase(outStr.size() - 5, 5);
+
+    Replace(content, "$EXPRESSIONS", outStr);
+}
+
+/// <summary>
 /// Replace $LEXER_RULES.
 /// </summary>
 /// <param name="content">String to replace in.</param>
@@ -303,6 +331,7 @@ void TemplateBody(FileNode file,
     Replace(content, "$NOTHING_TOKEN", nothing_token);
     Replace(content, "$LEXER_NAME", name);
     ReplaceLexerStates(content, file);
+    ReplaceExpressions(content, file);
     ReplaceRules(content, file);
     ReplaceToString(content, file);
     Replace(content, "$DEBUG_MODE", (debug ? "1" : "0"));

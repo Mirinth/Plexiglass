@@ -52,6 +52,8 @@ struct Rule
 /// <returns>The rules to be used by the lexer.</returns>
 std::vector<Rule> GetRules()
 {
+    $EXPRESSIONS
+
     std::vector<Rule> rules;
 
     $LEXER_RULES
